@@ -456,6 +456,16 @@ function showTodo(){
   `;
 }
 
+/* ---------- Background Picker ---------- */
+function openBackgroundPicker(){
+  const picker = $('background-picker');
+  if(picker.classList.contains('hidden')){
+    picker.classList.remove('hidden');
+  } else {
+    picker.classList.add('hidden');
+  }
+}
+
 /* ---------- Quick Links (unchanged except visibility) ---------- */
 function renderQuickLinks(){
   const top = $('topPanels');
@@ -1046,8 +1056,9 @@ function deleteTask(listIndex, taskIndex) {
     });
   }
 }
+
 function changeBackground(value){
-  document.body.style.background = value === 'default' ? getComputedStyle(document.documentElement).getPropertyValue('--default-moving').trim() : value;
+  applyBackgroundPreview(value);
   const users = getUsers();
   if (currentUser) {
     users[currentUser] = users[currentUser] || {};
@@ -1067,6 +1078,8 @@ function logout(){
   // hide top panels
   $('topPanels')?.classList.add('hidden'); $('topPanels')?.setAttribute('aria-hidden','true');
   $('quickLinks')?.classList.add('hidden'); $('planner')?.classList.add('hidden');
+  // hide background picker
+  $('background-picker')?.classList.add('hidden');
   checkTopPanelsVisibility();
 }
 
