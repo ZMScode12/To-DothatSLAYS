@@ -284,23 +284,15 @@
   <div id="taskDialog" class="hidden" style="position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(6,8,12,0.95); padding:16px; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.6); width:320px; z-index:999;">
     <h3 id="taskDialogTitle">Add Task</h3>
     <input type="text" id="taskText" placeholder="Task description">
-    <label style="font-size:13px; opacity:0.9; display:block; text-align:left; margin-left:4px;">Day</label>
-    <select id="taskDay">
-      <!-- Sunday-first order -->
-      <option value="0">Sunday</option>
-      <option value="1">Monday</option>
-      <option value="2">Tuesday</option>
-      <option value="3">Wednesday</option>
-      <option value="4">Thursday</option>
-      <option value="5">Friday</option>
-      <option value="6">Saturday</option>
-    </select>
 
     <label style="font-size:13px; opacity:0.9; display:block; text-align:left; margin-left:4px;">Color (pick or use palette)</label>
     <div style="display:flex; gap:8px; align-items:center;">
       <input type="color" id="taskColor" value="#ffd166">
       <div id="taskColorPreview" style="width:34px; height:34px; border-radius:6px; border:2px solid rgba(255,255,255,0.12);"></div>
     </div>
+
+    <!-- Palette swatches in dialog -->
+    <div id="dialogPaletteRow" class="palette-row" style="margin-top:8px;"></div>
 
     <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
       <button onclick="closeTaskDialog()">Cancel</button>
@@ -702,14 +694,42 @@ function clearPalette(){
   renderPlanner();
 }
 
+/* render palette swatches inside the task dialog */
+function renderDialogPalette(){
+  const dialogPaletteRow = $('dialogPaletteRow');
+  if (!dialogPaletteRow) return;
+  dialogPaletteRow.innerHTML = '';
+  
+  const users = getUsers();
+  const user = users[currentUser] || {};
+  const palette = user.palette || [];
+  
+  if (palette.length === 0) {
+    dialogPaletteRow.innerHTML = '<span style="font-size:12px; opacity:0.7;">No saved colors yet</span>';
+    return;
+  }
+  
+  palette.forEach(p => {
+    const s = document.createElement('div');
+    s.className = 'swatch';
+    s.title = p.label || '';
+    s.style.background = p.color || '#fff';
+    s.onclick = ()=> { 
+      $('taskColor').value = p.color; 
+      $('taskColorPreview').style.background = p.color; 
+    };
+    dialogPaletteRow.appendChild(s);
+  });
+}
+
 /* add planner task (legacy button in top of planner) opens dialog */
 function openAddTaskDialog(){
   $('taskDialogTitle').textContent = 'Add Task';
   $('taskText').value = '';
-  $('taskDay').value = '0'; // default Sunday
   $('taskColor').value = '#ffd166';
   $('taskColorPreview').style.background = $('taskColor').value;
   $('taskDialog').dataset.editId = ''; // new
+  renderDialogPalette();
   $('taskDialog').classList.remove('hidden');
 }
 
@@ -722,10 +742,10 @@ function openEditTaskDialog(taskId){
   if (!task) return alert('Task not found');
   $('taskDialogTitle').textContent = 'Edit Task';
   $('taskText').value = task.text || '';
-  $('taskDay').value = String(task.dayIndex||0);
   $('taskColor').value = task.color || '#ffd166';
   $('taskColorPreview').style.background = $('taskColor').value;
   $('taskDialog').dataset.editId = String(taskId);
+  renderDialogPalette();
   $('taskDialog').classList.remove('hidden');
 }
 
@@ -739,7 +759,6 @@ $('taskColor')?.addEventListener?.('input', ()=> { $('taskColorPreview').style.b
 function saveTaskFromDialog(){
   const text = $('taskText').value.trim();
   if (!text) return alert('Please enter task text');
-  const dayIndex = Number($('taskDay').value) || 0;
   const color = $('taskColor').value || '#ffd166';
   const users = getUsers();
   users[currentUser] = users[currentUser] || {};
@@ -756,7 +775,6 @@ function saveTaskFromDialog(){
       
       // Update planner task
       users[currentUser].planner[idx].text = text;
-      users[currentUser].planner[idx].dayIndex = dayIndex;
       users[currentUser].planner[idx].color = color;
       
       // Also update in to-do list if it exists there
@@ -773,7 +791,7 @@ function saveTaskFromDialog(){
     }
   } else {
     // new planner task
-    users[currentUser].planner.push({ id: Date.now() + Math.random(), text, dayIndex, color });
+    users[currentUser].planner.push({ id: Date.now() + Math.random(), text, color });
   }
   saveUsers(users);
   closeTaskDialog();
