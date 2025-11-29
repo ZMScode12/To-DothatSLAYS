@@ -194,7 +194,7 @@
       <div class="gradient-option" data-bg="default" id="defaultOption" style="background: linear-gradient(135deg,#5b00ff,#ff0066,#00f2ff)" title="Keep moving gradient"></div>
     </div>
     <div style="margin-top:8px">
-      <button onclick="alert('Button clicked!'); createAccount();">Create Account</button>
+      <button onclick="createAccount()">Create Account</button>
       <button class="control-small" onclick="useDefaultNow()">Don't change — keep moving</button>
     </div>
 
@@ -408,9 +408,6 @@ function createAccount(){
   
   const usersRaw = localStorage.getItem('users');
   const users = usersRaw ? JSON.parse(usersRaw) : {};
-  
-  // Debug: show what we have
-  alert('Trying to create: ' + user + '\nExisting users: ' + Object.keys(users).join(', '));
   
   // Check if username already exists
   const existingUsernames = Object.keys(users);
