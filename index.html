@@ -41,14 +41,14 @@
     .tab-btn.active { background: white; color: #6b5bff; font-weight:600; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
 
     .control-small { padding:6px 8px; font-size:14px; border-radius:8px; }
+    .small-btn { padding:6px 10px; font-size:13px; border-radius:6px; cursor:pointer; }
 
-    /* Top panels container - inline, side-by-side, pushes content down (no overlap) */
     #topPanels {
       display: flex;
       gap: 20px;
       justify-content: space-between;
       align-items: flex-start;
-      width: calc(100% - 80px); /* body padding 40 each side */
+      width: calc(100% - 80px);
       margin: 0 auto 18px auto;
       box-sizing: border-box;
       max-width: 1200px;
@@ -64,7 +64,6 @@
       overflow: visible;
     }
 
-    /* header bar that stays visible (click to toggle body) */
     .panel-header {
       display:flex;
       align-items:center;
@@ -80,7 +79,6 @@
     .panel-header .title { text-align:center; flex:1; font-size:16px; }
     .chev { width:20px; height:20px; display:inline-block; transition: transform 220ms ease; }
 
-    /* panel body uses max-height animation for smooth slide */
     .panel-body {
       overflow: hidden;
       max-height: 0;
@@ -91,15 +89,12 @@
       padding: 12px;
     }
 
-    /* when header toggled, rotate arrow */
     .open .chev { transform: rotate(180deg); }
 
-    /* Quick Links inner */
     #quickLinksList { padding-left: 6px; max-height: 240px; overflow-y: auto; margin-bottom: 8px; }
     #quickLinksList li { display:flex; justify-content: space-between; align-items: center; gap:8px; margin-bottom:6px; font-size:14px; }
     #quickLinksList a { color: #ffd; text-decoration: underline; max-width: 160px; word-break: break-word; }
 
-    /* Planner inner - weekly grid */
     #plannerGrid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -137,37 +132,49 @@
     }
     .task-label { flex:1; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:6px; }
 
-    /* Palette area */
     #palette {
       display:flex;
       flex-direction:column;
       gap:8px;
       margin-top:8px;
     }
-    .palette-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .palette-row { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
     .swatch {
       width:34px; height:34px; border-radius:6px; border:2px solid rgba(255,255,255,0.18); cursor:pointer; display:inline-block; box-shadow:0 4px 10px rgba(0,0,0,0.18);
     }
     .swatch.selected { outline:3px solid rgba(255,255,255,0.12); transform:translateY(-2px); }
+    .swatch-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .swatch-label {
+      color: white;
+      font-size: 10px;
+      max-width: 50px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-    /* add color form */
     #addColorForm { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
     #addColorForm input[type="text"] { width:140px; padding:8px; border-radius:8px; }
 
-    /* small responsive tweak so panels stack on narrow screens */
     @media (max-width: 880px) {
       #topPanels { flex-direction: column; gap: 12px; width: calc(100% - 40px); }
       .panel { width: 100%; }
       body { padding: 20px; }
       #plannerGrid { grid-template-columns: repeat(1, 1fr); }
     }
-    /* Only planner scrolls, not the whole page */
-#plannerBody {
-  max-width: 500px;    /* change width if you want it bigger/smaller */
-  overflow-x: auto;    /* makes a horizontal scroll appear inside planner */
-  overflow-y: hidden;  /* hides vertical scroll so it's only sideways */
-  white-space: nowrap; /* keeps tasks in one line so it scrolls sideways */
-}
+
+    #plannerBody {
+      max-width: 500px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -187,7 +194,7 @@
       <div class="gradient-option" data-bg="default" id="defaultOption" style="background: linear-gradient(135deg,#5b00ff,#ff0066,#00f2ff)" title="Keep moving gradient"></div>
     </div>
     <div style="margin-top:8px">
-      <button onclick="createAccount()">Create Account</button>
+      <button onclick="alert('Button clicked!'); createAccount();">Create Account</button>
       <button class="control-small" onclick="useDefaultNow()">Don't change — keep moving</button>
     </div>
 
@@ -235,25 +242,22 @@
         <div class="chev">▾</div>
       </div>
       <div id="plannerBody" class="panel-body" aria-hidden="true">
-        <!-- Controls: Add task / Palette -->
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <div style="margin-left:auto; font-size:13px; opacity:0.9">Week: Sunday → Saturday</div>
         </div>
 
-        <!-- Weekly grid -->
         <div id="plannerGrid" style="margin-top:10px;"></div>
 
-        <!-- Palette UI -->
         <div id="palette" aria-hidden="false">
           <div style="font-weight:600; margin-top:8px;">Palette (saved colors)</div>
           <div class="palette-row" id="paletteRow"></div>
 
-          <form id="addColorForm" onsubmit="event.preventDefault(); addPaletteColor();">
-            <input type="text" id="paletteLabel" placeholder="Label (e.g. school)" required>
-            <input type="color" id="paletteColor" value="#ffd166" required>
-            <button class="small-btn" type="submit">Save color</button>
-            <button type="button" class="small-btn" onclick="clearPalette()">Clear Palette</button>
-          </form>
+          <div id="addColorForm" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px;">
+            <input type="text" id="paletteLabel" placeholder="Label (e.g. school)">
+            <input type="color" id="paletteColor" value="#ffd166">
+            <button class="small-btn" onclick="addPaletteColor()">Save color</button>
+            <button class="small-btn" onclick="clearPalette()">Clear Palette</button>
+          </div>
         </div>
 
       </div>
@@ -262,9 +266,9 @@
 
   <!-- To-do lists -->
   <div id="todo" class="hidden">
-    <div id="todoHeader"></div> <!-- Dynamic welcome + New List -->
-    <div class="tabs" id="tabsContainer"></div> <!-- List tabs -->
-    <div id="listsContainer"></div> <!-- Tasks for active tab -->
+    <div id="todoHeader"></div>
+    <div class="tabs" id="tabsContainer"></div>
+    <div id="listsContainer"></div>
     <div id="background-picker" class="hidden" style="margin-top:12px;">
       <label for="bg-select">Choose Background:</label>
       <select id="bg-select" onchange="changeBackground(this.value)">
@@ -280,7 +284,7 @@
     </div>
   </div>
 
-  <!-- Add / Edit Task Modal (simple inline dialog) -->
+  <!-- Add / Edit Task Modal -->
   <div id="taskDialog" class="hidden" style="position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(6,8,12,0.95); padding:16px; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.6); width:320px; z-index:999;">
     <h3 id="taskDialogTitle">Add Task</h3>
     <input type="text" id="taskText" placeholder="Task description">
@@ -291,7 +295,6 @@
       <div id="taskColorPreview" style="width:34px; height:34px; border-radius:6px; border:2px solid rgba(255,255,255,0.12);"></div>
     </div>
 
-    <!-- Palette swatches in dialog -->
     <div id="dialogPaletteRow" class="palette-row" style="margin-top:8px;"></div>
 
     <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
@@ -304,8 +307,9 @@
 /* ---------- Utility & state ---------- */
 function $(id){return document.getElementById(id);}
 function escapeHtml(str){ return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function getUsers(){ return JSON.parse(localStorage.getItem('users') || '{}'); }
+function saveUsers(u){ localStorage.setItem('users', JSON.stringify(u)); }
 
-/* Keep earlier quirks: currentUser is stored as 'currentUser' in localStorage (password-as-id) */
 let currentUser = localStorage.getItem('currentUser') || null;
 let currentUserName = null;
 let allLists = [];
@@ -317,7 +321,7 @@ $('topPanels').classList.add('hidden');
 $('quickLinks').classList.add('hidden');
 $('planner').classList.add('hidden');
 
-/* ---------- Gradient selection (unchanged) ---------- */
+/* ---------- Gradient selection ---------- */
 const gradientEls = Array.from(document.querySelectorAll('.gradient-option'));
 function setPickedBgValue(val){
   pickedBackground = val;
@@ -326,7 +330,7 @@ function setPickedBgValue(val){
 }
 function applyBackgroundPreview(val) {
   if (val === 'default') {
-    document.body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--default-moving').trim();
+    document.body.style.background = 'linear-gradient(135deg, #5b00ff, #ff0066, #00f2ff)';
     document.body.style.backgroundSize = '400% 400%';
     document.body.style.animation = 'gradientMove 12s ease infinite';
   } else {
@@ -361,7 +365,7 @@ function togglePanel(panelId){
   }
 }
 
-/* ---------- Top panels visibility helper (Quick Links & Planner only show when logged in) ---------- */
+/* ---------- Top panels visibility helper ---------- */
 function checkTopPanelsVisibility(){
   const top = $('topPanels');
   const quick = $('quickLinks');
@@ -374,42 +378,62 @@ function checkTopPanelsVisibility(){
     return;
   }
 
-  // show all panels when logged in
   top?.classList.remove('hidden'); top?.setAttribute('aria-hidden','false');
   quick?.classList.remove('hidden'); quick?.setAttribute('aria-hidden','false');
   plan?.classList.remove('hidden'); plan?.setAttribute('aria-hidden','false');
 }
+
 /* ---------- Load session if any ---------- */
 if (currentUser) {
-  const usersTemp = JSON.parse(localStorage.getItem('users') || '{}');
-  if (usersTemp[currentUser]) currentUserName = usersTemp[currentUser].username || null;
-  loadAllLists();
-  showTodo();
-  renderLists();
-  renderQuickLinks();
-  renderPlanner();
-  checkTopPanelsVisibility();
+  const usersTemp = getUsers();
+  if (usersTemp[currentUser]) {
+    currentUserName = usersTemp[currentUser].username || null;
+    loadAllLists();
+    showTodo();
+    renderLists();
+    renderQuickLinks();
+    renderPlanner();
+    checkTopPanelsVisibility();
+  } else {
+    localStorage.removeItem('currentUser');
+    currentUser = null;
+  }
 }
 
-/* ---------- Accounts (unchanged behavior) ---------- */
+/* ---------- Accounts - FIXED to use username as key ---------- */
 function createAccount(){
   const user = $('username').value.trim();
   const pass = $('password').value.trim();
   if (!user || !pass) { alert('Please fill both username and password'); return; }
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
-  if (users[pass]) { alert('That password is already in use. Please pick a different password.'); return; }
-  users[pass] = {
+  
+  const usersRaw = localStorage.getItem('users');
+  const users = usersRaw ? JSON.parse(usersRaw) : {};
+  
+  // Debug: show what we have
+  alert('Trying to create: ' + user + '\nExisting users: ' + Object.keys(users).join(', '));
+  
+  // Check if username already exists
+  const existingUsernames = Object.keys(users);
+  for (let i = 0; i < existingUsernames.length; i++) {
+    if (existingUsernames[i] === user) {
+      alert('Username is in use, please choose another one');
+      return;
+    }
+  }
+  
+  users[user] = {
     username: user,
     password: pass,
     lists: [{ name: 'My First List', tasks: [] }],
     background: pickedBackground,
     quickLinks: [],
-    planner: [], // will hold {text, dayIndex (0-6), color, id}
-    palette: []  // per-user saved palette: [{label,color,id}]
+    planner: [],
+    palette: []
   };
   localStorage.setItem('users', JSON.stringify(users));
-  localStorage.setItem('currentUser', pass);
-  currentUser = pass; currentUserName = user;
+  localStorage.setItem('currentUser', user);
+  currentUser = user; 
+  currentUserName = user;
   loadAllLists();
   showTodo();
   renderLists();
@@ -424,10 +448,17 @@ function showSignup(){ $('login').classList.add('hidden'); $('signup').classList
 function login(){
   const userInput = $('loginUsername').value.trim();
   const pass = $('loginPassword').value.trim();
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
-  if (!users[pass] || users[pass].username !== userInput) { alert('Invalid username or password'); return; }
-  localStorage.setItem('currentUser', pass);
-  currentUser = pass; currentUserName = users[pass].username || null;
+  const users = getUsers();
+  
+  // FIXED: Look up by username and verify password
+  if (!users[userInput] || users[userInput].password !== pass) { 
+    alert('Invalid username or password'); 
+    return; 
+  }
+  
+  localStorage.setItem('currentUser', userInput);
+  currentUser = userInput; 
+  currentUserName = users[userInput].username || userInput;
   loadAllLists();
   showTodo();
   renderLists();
@@ -436,9 +467,9 @@ function login(){
   checkTopPanelsVisibility();
 }
 
-/* ---------- Show To-do (replace visible UI) ---------- */
+/* ---------- Show To-do ---------- */
 function showTodo(){
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const users = getUsers();
   if (!currentUser || !users[currentUser]) return;
   const user = users[currentUser];
   applyBackgroundPreview(user.background || 'default');
@@ -446,7 +477,7 @@ function showTodo(){
   $('login').classList.add('hidden');
   $('todo').classList.remove('hidden');
 
-  const displayName = currentUserName || (users[currentUser] && users[currentUser].username) || currentUser;
+  const displayName = currentUserName || currentUser;
   $('todoHeader').innerHTML = `
     <h1>Welcome, ${escapeHtml(displayName)}!</h1>
     <div style="margin-top:8px">
@@ -456,7 +487,7 @@ function showTodo(){
   `;
 }
 
-/* ---------- Background Picker ---------- */
+/* ---------- Background Picker - FIXED ---------- */
 function openBackgroundPicker(){
   const picker = $('background-picker');
   if(picker.classList.contains('hidden')){
@@ -466,25 +497,27 @@ function openBackgroundPicker(){
   }
 }
 
-/* ---------- Quick Links (unchanged except visibility) ---------- */
+function changeBackground(value){
+  applyBackgroundPreview(value);
+  const users = getUsers();
+  if (currentUser && users[currentUser]) {
+    users[currentUser].background = value;
+    saveUsers(users);
+  }
+}
+
+/* ---------- Quick Links ---------- */
 function renderQuickLinks(){
-  const top = $('topPanels');
-  const quickDiv = $('quickLinks');
   const listEl = $('quickLinksList');
   if (!listEl) return;
   listEl.innerHTML = '';
 
   if (!currentUser) {
-    quickDiv?.setAttribute('aria-hidden','true');
-    top?.classList.add('hidden');
-    top?.setAttribute('aria-hidden','true');
     checkTopPanelsVisibility();
     return;
   }
 
-  quickDiv?.classList.remove('hidden');
-
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const users = getUsers();
   const links = (users[currentUser] && users[currentUser].quickLinks) || [];
   links.forEach((link, i) => {
     const li = document.createElement('li');
@@ -497,7 +530,6 @@ function renderQuickLinks(){
     listEl.appendChild(li);
   });
 
-  if (top) { top.classList.remove('hidden'); top.setAttribute('aria-hidden','false'); }
   checkTopPanelsVisibility();
 }
 
@@ -506,16 +538,17 @@ function addQuickLink(){
   let url = $('quickLinkURL').value.trim();
   if (!name || !url) { alert('Please enter both a name and a URL'); return; }
   if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const users = getUsers();
   if (!currentUser || !users[currentUser]) return alert('No user session');
   users[currentUser].quickLinks = users[currentUser].quickLinks || [];
   users[currentUser].quickLinks.push({ name, url });
-  localStorage.setItem('users', JSON.stringify(users));
+  saveUsers(users);
   $('quickLinkName').value=''; $('quickLinkURL').value='';
   renderQuickLinks();
 }
+
 function editQuickLink(index){
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const users = getUsers();
   if (!currentUser || !users[currentUser] || !users[currentUser].quickLinks) return;
   const link = users[currentUser].quickLinks[index];
   if (!link) return;
@@ -524,30 +557,28 @@ function editQuickLink(index){
   if (!newName || !newUrl) return alert('Name and URL cannot be empty');
   if (!/^https?:\/\//i.test(newUrl)) newUrl = 'https://' + newUrl;
   users[currentUser].quickLinks[index] = { name: newName.trim(), url: newUrl.trim() };
-  localStorage.setItem('users', JSON.stringify(users));
+  saveUsers(users);
   renderQuickLinks();
 }
+
 function removeQuickLink(index){
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const users = getUsers();
   if (!currentUser || !users[currentUser] || !users[currentUser].quickLinks) return;
   users[currentUser].quickLinks.splice(index,1);
-  localStorage.setItem('users', JSON.stringify(users));
+  saveUsers(users);
   renderQuickLinks();
 }
+
 function clearQuickLinks(){
   if (!confirm('Clear all quick links for this account?')) return;
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const users = getUsers();
   if (!currentUser || !users[currentUser]) return;
   users[currentUser].quickLinks = [];
-  localStorage.setItem('users', JSON.stringify(users));
+  saveUsers(users);
   renderQuickLinks();
 }
 
-/* ---------- Planner: weekly grid + palette ---------- */
-
-/* helpers to read/write user data safely */
-function getUsers(){ return JSON.parse(localStorage.getItem('users') || '{}'); }
-function saveUsers(u){ localStorage.setItem('users', JSON.stringify(u)); }
+/* ---------- Planner ---------- */
 function formatDate(d) {
   const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -562,28 +593,22 @@ function formatDate(d) {
   return `${day}, ${month} ${date}${suffix}`;
 }
 
-/* render weekly planner - always Sunday (0) to Saturday (6) */
 function renderPlanner(){
   const plannerDiv = $('planner');
   const grid = $('plannerGrid');
   const paletteRow = $('paletteRow');
   if (!grid || !paletteRow) return;
 
-  // Hide planner if not logged in
   if (!currentUser) {
-    plannerDiv.setAttribute('aria-hidden','true');
     checkTopPanelsVisibility();
     return;
-  } else {
-    plannerDiv.setAttribute('aria-hidden','false');
   }
 
-  grid.innerHTML = ''; // clear grid
+  grid.innerHTML = '';
 
-  // Build the week starting from Sunday
   const today = new Date();
   const startOfWeek = new Date(today);
-  startOfWeek.setDate(today.getDate() - today.getDay()); // Sunday
+  startOfWeek.setDate(today.getDate() - today.getDay());
   const weekDates = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(startOfWeek);
@@ -591,18 +616,15 @@ function renderPlanner(){
     weekDates.push(d);
   }
 
-  // Get user data
   const users = getUsers();
   const user = users[currentUser] || { planner: [], palette: [] };
   const tasks = user.planner || [];
   const palette = user.palette || [];
 
-  // Render each day column
   for (let day = 0; day < 7; day++){
     const col = document.createElement('div');
     col.className = 'day-col';
 
-    // Format header: "Sunday, November 2nd"
     const d = weekDates[day];
     const dayLabel = formatDate(d);
     const header = document.createElement('div');
@@ -610,11 +632,14 @@ function renderPlanner(){
     header.textContent = dayLabel;
     col.appendChild(header);
 
-    // Filter tasks for this exact date
-    const dateStr = d.toISOString().slice(0,10); // "YYYY-MM-DD"
+    // FIXED: Use local date string to avoid timezone issues
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const date = String(d.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${date}`;
+    
     const dayTasks = tasks.filter(t => t.dueDate === dateStr);
 
-    // Render tasks
     dayTasks.forEach((task) => {
       const pill = document.createElement('div');
       pill.className = 'task-pill';
@@ -639,7 +664,6 @@ function renderPlanner(){
       col.appendChild(pill);
     });
 
-    // Filler if no tasks
     if(dayTasks.length === 0){
       const empty = document.createElement('div');
       empty.style.opacity='0.7';
@@ -651,24 +675,37 @@ function renderPlanner(){
     grid.appendChild(col);
   }
 
-  // Render palette
+  // Render palette WITH LABELS
   paletteRow.innerHTML = '';
-  (palette || []).forEach(p => {
-    const s = document.createElement('div');
-    s.className = 'swatch';
-    s.title = p.label || '';
-    s.style.background = p.color || '#fff';
-    s.onclick = ()=> { 
-      $('taskColor').value = p.color; 
-      $('taskColorPreview').style.background = p.color; 
-    };
-    paletteRow.appendChild(s);
-  });
+  if (palette.length === 0) {
+    paletteRow.innerHTML = '<span style="font-size:12px; opacity:0.7;">No saved colors yet</span>';
+  } else {
+    (palette || []).forEach(p => {
+      const container = document.createElement('div');
+      container.className = 'swatch-container';
+      
+      const s = document.createElement('div');
+      s.className = 'swatch';
+      s.title = p.label || '';
+      s.style.background = p.color || '#fff';
+      s.onclick = ()=> { 
+        $('taskColor').value = p.color; 
+        $('taskColorPreview').style.background = p.color; 
+      };
+      
+      const labelEl = document.createElement('div');
+      labelEl.className = 'swatch-label';
+      labelEl.textContent = p.label || '';
+      
+      container.appendChild(s);
+      container.appendChild(labelEl);
+      paletteRow.appendChild(container);
+    });
+  }
 
   checkTopPanelsVisibility();
 }
 
-/* readable text color (simple): decide black/white based on luminance */
 function readableTextColor(hex){
   try{
     const c = hex.replace('#','');
@@ -680,21 +717,34 @@ function readableTextColor(hex){
   } catch(e){ return '#071019'; }
 }
 
-/* add palette color */
 function addPaletteColor(){
-  const label = $('paletteLabel').value.trim();
-  const color = $('paletteColor').value;
-  if (!label) return alert('Label required for saved color');
+  const labelInput = $('paletteLabel');
+  const colorInput = $('paletteColor');
+  const label = labelInput.value.trim();
+  const color = colorInput.value;
+  
+  if (!label) { 
+    alert('Label required for saved color'); 
+    return; 
+  }
+  if (!currentUser) { 
+    alert('No user session'); 
+    return; 
+  }
+  
   const users = getUsers();
-  users[currentUser] = users[currentUser] || {};
+  if (!users[currentUser]) {
+    alert('User not found');
+    return;
+  }
+  
   users[currentUser].palette = users[currentUser].palette || [];
-  users[currentUser].palette.push({ id: Date.now() + Math.random(), label, color });
+  users[currentUser].palette.push({ id: Date.now() + Math.random(), label: label, color: color });
   saveUsers(users);
-  $('paletteLabel').value = '';
+  labelInput.value = '';
   renderPlanner();
 }
 
-/* clear palette */
 function clearPalette(){
   if (!confirm('Clear saved palette for this account?')) return;
   const users = getUsers();
@@ -704,7 +754,7 @@ function clearPalette(){
   renderPlanner();
 }
 
-/* render palette swatches inside the task dialog */
+/* ---------- Task Dialog with Palette ---------- */
 function renderDialogPalette(){
   const dialogPaletteRow = $('dialogPaletteRow');
   if (!dialogPaletteRow) return;
@@ -720,6 +770,9 @@ function renderDialogPalette(){
   }
   
   palette.forEach(p => {
+    const container = document.createElement('div');
+    container.className = 'swatch-container';
+    
     const s = document.createElement('div');
     s.className = 'swatch';
     s.title = p.label || '';
@@ -728,22 +781,27 @@ function renderDialogPalette(){
       $('taskColor').value = p.color; 
       $('taskColorPreview').style.background = p.color; 
     };
-    dialogPaletteRow.appendChild(s);
+    
+    const labelEl = document.createElement('div');
+    labelEl.className = 'swatch-label';
+    labelEl.textContent = p.label || '';
+    
+    container.appendChild(s);
+    container.appendChild(labelEl);
+    dialogPaletteRow.appendChild(container);
   });
 }
 
-/* add planner task (legacy button in top of planner) opens dialog */
 function openAddTaskDialog(){
   $('taskDialogTitle').textContent = 'Add Task';
   $('taskText').value = '';
   $('taskColor').value = '#ffd166';
   $('taskColorPreview').style.background = $('taskColor').value;
-  $('taskDialog').dataset.editId = ''; // new
+  $('taskDialog').dataset.editId = '';
   renderDialogPalette();
   $('taskDialog').classList.remove('hidden');
 }
 
-/* open edit dialog for existing task id */
 function openEditTaskDialog(taskId){
   const users = getUsers();
   const user = users[currentUser] || {};
@@ -759,13 +817,10 @@ function openEditTaskDialog(taskId){
   $('taskDialog').classList.remove('hidden');
 }
 
-/* close dialog */
 function closeTaskDialog(){ $('taskDialog').classList.add('hidden'); $('taskDialog').dataset.editId=''; }
 
-/* keep preview synced */
 $('taskColor')?.addEventListener?.('input', ()=> { $('taskColorPreview').style.background = $('taskColor').value; });
 
-/* save from dialog (syncs to to-do list) */
 function saveTaskFromDialog(){
   const text = $('taskText').value.trim();
   if (!text) return alert('Please enter task text');
@@ -776,18 +831,16 @@ function saveTaskFromDialog(){
 
   const editId = $('taskDialog').dataset.editId;
   if (editId) {
-    // update planner task
     const idx = users[currentUser].planner.findIndex(t=>String(t.id)===String(editId));
     if (idx >= 0) {
       const oldTask = users[currentUser].planner[idx];
       const oldText = oldTask.text;
       const oldDueDate = oldTask.dueDate;
       
-      // Update planner task
       users[currentUser].planner[idx].text = text;
       users[currentUser].planner[idx].color = color;
       
-      // Also update in to-do list if it exists there
+      // Sync to to-do list
       if(oldDueDate){
         allLists.forEach(list => {
           list.tasks.forEach(t => {
@@ -800,7 +853,6 @@ function saveTaskFromDialog(){
       }
     }
   } else {
-    // new planner task
     users[currentUser].planner.push({ id: Date.now() + Math.random(), text, color });
   }
   saveUsers(users);
@@ -809,19 +861,16 @@ function saveTaskFromDialog(){
   renderLists();
 }
 
-/* remove by id (syncs to to-do list) */
 function removePlannerById(id){
   const users = getUsers();
   if (!users[currentUser] || !users[currentUser].planner) return;
   
-  // Find the planner task before removing
   const plannerTask = users[currentUser].planner.find(t => String(t.id) === String(id));
   
-  // Remove from planner
   users[currentUser].planner = users[currentUser].planner.filter(t => String(t.id) !== String(id));
   saveUsers(users);
   
-  // Also remove from to-do list if it exists there
+  // Sync deletion to to-do list
   if(plannerTask && plannerTask.dueDate){
     allLists.forEach(list => {
       list.tasks = list.tasks.filter(t => !(t.dueDate === plannerTask.dueDate && t.text === plannerTask.text));
@@ -833,56 +882,16 @@ function removePlannerById(id){
   renderPlanner();
 }
 
-/* ---------- Planner edit helpers (legacy functions kept for compatibility) ---------- */
-function addPlannerTask(){
-  // retained for older button (text + date) — we'll map date to weekday if provided
-  const textEl = $('plannerTask');
-  const dateEl = $('plannerDate');
-  const text = textEl?.value?.trim() || '';
-  const date = dateEl?.value || '';
-  if (!text) return alert('Enter a task first!');
-  const users = getUsers();
-  if (!currentUser || !users[currentUser]) return alert('No user session');
-  users[currentUser].planner = users[currentUser].planner || [];
-  let dayIndex = 0;
-  if (date) {
-    const d = new Date(date);
-    if (!isNaN(d)) dayIndex = d.getDay(); // 0..6 (Sunday..Saturday)
-  }
-  users[currentUser].planner.push({ id: Date.now()+Math.random(), text, dayIndex, color: '#ffd166' });
-  saveUsers(users);
-  if (textEl) textEl.value = '';
-  if (dateEl) dateEl.value = '';
-  renderPlanner();
-}
-function editPlannerTask(index){
-  // keep legacy interface but also allow editing through modal
-  alert('Use the weekly editor (✏️ on task) to edit tasks.');
-}
-function removePlannerTask(index){
-  // legacy: index-based removal not used; keep for safety
-  const users = getUsers();
-  if (!currentUser || !users[currentUser] || !users[currentUser].planner) return;
-  users[currentUser].planner.splice(index,1);
-  saveUsers(users);
-  renderPlanner();
-}
-function clearPlanner(){
-  if (!confirm('Clear all planner tasks?')) return;
-  const users = getUsers();
-  if (!currentUser || !users[currentUser]) return;
-  users[currentUser].planner = [];
-  saveUsers(users);
-  renderPlanner();
-}
-
-/* ---------- Lists (unchanged except persistence helpers) ---------- */
+/* ---------- Lists ---------- */
 function saveAllLists(){
   if (!currentUser) return;
   const users = getUsers();
-  users[currentUser].lists = allLists;
-  saveUsers(users);
+  if (users[currentUser]) {
+    users[currentUser].lists = allLists;
+    saveUsers(users);
+  }
 }
+
 function loadAllLists(){
   const users = getUsers();
   if (!currentUser || !users[currentUser]) { allLists = []; return; }
@@ -890,10 +899,12 @@ function loadAllLists(){
   allLists = allLists.map(l => (typeof l === 'string' ? { name: l, tasks: [] } : (l.name ? l : { name: 'Untitled', tasks: l.tasks || [] })));
   activeListIndex = 0;
 }
+
 function renderLists(){
   renderTabs();
   renderActiveList();
 }
+
 function renderTabs(){
   const tabs = $('tabsContainer'); tabs.innerHTML='';
   allLists.forEach((list,i)=>{
@@ -910,6 +921,7 @@ function renderTabs(){
     tabs.appendChild(delBtn);
   });
 }
+
 function renderActiveList(){
   const container = $('listsContainer'); container.innerHTML='';
   if (allLists.length === 0){
@@ -945,9 +957,11 @@ function renderActiveList(){
     ul.appendChild(li);
   });
 }
+
 function createNewList(){ allLists.push({ name:`List ${allLists.length+1}`, tasks:[] }); saveAllLists(); activeListIndex = allLists.length-1; renderLists(); }
 function renameList(listIndex){ const newName = prompt("New name:", allLists[listIndex].name || `List ${listIndex+1}`); if (newName && newName.trim()!==""){ allLists[listIndex].name=newName.trim(); saveAllLists(); renderLists(); } }
 function confirmDeleteList(listIndex){ if(!confirm("Delete this list?")) return; allLists.splice(listIndex,1); if(allLists.length===0) activeListIndex=0; else if(activeListIndex>=allLists.length) activeListIndex=allLists.length-1; saveAllLists(); renderLists(); }
+
 function addTask(listIndex){
   const input = $('newTask_'+listIndex);
   const dateInput = $('newTaskDate_'+listIndex);
@@ -956,50 +970,39 @@ function addTask(listIndex){
 
   if (!text) return alert("Please enter a task!");
 
-  // Figure out the day index if there's a date
-  let dayIndex = null;
-  if(dueDate){
-    const d = new Date(dueDate);
-    dayIndex = isNaN(d) ? null : d.getDay(); // 0 = Sunday ... 6 = Saturday
-  }
+  allLists[listIndex].tasks.push({ text, done:false, dueDate: dueDate || undefined });
 
-  // Add task to the to-do list
-  allLists[listIndex].tasks.push({ text, done:false, dueDate: dueDate || undefined, dayIndex });
-
-  // Clear inputs
   input.value = "";
   if(dateInput) dateInput.value = "";
 
-  // Add to planner ONLY if there's a date and a logged-in user
+  // Add to planner if there's a date
   if(dueDate && currentUser){
     const users = getUsers();
     users[currentUser] = users[currentUser] || {};
     users[currentUser].planner = users[currentUser].planner || [];
 
     users[currentUser].planner.push({
-      id: Date.now() + Math.random(), // unique ID
+      id: Date.now() + Math.random(),
       text,
-      dayIndex,
-      dueDate, // store the exact date too
+      dueDate,
       color: '#ffd166'
     });
 
     saveUsers(users);
-    renderPlanner(); // update planner immediately
+    renderPlanner();
   }
 
   saveAllLists();
-  renderLists(); // update your to-do list
+  renderLists();
 }
 
 function toggleTask(taskIndex){ allLists[activeListIndex].tasks[taskIndex].done = !allLists[activeListIndex].tasks[taskIndex].done; saveAllLists(); renderLists(); }
 
-/* Edit task text (syncs to planner) */
 function editTask(taskIndex, newText){
   const task = allLists[activeListIndex].tasks[taskIndex];
   const oldText = task.text;
   
-  // Update planner if task has a date
+  // Sync to planner
   if(currentUser && task.dueDate){
     const users = getUsers();
     const user = users[currentUser];
@@ -1015,23 +1018,18 @@ function editTask(taskIndex, newText){
   saveAllLists();
 }
 
-/* Delete task (syncs to planner) */
 function deleteTask(listIndex, taskIndex) {
-  // make sure the list and task exist before doing anything
   if (
     allLists[listIndex] &&
     allLists[listIndex].tasks &&
     allLists[listIndex].tasks[taskIndex] !== undefined
   ) {
-    const task = allLists[listIndex].tasks[taskIndex]; // grab it before removing
+    const task = allLists[listIndex].tasks[taskIndex];
 
-    // delete from to-do list
     allLists[listIndex].tasks.splice(taskIndex, 1);
-
-    // save updated list
     saveAllLists();
 
-    // if there's a date and a user logged in, remove from planner too
+    // Sync deletion to planner
     if (currentUser && task && task.dueDate) {
       const users = getUsers();
       const user = users[currentUser];
@@ -1043,7 +1041,6 @@ function deleteTask(listIndex, taskIndex) {
       }
     }
 
-    // render safely after everything updates
     requestAnimationFrame(() => {
       renderLists();
       renderPlanner();
@@ -1057,48 +1054,48 @@ function deleteTask(listIndex, taskIndex) {
   }
 }
 
-function changeBackground(value){
-  applyBackgroundPreview(value);
-  const users = getUsers();
-  if (currentUser) {
-    users[currentUser] = users[currentUser] || {};
-    users[currentUser].background = value;
-    saveUsers(users);
-  }
-}
-
 /* ---------- Logout ---------- */
 function logout(){
   saveAllLists();
   localStorage.removeItem('currentUser');
   currentUser = null; currentUserName = null; allLists = []; activeListIndex = 0;
   setPickedBgValue('default');
-  $('todo').classList.add('hidden'); $('login').classList.remove('hidden');
-  $('listsContainer').innerHTML=''; $('tabsContainer').innerHTML=''; $('todoHeader').innerHTML='';
-  // hide top panels
-  $('topPanels')?.classList.add('hidden'); $('topPanels')?.setAttribute('aria-hidden','true');
-  $('quickLinks')?.classList.add('hidden'); $('planner')?.classList.add('hidden');
-  // hide background picker
+  $('todo').classList.add('hidden'); 
+  $('login').classList.remove('hidden');
+  $('listsContainer').innerHTML=''; 
+  $('tabsContainer').innerHTML=''; 
+  $('todoHeader').innerHTML='';
   $('background-picker')?.classList.add('hidden');
+  $('topPanels')?.classList.add('hidden'); 
+  $('topPanels')?.setAttribute('aria-hidden','true');
+  $('quickLinks')?.classList.add('hidden'); 
+  $('planner')?.classList.add('hidden');
   checkTopPanelsVisibility();
 }
 
-/* ---------- Init / utility ---------- */
+/* ---------- Init ---------- */
 function initPage(){
   currentUser = localStorage.getItem('currentUser');
   if (currentUser) {
     const users = getUsers();
-    currentUserName = users[currentUser]?.username || null;
-    loadAllLists();
-    showTodo();
-    renderLists();
-    renderQuickLinks();
-    renderPlanner();
+    if (users[currentUser]) {
+      currentUserName = users[currentUser].username || null;
+      loadAllLists();
+      showTodo();
+      renderLists();
+      renderQuickLinks();
+      renderPlanner();
+    } else {
+      localStorage.removeItem('currentUser');
+      currentUser = null;
+      $('signup').classList.remove('hidden');
+    }
   } else {
     $('signup').classList.remove('hidden');
   }
   checkTopPanelsVisibility();
 }
+
 window.addEventListener('DOMContentLoaded', initPage);
 </script>
 </body>
