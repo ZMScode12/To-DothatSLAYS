@@ -30,7 +30,7 @@
     .list-button { background-color: white; color: #6b5bff; }
 
     ul { list-style: none; padding: 0; margin-top: 10px; }
-    li { margin: 10px; background: rgba(255,255,255,0.14); padding: 10px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    li { margin: 10px; background: rgba(255,255,255,0.14); padding: 10px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
     input[type="text"] { flex: 1; margin-left: 10px; border-radius:6px; padding:8px; border:none; }
 
     .gradient-option { width: 86px; height: 44px; border-radius: 10px; display: inline-block; margin: 6px; cursor: pointer; border: 3px solid transparent; box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
@@ -85,10 +85,7 @@
       transition: max-height 320ms cubic-bezier(.25,.8,.25,1), padding 220ms ease;
       padding: 0 12px;
     }
-    .panel-body.open {
-      padding: 12px;
-    }
-
+    .panel-body.open { padding: 12px; }
     .open .chev { transform: rotate(180deg); }
 
     #quickLinksList { padding-left: 6px; max-height: 240px; overflow-y: auto; margin-bottom: 8px; }
@@ -112,69 +109,97 @@
       flex-direction:column;
       gap:6px;
     }
-    .day-header {
-      font-weight:700;
-      font-size:13px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:6px;
-    }
-    .task-pill {
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:6px 8px;
-      border-radius: 8px;
-      color: #071019;
-      font-size:13px;
-      justify-content:space-between;
-    }
+    .day-header { font-weight:700; font-size:13px; display:flex; justify-content:space-between; align-items:center; gap:6px; }
+    .task-pill { display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius: 8px; color: #071019; font-size:13px; justify-content:space-between; }
     .task-label { flex:1; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:6px; }
 
-    #palette {
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      margin-top:8px;
-    }
+    #palette { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
     .palette-row { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
-    .swatch {
-      width:34px; height:34px; border-radius:6px; border:2px solid rgba(255,255,255,0.18); cursor:pointer; display:inline-block; box-shadow:0 4px 10px rgba(0,0,0,0.18);
-    }
+    .swatch { width:34px; height:34px; border-radius:6px; border:2px solid rgba(255,255,255,0.18); cursor:pointer; display:inline-block; box-shadow:0 4px 10px rgba(0,0,0,0.18); }
     .swatch.selected { outline:3px solid rgba(255,255,255,0.12); transform:translateY(-2px); }
-    .swatch-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-    .swatch-label {
-      color: white;
-      font-size: 10px;
-      max-width: 50px;
-      text-align: center;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+    .swatch-container { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .swatch-label { color: white; font-size: 10px; max-width: 50px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     #addColorForm { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
     #addColorForm input[type="text"] { width:140px; padding:8px; border-radius:8px; }
+
+    /* ===== VIRTUAL PET ===== */
+    #petContainer {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+      z-index: 1000;
+      min-width: 120px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    #petDisplay { font-size: 48px; line-height: 1; margin-bottom: 6px; position: relative; }
+    #petAccessory { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 24px; }
+    #petName { font-size: 12px; font-weight: bold; margin-bottom: 4px; }
+    #petLevel { font-size: 10px; opacity: 0.8; margin-bottom: 6px; }
+    #happinessBar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
+    #happinessFill { height: 100%; background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77); transition: width 0.5s ease; }
+    #petMood { font-size: 10px; margin-top: 4px; }
+    .pet-bounce { animation: petBounce 0.5s ease; }
+    @keyframes petBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes petSad { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
+    .pet-sad { animation: petSad 1s ease infinite; }
+
+    /* ===== QUOTE BOX ===== */
+    #quoteBox {
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      font-style: italic;
+      position: relative;
+    }
+    #quoteText { font-size: 14px; line-height: 1.5; margin-bottom: 8px; }
+    #quoteAuthor { font-size: 12px; opacity: 0.7; }
+    #newQuoteBtn { position: absolute; top: 8px; right: 8px; padding: 4px 8px; font-size: 12px; background: rgba(255,255,255,0.2); border: none; border-radius: 6px; cursor: pointer; color: white; }
+    #newQuoteBtn:hover { background: rgba(255,255,255,0.3); }
+
+    /* ===== TIMER ===== */
+    #timerContainer {
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #timerDisplay { font-size: 36px; font-weight: bold; font-family: monospace; margin: 10px 0; }
+    #timerProgress { width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+    #timerProgressFill { height: 100%; background: #1DB954; transition: width 1s linear; }
+    .timer-btn { padding: 8px 16px; margin: 4px; font-size: 13px; border-radius: 8px; border: none; cursor: pointer; }
+    .timer-btn.start { background: #1DB954; color: white; }
+    .timer-btn.pause { background: #ffd93d; color: #333; }
+    .timer-btn.reset { background: rgba(255,255,255,0.2); color: white; }
+
+    /* ===== TASK TIME TRACKING ===== */
+    .task-timer { display: flex; align-items: center; gap: 6px; font-size: 11px; opacity: 0.9; }
+    .task-timer-btn { padding: 3px 8px; font-size: 11px; border-radius: 4px; border: none; cursor: pointer; background: rgba(255,255,255,0.3); }
+    .task-timer-btn.active { background: #ff6b6b; color: white; }
+    .task-time-display { font-family: monospace; min-width: 50px; }
+    .task-total-time { font-size: 10px; opacity: 0.7; margin-left: 4px; }
 
     @media (max-width: 880px) {
       #topPanels { flex-direction: column; gap: 12px; width: calc(100% - 40px); }
       .panel { width: 100%; }
       body { padding: 20px; }
       #plannerGrid { grid-template-columns: repeat(1, 1fr); }
+      #petContainer { bottom: 10px; right: 10px; padding: 8px; min-width: 100px; }
+      #petDisplay { font-size: 36px; }
     }
 
-    #plannerBody {
-      max-width: 500px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      white-space: nowrap;
-    }
+    #plannerBody { max-width: 500px; overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -184,7 +209,6 @@
     <h1>Sign Up 💫</h1>
     <input type="text" id="username" placeholder="Enter a username"><br>
     <input type="password" id="password" placeholder="Enter a password"><br>
-
     <p style="margin-top:8px">Pick your background style (or keep the moving default):</p>
     <div id="gradients">
       <div class="gradient-option" data-bg="linear-gradient(to right, #ff7e5f, #feb47b)" style="background: linear-gradient(to right, #ff7e5f, #feb47b)" title="Sunset"></div>
@@ -197,7 +221,6 @@
       <button onclick="createAccount()">Create Account</button>
       <button class="control-small" onclick="useDefaultNow()">Don't change — keep moving</button>
     </div>
-
     <p style="margin-top:12px">Already have an account? <a href="#" onclick="showLogin()">Log in</a></p>
   </div>
 
@@ -211,9 +234,18 @@
     </div>
   </div>
 
-  <!-- Top inline panels: Quick Links (left) + Planner (right) -->
+  <!-- Virtual Pet -->
+  <div id="petContainer" class="hidden">
+    <div id="petDisplay"><span id="petAccessory"></span><span id="petEmoji">🐱</span></div>
+    <div id="petName">Pixel</div>
+    <div id="petLevel">Level 1 • 0 XP</div>
+    <div id="happinessBar"><div id="happinessFill" style="width: 100%"></div></div>
+    <div id="petMood">😊 Happy!</div>
+    <button class="small-btn" onclick="openPetSettings()" style="margin-top:8px; font-size:10px;">⚙️ Pet</button>
+  </div>
+
+  <!-- Top inline panels -->
   <div id="topPanels" class="hidden" aria-hidden="true">
-    <!-- Quick Links panel -->
     <div id="quickLinks" class="panel" aria-hidden="true">
       <div class="panel-header" onclick="togglePanel('quickLinks')">
         <div style="width:20px"></div>
@@ -222,7 +254,6 @@
       </div>
       <div id="quickLinksBody" class="panel-body" aria-hidden="true">
         <ul id="quickLinksList"></ul>
-
         <div class="inputs">
           <input type="text" id="quickLinkName" placeholder="Link name (e.g. Spotify)">
           <input type="text" id="quickLinkURL" placeholder="URL (e.g. https://spotify.com)">
@@ -234,7 +265,6 @@
       </div>
     </div>
 
-    <!-- Planner panel (weekly + palette) -->
     <div id="planner" class="panel" aria-hidden="true">
       <div class="panel-header" onclick="togglePanel('planner')">
         <div style="width:20px"></div>
@@ -245,13 +275,10 @@
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <div style="margin-left:auto; font-size:13px; opacity:0.9">Week: Sunday → Saturday</div>
         </div>
-
         <div id="plannerGrid" style="margin-top:10px;"></div>
-
         <div id="palette" aria-hidden="false">
           <div style="font-weight:600; margin-top:8px;">Palette (saved colors)</div>
           <div class="palette-row" id="paletteRow"></div>
-
           <div id="addColorForm" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px;">
             <input type="text" id="paletteLabel" placeholder="Label (e.g. school)">
             <input type="color" id="paletteColor" value="#ffd166">
@@ -259,13 +286,34 @@
             <button class="small-btn" onclick="clearPalette()">Clear Palette</button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 
   <!-- To-do lists -->
   <div id="todo" class="hidden">
+    <!-- Quote Box -->
+    <div id="quoteBox">
+      <button id="newQuoteBtn" onclick="showNewQuote()">🔄</button>
+      <div id="quoteText">"Loading wisdom..."</div>
+      <div id="quoteAuthor">— Loading</div>
+    </div>
+
+    <!-- Timer -->
+    <div id="timerContainer">
+      <div style="font-weight:600; margin-bottom:8px;">⏱️ Focus Timer</div>
+      <div id="timerProgress"><div id="timerProgressFill" style="width: 100%"></div></div>
+      <div id="timerDisplay">25:00</div>
+      <div>
+        <input type="number" id="timerMinutes" value="25" min="1" max="120" style="width:60px; text-align:center;"> min
+      </div>
+      <div style="margin-top:8px;">
+        <button class="timer-btn start" onclick="startTimer()">▶ Start</button>
+        <button class="timer-btn pause" onclick="pauseTimer()">⏸ Pause</button>
+        <button class="timer-btn reset" onclick="resetTimer()">↺ Reset</button>
+      </div>
+    </div>
+
     <div id="todoHeader"></div>
     <div class="tabs" id="tabsContainer"></div>
     <div id="listsContainer"></div>
@@ -284,27 +332,39 @@
     </div>
   </div>
 
-  <!-- Add / Edit Task Modal -->
+  <!-- Task Dialog -->
   <div id="taskDialog" class="hidden" style="position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(6,8,12,0.95); padding:16px; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.6); width:320px; z-index:999;">
     <h3 id="taskDialogTitle">Add Task</h3>
     <input type="text" id="taskText" placeholder="Task description">
-
     <label style="font-size:13px; opacity:0.9; display:block; text-align:left; margin-left:4px;">Color (pick or use palette)</label>
     <div style="display:flex; gap:8px; align-items:center;">
       <input type="color" id="taskColor" value="#ffd166">
       <div id="taskColorPreview" style="width:34px; height:34px; border-radius:6px; border:2px solid rgba(255,255,255,0.12);"></div>
     </div>
-
     <div id="dialogPaletteRow" class="palette-row" style="margin-top:8px;"></div>
-
     <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
       <button onclick="closeTaskDialog()">Cancel</button>
       <button onclick="saveTaskFromDialog()" class="list-button">Save</button>
     </div>
   </div>
 
+  <!-- Pet Settings Dialog -->
+  <div id="petDialog" class="hidden" style="position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(6,8,12,0.95); padding:16px; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.6); width:320px; z-index:999;">
+    <h3>🐾 Pet Settings</h3>
+    <label style="font-size:13px; display:block; text-align:left; margin:8px 0 4px;">Pet Name:</label>
+    <input type="text" id="petNameInput" placeholder="Name your pet" style="width:100%;">
+    <label style="font-size:13px; display:block; text-align:left; margin:8px 0 4px;">Choose Pet:</label>
+    <div id="petChoices" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
+    <label style="font-size:13px; display:block; text-align:left; margin:8px 0 4px;">Unlocked Accessories:</label>
+    <div id="accessoryChoices" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
+      <button onclick="closePetDialog()">Cancel</button>
+      <button onclick="savePetSettings()" class="list-button">Save</button>
+    </div>
+  </div>
+
 <script>
-/* ---------- Utility & state ---------- */
+/* ========== UTILITIES ========== */
 function $(id){return document.getElementById(id);}
 function escapeHtml(str){ return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function getUsers(){ return JSON.parse(localStorage.getItem('users') || '{}'); }
@@ -316,12 +376,337 @@ let allLists = [];
 let activeListIndex = 0;
 let pickedBackground = 'default';
 
-/* default quick hide so page load doesn't flash panels */
+// Task timer tracking
+let activeTaskTimer = null; // { listIndex, taskIndex, startTime, intervalId }
+
+// Focus timer
+let focusTimerInterval = null;
+let focusTimerSeconds = 25 * 60;
+let focusTimerTotal = 25 * 60;
+let focusTimerRunning = false;
+
+// Pet decay interval
+let petDecayInterval = null;
+
+/* Hide panels on load */
 $('topPanels').classList.add('hidden');
 $('quickLinks').classList.add('hidden');
 $('planner').classList.add('hidden');
+$('petContainer').classList.add('hidden');
 
-/* ---------- Gradient selection ---------- */
+/* ========== QUOTES ========== */
+const quotes = [
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+  { text: "Done is better than perfect.", author: "Sheryl Sandberg" },
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
+  { text: "Your future self is watching you right now through memories.", author: "Aubrey de Grey" },
+  { text: "A year from now you'll wish you started today.", author: "Karen Lamb" },
+  { text: "Stop waiting for Friday, for summer, for life. Happiness is achieved when you stop waiting and start doing.", author: "Unknown" },
+  // Sarcastic ones 😏
+  { text: "I'm not procrastinating. I'm doing side quests.", author: "Every gamer ever" },
+  { text: "If you think you're too small to make a difference, try sleeping with a mosquito.", author: "Dalai Lama" },
+  { text: "The road to success is always under construction.", author: "Lily Tomlin" },
+  { text: "I didn't fail. I just found 10,000 ways that won't work.", author: "Thomas Edison" },
+  { text: "My to-do list and my 'done' list are in a long-distance relationship.", author: "Everyone" },
+  { text: "I'll start being productive tomorrow. Today is still ruined.", author: "You, probably" },
+  { text: "Hard work pays off later. Laziness pays off now.", author: "Steven Wright" },
+  { text: "I'm on a seafood diet. I see food and I eat it instead of working.", author: "Anonymous" },
+  { text: "Do or do not. There is no try. But also, naps.", author: "Tired Yoda" },
+  { text: "The only thing standing between you and success is... literally everything else.", author: "Reality" },
+  { text: "If at first you don't succeed, redefine success.", author: "Every startup" },
+  { text: "I have a lot of potential. I just choose to keep it potential.", author: "Your inner voice" }
+];
+
+function showNewQuote(){
+  const q = quotes[Math.floor(Math.random() * quotes.length)];
+  $('quoteText').textContent = `"${q.text}"`;
+  $('quoteAuthor').textContent = `— ${q.author}`;
+}
+
+/* ========== VIRTUAL PET ========== */
+const petTypes = ['🐱', '🐶', '🐰', '🐻', '🦊', '🐼', '🐸', '🐧', '🦄', '🐲'];
+const accessories = [
+  { emoji: '', name: 'None', unlockLevel: 0 },
+  { emoji: '🎩', name: 'Top Hat', unlockLevel: 2 },
+  { emoji: '👒', name: 'Sun Hat', unlockLevel: 3 },
+  { emoji: '🎀', name: 'Bow', unlockLevel: 4 },
+  { emoji: '👑', name: 'Crown', unlockLevel: 5 },
+  { emoji: '🕶️', name: 'Sunglasses', unlockLevel: 6 },
+  { emoji: '🧢', name: 'Cap', unlockLevel: 7 },
+  { emoji: '🌸', name: 'Flower', unlockLevel: 8 },
+  { emoji: '⭐', name: 'Star', unlockLevel: 10 }
+];
+
+function getPetData(){
+  if (!currentUser) return null;
+  const users = getUsers();
+  if (!users[currentUser]) return null;
+  return users[currentUser].pet || { name: 'Pixel', emoji: '🐱', happiness: 100, xp: 0, level: 1, accessory: '', lastActive: Date.now() };
+}
+
+function savePetData(pet){
+  if (!currentUser) return;
+  const users = getUsers();
+  if (!users[currentUser]) return;
+  users[currentUser].pet = pet;
+  saveUsers(users);
+}
+
+function renderPet(){
+  const pet = getPetData();
+  if (!pet) return;
+  
+  $('petEmoji').textContent = pet.emoji || '🐱';
+  $('petAccessory').textContent = pet.accessory || '';
+  $('petName').textContent = pet.name || 'Pixel';
+  $('petLevel').textContent = `Level ${pet.level} • ${pet.xp} XP`;
+  $('happinessFill').style.width = `${pet.happiness}%`;
+  
+  const petDisplay = $('petDisplay');
+  petDisplay.classList.remove('pet-sad', 'pet-bounce');
+  
+  if (pet.happiness >= 70) {
+    $('petMood').textContent = '😊 Happy!';
+  } else if (pet.happiness >= 40) {
+    $('petMood').textContent = '😐 Okay...';
+  } else if (pet.happiness >= 20) {
+    $('petMood').textContent = '😢 Sad...';
+    petDisplay.classList.add('pet-sad');
+  } else {
+    $('petMood').textContent = '💀 Dying! Do tasks!';
+    petDisplay.classList.add('pet-sad');
+  }
+}
+
+function petGainXP(amount){
+  const pet = getPetData();
+  if (!pet) return;
+  
+  pet.xp += amount;
+  pet.happiness = Math.min(100, pet.happiness + 10);
+  pet.lastActive = Date.now();
+  
+  // Level up check (100 XP per level)
+  const newLevel = Math.floor(pet.xp / 100) + 1;
+  if (newLevel > pet.level) {
+    pet.level = newLevel;
+    alert(`🎉 ${pet.name} leveled up to Level ${pet.level}!`);
+  }
+  
+  savePetData(pet);
+  renderPet();
+  
+  // Bounce animation
+  const petDisplay = $('petDisplay');
+  petDisplay.classList.remove('pet-bounce');
+  void petDisplay.offsetWidth;
+  petDisplay.classList.add('pet-bounce');
+}
+
+function petDecay(){
+  const pet = getPetData();
+  if (!pet) return;
+  
+  // Decay happiness over time if no tasks completed
+  pet.happiness = Math.max(0, pet.happiness - 2);
+  savePetData(pet);
+  renderPet();
+}
+
+function startPetDecay(){
+  if (petDecayInterval) clearInterval(petDecayInterval);
+  // Decay every 5 minutes
+  petDecayInterval = setInterval(petDecay, 5 * 60 * 1000);
+}
+
+function openPetSettings(){
+  const pet = getPetData();
+  if (!pet) return;
+  
+  $('petNameInput').value = pet.name || 'Pixel';
+  
+  // Render pet choices
+  const petChoicesDiv = $('petChoices');
+  petChoicesDiv.innerHTML = '';
+  petTypes.forEach(emoji => {
+    const btn = document.createElement('button');
+    btn.textContent = emoji;
+    btn.style.fontSize = '24px';
+    btn.style.padding = '8px';
+    btn.style.background = pet.emoji === emoji ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '8px';
+    btn.style.cursor = 'pointer';
+    btn.onclick = () => {
+      petChoicesDiv.querySelectorAll('button').forEach(b => b.style.background = 'rgba(255,255,255,0.1)');
+      btn.style.background = 'rgba(255,255,255,0.3)';
+      btn.dataset.selected = 'true';
+    };
+    if (pet.emoji === emoji) btn.dataset.selected = 'true';
+    petChoicesDiv.appendChild(btn);
+  });
+  
+  // Render accessory choices
+  const accDiv = $('accessoryChoices');
+  accDiv.innerHTML = '';
+  accessories.forEach(acc => {
+    const btn = document.createElement('button');
+    btn.textContent = acc.emoji || '❌';
+    btn.title = acc.name + (acc.unlockLevel > pet.level ? ` (Unlock at Lvl ${acc.unlockLevel})` : '');
+    btn.style.fontSize = '20px';
+    btn.style.padding = '6px';
+    btn.style.background = pet.accessory === acc.emoji ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '8px';
+    btn.style.cursor = acc.unlockLevel <= pet.level ? 'pointer' : 'not-allowed';
+    btn.style.opacity = acc.unlockLevel <= pet.level ? '1' : '0.4';
+    btn.disabled = acc.unlockLevel > pet.level;
+    btn.onclick = () => {
+      if (acc.unlockLevel > pet.level) return;
+      accDiv.querySelectorAll('button').forEach(b => b.style.background = 'rgba(255,255,255,0.1)');
+      btn.style.background = 'rgba(255,255,255,0.3)';
+      btn.dataset.selected = 'true';
+      btn.dataset.emoji = acc.emoji;
+    };
+    if (pet.accessory === acc.emoji) {
+      btn.dataset.selected = 'true';
+      btn.dataset.emoji = acc.emoji;
+    }
+    accDiv.appendChild(btn);
+  });
+  
+  $('petDialog').classList.remove('hidden');
+}
+
+function closePetDialog(){
+  $('petDialog').classList.add('hidden');
+}
+
+function savePetSettings(){
+  const pet = getPetData();
+  if (!pet) return;
+  
+  pet.name = $('petNameInput').value.trim() || 'Pixel';
+  
+  const selectedPet = $('petChoices').querySelector('[data-selected="true"]');
+  if (selectedPet) pet.emoji = selectedPet.textContent;
+  
+  const selectedAcc = $('accessoryChoices').querySelector('[data-selected="true"]');
+  if (selectedAcc) pet.accessory = selectedAcc.dataset.emoji || '';
+  
+  savePetData(pet);
+  renderPet();
+  closePetDialog();
+}
+
+/* ========== FOCUS TIMER ========== */
+function updateTimerDisplay(){
+  const mins = Math.floor(focusTimerSeconds / 60);
+  const secs = focusTimerSeconds % 60;
+  $('timerDisplay').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  const progress = (focusTimerSeconds / focusTimerTotal) * 100;
+  $('timerProgressFill').style.width = `${progress}%`;
+}
+
+function startTimer(){
+  if (focusTimerRunning) return;
+  
+  if (focusTimerSeconds <= 0) {
+    focusTimerTotal = parseInt($('timerMinutes').value) * 60 || 25 * 60;
+    focusTimerSeconds = focusTimerTotal;
+  }
+  
+  focusTimerRunning = true;
+  focusTimerInterval = setInterval(() => {
+    focusTimerSeconds--;
+    updateTimerDisplay();
+    
+    if (focusTimerSeconds <= 0) {
+      clearInterval(focusTimerInterval);
+      focusTimerRunning = false;
+      playChime();
+      alert('⏰ Timer complete! Great focus session!');
+      petGainXP(20); // Bonus XP for completing a focus session
+    }
+  }, 1000);
+}
+
+function pauseTimer(){
+  if (focusTimerInterval) {
+    clearInterval(focusTimerInterval);
+    focusTimerRunning = false;
+  }
+}
+
+function resetTimer(){
+  pauseTimer();
+  focusTimerTotal = parseInt($('timerMinutes').value) * 60 || 25 * 60;
+  focusTimerSeconds = focusTimerTotal;
+  updateTimerDisplay();
+}
+
+function playChime(){
+  // Create a soft chime using Web Audio API
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 800;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 1);
+  } catch(e) { /* Audio not supported */ }
+}
+
+/* ========== TASK TIME TRACKING ========== */
+function formatTaskTime(seconds){
+  if (seconds < 60) return `${seconds}s`;
+  if (seconds < 3600) return `${Math.floor(seconds/60)}m ${seconds%60}s`;
+  return `${Math.floor(seconds/3600)}h ${Math.floor((seconds%3600)/60)}m`;
+}
+
+function startTaskTimer(listIndex, taskIndex){
+  // Stop any existing timer
+  stopTaskTimer();
+  
+  activeTaskTimer = {
+    listIndex,
+    taskIndex,
+    startTime: Date.now(),
+    intervalId: setInterval(() => renderLists(), 1000)
+  };
+  renderLists();
+}
+
+function stopTaskTimer(){
+  if (!activeTaskTimer) return;
+  
+  clearInterval(activeTaskTimer.intervalId);
+  
+  // Calculate time spent
+  const elapsed = Math.floor((Date.now() - activeTaskTimer.startTime) / 1000);
+  const task = allLists[activeTaskTimer.listIndex]?.tasks?.[activeTaskTimer.taskIndex];
+  if (task) {
+    task.timeSpent = (task.timeSpent || 0) + elapsed;
+    saveAllLists();
+  }
+  
+  activeTaskTimer = null;
+  renderLists();
+}
+
+function getActiveTaskTime(){
+  if (!activeTaskTimer) return 0;
+  return Math.floor((Date.now() - activeTaskTimer.startTime) / 1000);
+}
+
+/* ========== GRADIENT SELECTION ========== */
 const gradientEls = Array.from(document.querySelectorAll('.gradient-option'));
 function setPickedBgValue(val){
   pickedBackground = val;
@@ -342,7 +727,7 @@ function applyBackgroundPreview(val) {
 gradientEls.forEach(el => el.addEventListener('click', ()=> setPickedBgValue(el.getAttribute('data-bg'))));
 function useDefaultNow(){ setPickedBgValue('default'); }
 
-/* ---------- Panel toggle ---------- */
+/* ========== PANEL TOGGLE ========== */
 function togglePanel(panelId){
   const panel = $(panelId);
   const body = $(panelId + 'Body');
@@ -365,25 +750,28 @@ function togglePanel(panelId){
   }
 }
 
-/* ---------- Top panels visibility helper ---------- */
+/* ========== TOP PANELS VISIBILITY ========== */
 function checkTopPanelsVisibility(){
   const top = $('topPanels');
   const quick = $('quickLinks');
   const plan = $('planner');
+  const pet = $('petContainer');
 
   if (!currentUser) {
     top?.classList.add('hidden'); top?.setAttribute('aria-hidden','true');
     quick?.classList.add('hidden'); quick?.setAttribute('aria-hidden','true');
     plan?.classList.add('hidden'); plan?.setAttribute('aria-hidden','true');
+    pet?.classList.add('hidden');
     return;
   }
 
   top?.classList.remove('hidden'); top?.setAttribute('aria-hidden','false');
   quick?.classList.remove('hidden'); quick?.setAttribute('aria-hidden','false');
   plan?.classList.remove('hidden'); plan?.setAttribute('aria-hidden','false');
+  pet?.classList.remove('hidden');
 }
 
-/* ---------- Load session if any ---------- */
+/* ========== LOAD SESSION ========== */
 if (currentUser) {
   const usersTemp = getUsers();
   if (usersTemp[currentUser]) {
@@ -393,14 +781,16 @@ if (currentUser) {
     renderLists();
     renderQuickLinks();
     renderPlanner();
+    renderPet();
     checkTopPanelsVisibility();
+    startPetDecay();
   } else {
     localStorage.removeItem('currentUser');
     currentUser = null;
   }
 }
 
-/* ---------- Accounts - FIXED to use username as key ---------- */
+/* ========== ACCOUNTS ========== */
 function createAccount(){
   const user = $('username').value.trim();
   const pass = $('password').value.trim();
@@ -409,7 +799,6 @@ function createAccount(){
   const usersRaw = localStorage.getItem('users');
   const users = usersRaw ? JSON.parse(usersRaw) : {};
   
-  // Check if username already exists
   const existingUsernames = Object.keys(users);
   for (let i = 0; i < existingUsernames.length; i++) {
     if (existingUsernames[i] === user) {
@@ -425,7 +814,8 @@ function createAccount(){
     background: pickedBackground,
     quickLinks: [],
     planner: [],
-    palette: []
+    palette: [],
+    pet: { name: 'Pixel', emoji: '🐱', happiness: 100, xp: 0, level: 1, accessory: '', lastActive: Date.now() }
   };
   localStorage.setItem('users', JSON.stringify(users));
   localStorage.setItem('currentUser', user);
@@ -436,7 +826,9 @@ function createAccount(){
   renderLists();
   renderQuickLinks();
   renderPlanner();
+  renderPet();
   checkTopPanelsVisibility();
+  startPetDecay();
 }
 
 function showLogin(){ $('signup').classList.add('hidden'); $('login').classList.remove('hidden'); }
@@ -447,7 +839,6 @@ function login(){
   const pass = $('loginPassword').value.trim();
   const users = getUsers();
   
-  // FIXED: Look up by username and verify password
   if (!users[userInput] || users[userInput].password !== pass) { 
     alert('Invalid username or password'); 
     return; 
@@ -461,10 +852,13 @@ function login(){
   renderLists();
   renderQuickLinks();
   renderPlanner();
+  renderPet();
   checkTopPanelsVisibility();
+  startPetDecay();
+  showNewQuote();
 }
 
-/* ---------- Show To-do ---------- */
+/* ========== SHOW TODO ========== */
 function showTodo(){
   const users = getUsers();
   if (!currentUser || !users[currentUser]) return;
@@ -482,9 +876,12 @@ function showTodo(){
       <button class="control-small" onclick="openBackgroundPicker()">Change background</button>
     </div>
   `;
+  
+  showNewQuote();
+  resetTimer();
 }
 
-/* ---------- Background Picker - FIXED ---------- */
+/* ========== BACKGROUND PICKER ========== */
 function openBackgroundPicker(){
   const picker = $('background-picker');
   if(picker.classList.contains('hidden')){
@@ -503,7 +900,7 @@ function changeBackground(value){
   }
 }
 
-/* ---------- Quick Links ---------- */
+/* ========== QUICK LINKS ========== */
 function renderQuickLinks(){
   const listEl = $('quickLinksList');
   if (!listEl) return;
@@ -575,18 +972,16 @@ function clearQuickLinks(){
   renderQuickLinks();
 }
 
-/* ---------- Planner ---------- */
+/* ========== PLANNER ========== */
 function formatDate(d) {
   const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   const day = days[d.getDay()];
   const month = months[d.getMonth()];
   const date = d.getDate();
-
   const suffix = (date % 10 === 1 && date !== 11) ? "st" :
                  (date % 10 === 2 && date !== 12) ? "nd" :
                  (date % 10 === 3 && date !== 13) ? "rd" : "th";
-
   return `${day}, ${month} ${date}${suffix}`;
 }
 
@@ -629,7 +1024,6 @@ function renderPlanner(){
     header.textContent = dayLabel;
     col.appendChild(header);
 
-    // FIXED: Use local date string to avoid timezone issues
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const date = String(d.getDate()).padStart(2, '0');
@@ -677,7 +1071,7 @@ function renderPlanner(){
   if (palette.length === 0) {
     paletteRow.innerHTML = '<span style="font-size:12px; opacity:0.7;">No saved colors yet</span>';
   } else {
-    (palette || []).forEach(p => {
+    palette.forEach(p => {
       const container = document.createElement('div');
       container.className = 'swatch-container';
       
@@ -720,20 +1114,11 @@ function addPaletteColor(){
   const label = labelInput.value.trim();
   const color = colorInput.value;
   
-  if (!label) { 
-    alert('Label required for saved color'); 
-    return; 
-  }
-  if (!currentUser) { 
-    alert('No user session'); 
-    return; 
-  }
+  if (!label) { alert('Label required for saved color'); return; }
+  if (!currentUser) { alert('No user session'); return; }
   
   const users = getUsers();
-  if (!users[currentUser]) {
-    alert('User not found');
-    return;
-  }
+  if (!users[currentUser]) { alert('User not found'); return; }
   
   users[currentUser].palette = users[currentUser].palette || [];
   users[currentUser].palette.push({ id: Date.now() + Math.random(), label: label, color: color });
@@ -751,7 +1136,7 @@ function clearPalette(){
   renderPlanner();
 }
 
-/* ---------- Task Dialog with Palette ---------- */
+/* ========== TASK DIALOG ========== */
 function renderDialogPalette(){
   const dialogPaletteRow = $('dialogPaletteRow');
   if (!dialogPaletteRow) return;
@@ -837,7 +1222,6 @@ function saveTaskFromDialog(){
       users[currentUser].planner[idx].text = text;
       users[currentUser].planner[idx].color = color;
       
-      // Sync to to-do list
       if(oldDueDate){
         allLists.forEach(list => {
           list.tasks.forEach(t => {
@@ -867,7 +1251,6 @@ function removePlannerById(id){
   users[currentUser].planner = users[currentUser].planner.filter(t => String(t.id) !== String(id));
   saveUsers(users);
   
-  // Sync deletion to to-do list
   if(plannerTask && plannerTask.dueDate){
     allLists.forEach(list => {
       list.tasks = list.tasks.filter(t => !(t.dueDate === plannerTask.dueDate && t.text === plannerTask.text));
@@ -879,7 +1262,7 @@ function removePlannerById(id){
   renderPlanner();
 }
 
-/* ---------- Lists ---------- */
+/* ========== LISTS ========== */
 function saveAllLists(){
   if (!currentUser) return;
   const users = getUsers();
@@ -933,8 +1316,8 @@ function renderActiveList(){
   const listDiv = document.createElement('div');
   listDiv.innerHTML = `
     <h2 style="margin-bottom:6px">${escapeHtml(list.name)}</h2>
-    <div style="margin-bottom:8px; display:flex; gap:6px; align-items:center;">
-      <input type="text" id="newTask_${index}" placeholder="Add a task..." style="flex:1;">
+    <div style="margin-bottom:8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+      <input type="text" id="newTask_${index}" placeholder="Add a task..." style="flex:1; min-width:150px;">
       <input type="date" id="newTaskDate_${index}">
       <button onclick="addTask(${index})">Add</button>
     </div>
@@ -942,13 +1325,27 @@ function renderActiveList(){
   `;
   container.appendChild(listDiv);
   const ul = $('list_'+index);
+  
   list.tasks.forEach((task, tIdx)=>{
     const li = document.createElement('li');
     const dateLabel = task.dueDate ? `<span style="font-size:12px; opacity:0.9; margin-right:8px;">${escapeHtml(task.dueDate)}</span>` : '';
+    const totalTime = task.timeSpent ? `<span class="task-total-time">Total: ${formatTaskTime(task.timeSpent)}</span>` : '';
+    
+    // Check if this task has active timer
+    const isTimerActive = activeTaskTimer && activeTaskTimer.listIndex === index && activeTaskTimer.taskIndex === tIdx;
+    const currentTime = isTimerActive ? getActiveTaskTime() + (task.timeSpent || 0) : (task.timeSpent || 0);
+    
     li.innerHTML = `
       <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${tIdx})">
-      <input type="text" value="${escapeHtml(task.text)}" onchange="editTask(${tIdx}, this.value)" style="text-decoration: ${task.done ? 'line-through' : 'none'}; margin-left:8px; flex:1;">
+      <input type="text" value="${escapeHtml(task.text)}" onchange="editTask(${tIdx}, this.value)" style="text-decoration: ${task.done ? 'line-through' : 'none'}; margin-left:8px; flex:1; min-width:100px;">
       ${dateLabel}
+      <div class="task-timer">
+        <span class="task-time-display">${formatTaskTime(currentTime)}</span>
+        ${isTimerActive 
+          ? `<button class="task-timer-btn active" onclick="stopTaskTimer()">⏹</button>`
+          : `<button class="task-timer-btn" onclick="startTaskTimer(${index}, ${tIdx})">▶</button>`
+        }
+      </div>
       <button onclick="deleteTask(${index}, ${tIdx})">🗑️</button>
     `;
     ul.appendChild(li);
@@ -967,12 +1364,11 @@ function addTask(listIndex){
 
   if (!text) return alert("Please enter a task!");
 
-  allLists[listIndex].tasks.push({ text, done:false, dueDate: dueDate || undefined });
+  allLists[listIndex].tasks.push({ text, done:false, dueDate: dueDate || undefined, timeSpent: 0 });
 
   input.value = "";
   if(dateInput) dateInput.value = "";
 
-  // Add to planner if there's a date
   if(dueDate && currentUser){
     const users = getUsers();
     users[currentUser] = users[currentUser] || {};
@@ -993,13 +1389,26 @@ function addTask(listIndex){
   renderLists();
 }
 
-function toggleTask(taskIndex){ allLists[activeListIndex].tasks[taskIndex].done = !allLists[activeListIndex].tasks[taskIndex].done; saveAllLists(); renderLists(); }
+function toggleTask(taskIndex){ 
+  const task = allLists[activeListIndex].tasks[taskIndex];
+  task.done = !task.done;
+  
+  // If completing a task, stop its timer and give pet XP
+  if (task.done) {
+    if (activeTaskTimer && activeTaskTimer.listIndex === activeListIndex && activeTaskTimer.taskIndex === taskIndex) {
+      stopTaskTimer();
+    }
+    petGainXP(25); // XP for completing a task
+  }
+  
+  saveAllLists(); 
+  renderLists(); 
+}
 
 function editTask(taskIndex, newText){
   const task = allLists[activeListIndex].tasks[taskIndex];
   const oldText = task.text;
   
-  // Sync to planner
   if(currentUser && task.dueDate){
     const users = getUsers();
     const user = users[currentUser];
@@ -1016,17 +1425,17 @@ function editTask(taskIndex, newText){
 }
 
 function deleteTask(listIndex, taskIndex) {
-  if (
-    allLists[listIndex] &&
-    allLists[listIndex].tasks &&
-    allLists[listIndex].tasks[taskIndex] !== undefined
-  ) {
+  if (allLists[listIndex] && allLists[listIndex].tasks && allLists[listIndex].tasks[taskIndex] !== undefined) {
     const task = allLists[listIndex].tasks[taskIndex];
+    
+    // Stop timer if active on this task
+    if (activeTaskTimer && activeTaskTimer.listIndex === listIndex && activeTaskTimer.taskIndex === taskIndex) {
+      stopTaskTimer();
+    }
 
     allLists[listIndex].tasks.splice(taskIndex, 1);
     saveAllLists();
 
-    // Sync deletion to planner
     if (currentUser && task && task.dueDate) {
       const users = getUsers();
       const user = users[currentUser];
@@ -1042,18 +1451,14 @@ function deleteTask(listIndex, taskIndex) {
       renderLists();
       renderPlanner();
     });
-  } else {
-    console.warn("Tried to delete a task that doesn't exist!", {
-      listIndex,
-      taskIndex,
-      allLists,
-    });
   }
 }
 
-/* ---------- Logout ---------- */
+/* ========== LOGOUT ========== */
 function logout(){
+  stopTaskTimer();
   saveAllLists();
+  if (petDecayInterval) clearInterval(petDecayInterval);
   localStorage.removeItem('currentUser');
   currentUser = null; currentUserName = null; allLists = []; activeListIndex = 0;
   setPickedBgValue('default');
@@ -1067,10 +1472,11 @@ function logout(){
   $('topPanels')?.setAttribute('aria-hidden','true');
   $('quickLinks')?.classList.add('hidden'); 
   $('planner')?.classList.add('hidden');
+  $('petContainer')?.classList.add('hidden');
   checkTopPanelsVisibility();
 }
 
-/* ---------- Init ---------- */
+/* ========== INIT ========== */
 function initPage(){
   currentUser = localStorage.getItem('currentUser');
   if (currentUser) {
@@ -1082,6 +1488,8 @@ function initPage(){
       renderLists();
       renderQuickLinks();
       renderPlanner();
+      renderPet();
+      startPetDecay();
     } else {
       localStorage.removeItem('currentUser');
       currentUser = null;
