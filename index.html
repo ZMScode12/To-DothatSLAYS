@@ -45,9 +45,8 @@
 
     #topPanels {
       display: flex;
-      gap: 20px;
-      justify-content: space-between;
-      align-items: flex-start;
+      flex-direction: column;
+      gap: 16px;
       width: calc(100% - 80px);
       margin: 0 auto 18px auto;
       box-sizing: border-box;
@@ -55,7 +54,7 @@
     }
 
     .panel {
-      width: 48%;
+      width: 100%;
       background: rgba(0, 0, 0, 0.32);
       border-radius: 12px;
       color: white;
@@ -123,12 +122,14 @@
     #addColorForm { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
     #addColorForm input[type="text"] { width:140px; padding:8px; border-radius:8px; }
 
-    /* ===== LEFT PANEL (Pet, Quote, Timer) ===== */
-    .left-panel {
+    /* ===== DASHBOARD PANEL (Horizontal Layout) ===== */
+    #leftPanel { width: 100%; }
+    .dashboard-content {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       gap: 12px;
       padding: 12px;
+      align-items: stretch;
     }
 
     /* ===== VIRTUAL PET IN PANEL ===== */
@@ -137,15 +138,18 @@
       border-radius: 12px;
       padding: 12px;
       text-align: center;
+      flex: 1;
+      min-width: 140px;
     }
-    #petDisplay { font-size: 48px; line-height: 1; margin-bottom: 6px; position: relative; display: inline-block; }
-    #petAccessory { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 24px; }
-    #petName { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
-    #petLevel { font-size: 11px; opacity: 0.8; margin-bottom: 6px; }
-    #happinessBar { width: 100%; height: 10px; background: rgba(255,255,255,0.2); border-radius: 5px; overflow: hidden; }
+    #petDisplay { font-size: 40px; line-height: 1; margin-bottom: 4px; position: relative; display: inline-block; }
+    #petAccessory { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 20px; }
+    #petName { font-size: 13px; font-weight: bold; margin-bottom: 2px; }
+    #petLevel { font-size: 10px; opacity: 0.8; margin-bottom: 4px; }
+    #happinessBar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
     #happinessFill { height: 100%; background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77); transition: width 0.5s ease; }
-    #petMood { font-size: 11px; margin-top: 6px; }
-    #tasksToday { font-size: 10px; opacity: 0.7; margin-top: 4px; }
+    #petMood { font-size: 10px; margin-top: 4px; }
+    #tasksToday { font-size: 9px; opacity: 0.7; margin-top: 2px; }
+    #unlockedPets { font-size: 9px; opacity: 0.7; margin-top: 2px; }
     .pet-bounce { animation: petBounce 0.5s ease; }
     @keyframes petBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     @keyframes petSad { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
@@ -159,6 +163,11 @@
       font-style: italic;
       position: relative;
       text-align: left;
+      flex: 1.5;
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     #quoteText { font-size: 12px; line-height: 1.4; margin-bottom: 6px; }
     #quoteAuthor { font-size: 11px; opacity: 0.7; }
@@ -170,12 +179,14 @@
       border-radius: 12px;
       padding: 12px;
       text-align: center;
+      flex: 1;
+      min-width: 140px;
     }
-    #timerTitle { font-weight: 600; font-size: 13px; margin-bottom: 8px; }
-    #timerDisplay { font-size: 28px; font-weight: bold; font-family: monospace; margin: 6px 0; }
-    #timerProgress { width: 100%; height: 5px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+    #timerTitle { font-weight: 600; font-size: 12px; margin-bottom: 4px; }
+    #timerDisplay { font-size: 24px; font-weight: bold; font-family: monospace; margin: 4px 0; }
+    #timerProgress { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
     #timerProgressFill { height: 100%; background: #1DB954; transition: width 1s linear; }
-    .timer-btn { padding: 5px 10px; margin: 2px; font-size: 11px; border-radius: 6px; border: none; cursor: pointer; }
+    .timer-btn { padding: 4px 8px; margin: 2px; font-size: 10px; border-radius: 5px; border: none; cursor: pointer; }
     .timer-btn.start { background: #1DB954; color: white; }
     .timer-btn.pause { background: #ffd93d; color: #333; }
     .timer-btn.reset { background: rgba(255,255,255,0.2); color: white; }
@@ -252,10 +263,17 @@
     .task-estimate { font-size: 10px; opacity: 0.7; }
 
     @media (max-width: 880px) {
-      #topPanels { flex-direction: column; gap: 12px; width: calc(100% - 40px); }
+      #topPanels { gap: 12px; width: calc(100% - 40px); }
       .panel { width: 100%; }
       body { padding: 20px; }
       #plannerGrid { grid-template-columns: repeat(1, 1fr); }
+      .dashboard-content { flex-wrap: wrap; }
+      #petBox, #quoteBox, #timerBox { min-width: 120px; flex: 1 1 45%; }
+    }
+
+    @media (max-width: 600px) {
+      .dashboard-content { flex-direction: column; }
+      #petBox, #quoteBox, #timerBox { width: 100%; flex: none; }
     }
 
     #plannerBody { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
@@ -293,9 +311,9 @@
     </div>
   </div>
 
-  <!-- Top panels: Left (Pet/Quote/Timer) + Right (Planner) -->
+  <!-- Top panels: Dashboard (horizontal) + Planner -->
   <div id="topPanels" class="hidden" aria-hidden="true">
-    <!-- Left Panel: Pet, Quote, Timer -->
+    <!-- Dashboard Panel: Pet, Quote, Timer (horizontal) -->
     <div id="leftPanel" class="panel">
       <div class="panel-header" onclick="togglePanel('leftPanel')">
         <div style="width:20px"></div>
@@ -303,7 +321,7 @@
         <div class="chev">▾</div>
       </div>
       <div id="leftPanelBody" class="panel-body">
-        <div class="left-panel">
+        <div class="dashboard-content">
           <!-- Pet -->
           <div id="petBox">
             <div id="petDisplay"><span id="petAccessory"></span><span id="petEmoji">🐱</span></div>
@@ -312,7 +330,8 @@
             <div id="happinessBar"><div id="happinessFill" style="width: 50%"></div></div>
             <div id="petMood">😐 Waiting for tasks...</div>
             <div id="tasksToday">Tasks today: 0/5</div>
-            <button class="small-btn" onclick="openPetSettings()" style="margin-top:8px; font-size:10px;">⚙️ Settings</button>
+            <div id="unlockedPets">🔓 1/10 pets</div>
+            <button class="small-btn" onclick="openPetSettings()" style="margin-top:6px; font-size:9px; padding:4px 8px;">⚙️ Pet</button>
           </div>
 
           <!-- Quote -->
@@ -328,22 +347,24 @@
             <div id="timerProgress"><div id="timerProgressFill" style="width: 100%"></div></div>
             <div id="timerDisplay">25:00</div>
             <div>
-              <input type="number" id="timerMinutes" value="25" min="1" max="120" style="width:50px; text-align:center; padding:5px;"> min
+              <input type="number" id="timerMinutes" value="25" min="1" max="120" style="width:45px; text-align:center; padding:4px; font-size:12px;"> min
             </div>
-            <div style="margin-top:6px;">
-              <button class="timer-btn start" onclick="startTimer()">▶ Start</button>
+            <div style="margin-top:4px;">
+              <button class="timer-btn start" onclick="startTimer()">▶</button>
               <button class="timer-btn pause" onclick="pauseTimer()">⏸</button>
               <button class="timer-btn reset" onclick="resetTimer()">↺</button>
             </div>
           </div>
 
           <!-- Quick Links Button -->
-          <button id="quickLinksBtn" onclick="openQuickLinksModal()">📎 Quick Links</button>
+          <div style="display:flex; align-items:center;">
+            <button id="quickLinksBtn" onclick="openQuickLinksModal()" style="padding:10px 14px;">📎 Links</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Right Panel: Planner -->
+    <!-- Planner Panel -->
     <div id="planner" class="panel">
       <div class="panel-header" onclick="togglePanel('planner')">
         <div style="width:20px"></div>
@@ -530,6 +551,11 @@ function savePetData(pet){
   saveUsers(users);
 }
 
+function getUnlockedPetCount(xp){
+  // 1 pet unlocked at start, then 1 more every 100 XP (max 10 pets)
+  return Math.min(10, 1 + Math.floor(xp / 100));
+}
+
 function getTasksCompletedToday(){
   const pet = getPetData();
   if (!pet) return 0;
@@ -567,6 +593,7 @@ function renderPet(){
   
   const today = getTodayStr();
   const tasksToday = (pet.lastTaskDate === today) ? (pet.tasksToday || 0) : 0;
+  const unlockedCount = getUnlockedPetCount(pet.xp);
   
   $('petEmoji').textContent = pet.emoji || '🐱';
   $('petAccessory').textContent = pet.accessory || '';
@@ -574,6 +601,7 @@ function renderPet(){
   $('petLevel').textContent = `Level ${pet.level} • ${pet.xp} XP`;
   $('happinessFill').style.width = `${pet.happiness}%`;
   $('tasksToday').textContent = `Tasks today: ${tasksToday}/5`;
+  $('unlockedPets').textContent = `🔓 ${unlockedCount}/10 pets unlocked`;
   
   const petDisplay = $('petDisplay');
   petDisplay.classList.remove('pet-sad', 'pet-bounce');
@@ -597,13 +625,20 @@ function petGainXP(amount){
   const pet = getPetData();
   if (!pet) return;
   
+  const oldUnlocked = getUnlockedPetCount(pet.xp);
   pet.xp += amount;
+  const newUnlocked = getUnlockedPetCount(pet.xp);
+  
+  // Check if new pet unlocked
+  if (newUnlocked > oldUnlocked && newUnlocked <= 10) {
+    const newPetEmoji = petTypes[newUnlocked - 1];
+    alert(`🎉 New pet unlocked: ${newPetEmoji}! You now have ${newUnlocked}/10 pets!`);
+  }
   
   // Level up check (100 XP per level)
   const newLevel = Math.floor(pet.xp / 100) + 1;
   if (newLevel > pet.level) {
     pet.level = newLevel;
-    alert(`🎉 ${pet.name} leveled up to Level ${pet.level}!`);
   }
   
   savePetData(pet);
@@ -665,23 +700,40 @@ function openPetSettings(){
   
   $('petNameInput').value = pet.name || 'Pixel';
   
+  const unlockedCount = getUnlockedPetCount(pet.xp);
+  
   const petChoicesDiv = $('petChoices');
   petChoicesDiv.innerHTML = '';
-  petTypes.forEach(emoji => {
+  petTypes.forEach((emoji, index) => {
+    const isUnlocked = index < unlockedCount;
+    const xpNeeded = index * 100;
+    
     const btn = document.createElement('button');
-    btn.textContent = emoji;
+    btn.textContent = isUnlocked ? emoji : '🔒';
+    btn.title = isUnlocked ? emoji : `Unlock at ${xpNeeded} XP`;
     btn.style.fontSize = '24px';
     btn.style.padding = '8px';
     btn.style.background = pet.emoji === emoji ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)';
     btn.style.border = 'none';
     btn.style.borderRadius = '8px';
-    btn.style.cursor = 'pointer';
+    btn.style.cursor = isUnlocked ? 'pointer' : 'not-allowed';
+    btn.style.opacity = isUnlocked ? '1' : '0.4';
+    btn.disabled = !isUnlocked;
+    
     btn.onclick = () => {
-      petChoicesDiv.querySelectorAll('button').forEach(b => b.style.background = 'rgba(255,255,255,0.1)');
+      if (!isUnlocked) return;
+      petChoicesDiv.querySelectorAll('button').forEach(b => {
+        b.style.background = 'rgba(255,255,255,0.1)';
+        delete b.dataset.selected;
+      });
       btn.style.background = 'rgba(255,255,255,0.3)';
       btn.dataset.selected = 'true';
+      btn.dataset.emoji = emoji;
     };
-    if (pet.emoji === emoji) btn.dataset.selected = 'true';
+    if (pet.emoji === emoji) {
+      btn.dataset.selected = 'true';
+      btn.dataset.emoji = emoji;
+    }
     petChoicesDiv.appendChild(btn);
   });
   
@@ -701,7 +753,10 @@ function openPetSettings(){
     btn.disabled = acc.unlockLevel > pet.level;
     btn.onclick = () => {
       if (acc.unlockLevel > pet.level) return;
-      accDiv.querySelectorAll('button').forEach(b => b.style.background = 'rgba(255,255,255,0.1)');
+      accDiv.querySelectorAll('button').forEach(b => {
+        b.style.background = 'rgba(255,255,255,0.1)';
+        delete b.dataset.selected;
+      });
       btn.style.background = 'rgba(255,255,255,0.3)';
       btn.dataset.selected = 'true';
       btn.dataset.emoji = acc.emoji;
@@ -725,7 +780,9 @@ function savePetSettings(){
   pet.name = $('petNameInput').value.trim() || 'Pixel';
   
   const selectedPet = $('petChoices').querySelector('[data-selected="true"]');
-  if (selectedPet) pet.emoji = selectedPet.textContent;
+  if (selectedPet && selectedPet.dataset.emoji) {
+    pet.emoji = selectedPet.dataset.emoji;
+  }
   
   const selectedAcc = $('accessoryChoices').querySelector('[data-selected="true"]');
   if (selectedAcc) pet.accessory = selectedAcc.dataset.emoji || '';
