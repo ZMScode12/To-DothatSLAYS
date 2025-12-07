@@ -30,7 +30,7 @@
     .list-button { background-color: white; color: #6b5bff; }
 
     ul { list-style: none; padding: 0; margin-top: 10px; }
-    li { margin: 10px; background: rgba(255,255,255,0.14); padding: 10px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    li { margin: 10px; background: rgba(255,255,255,0.14); padding: 12px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
     input[type="text"] { flex: 1; margin-left: 10px; border-radius:6px; padding:8px; border:none; }
 
     .gradient-option { width: 86px; height: 44px; border-radius: 10px; display: inline-block; margin: 6px; cursor: pointer; border: 3px solid transparent; box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
@@ -123,109 +123,142 @@
     #addColorForm { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
     #addColorForm input[type="text"] { width:140px; padding:8px; border-radius:8px; }
 
-    /* ===== VIRTUAL PET ===== */
-    #petContainer {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(0,0,0,0.7);
-      border-radius: 16px;
+    /* ===== LEFT PANEL (Pet, Quote, Timer) ===== */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    /* ===== VIRTUAL PET IN PANEL ===== */
+    #petBox {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
       padding: 12px;
       text-align: center;
-      z-index: 1000;
-      min-width: 120px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
-    #petDisplay { font-size: 48px; line-height: 1; margin-bottom: 6px; position: relative; }
+    #petDisplay { font-size: 48px; line-height: 1; margin-bottom: 6px; position: relative; display: inline-block; }
     #petAccessory { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 24px; }
-    #petName { font-size: 12px; font-weight: bold; margin-bottom: 4px; }
-    #petLevel { font-size: 10px; opacity: 0.8; margin-bottom: 6px; }
-    #happinessBar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
+    #petName { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
+    #petLevel { font-size: 11px; opacity: 0.8; margin-bottom: 6px; }
+    #happinessBar { width: 100%; height: 10px; background: rgba(255,255,255,0.2); border-radius: 5px; overflow: hidden; }
     #happinessFill { height: 100%; background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77); transition: width 0.5s ease; }
-    #petMood { font-size: 10px; margin-top: 4px; }
+    #petMood { font-size: 11px; margin-top: 6px; }
+    #tasksToday { font-size: 10px; opacity: 0.7; margin-top: 4px; }
     .pet-bounce { animation: petBounce 0.5s ease; }
     @keyframes petBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     @keyframes petSad { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
     .pet-sad { animation: petSad 1s ease infinite; }
 
-    /* ===== FLOATING LEFT CONTAINER (Quote + Timer) ===== */
-    #floatingLeftContainer {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 280px;
-    }
-
-    /* ===== QUOTE BOX ===== */
+    /* ===== QUOTE BOX IN PANEL ===== */
     #quoteBox {
-      background: rgba(0,0,0,0.5);
+      background: rgba(255,255,255,0.1);
       border-radius: 12px;
-      padding: 14px 16px;
+      padding: 12px;
       font-style: italic;
       position: relative;
       text-align: left;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     }
-    #quoteBox.collapsed { display: none; }
-    #quoteText { font-size: 13px; line-height: 1.4; margin-bottom: 6px; }
+    #quoteText { font-size: 12px; line-height: 1.4; margin-bottom: 6px; }
     #quoteAuthor { font-size: 11px; opacity: 0.7; }
-    #newQuoteBtn { position: absolute; top: 6px; right: 6px; padding: 3px 6px; font-size: 11px; background: rgba(255,255,255,0.2); border: none; border-radius: 4px; cursor: pointer; color: white; }
-    #newQuoteBtn:hover { background: rgba(255,255,255,0.3); }
+    #newQuoteBtn { position: absolute; top: 6px; right: 6px; padding: 3px 6px; font-size: 10px; background: rgba(255,255,255,0.2); border: none; border-radius: 4px; cursor: pointer; color: white; }
 
-    /* ===== TIMER ===== */
-    #timerContainer {
-      background: rgba(0,0,0,0.5);
+    /* ===== TIMER IN PANEL ===== */
+    #timerBox {
+      background: rgba(255,255,255,0.1);
       border-radius: 12px;
-      padding: 14px;
+      padding: 12px;
       text-align: center;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      position: relative;
     }
-    #timerContainer.collapsed #timerBody { display: none; }
-    #timerContainer.collapsed { padding: 10px 14px; }
-    #timerHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-    #timerHeader.collapsed-header { margin-bottom: 0; }
-    #timerTitle { font-weight: 600; font-size: 14px; }
-    .hide-btn { padding: 3px 8px; font-size: 11px; background: rgba(255,255,255,0.2); border: none; border-radius: 4px; cursor: pointer; color: white; }
-    .hide-btn:hover { background: rgba(255,255,255,0.3); }
-    #timerDisplay { font-size: 32px; font-weight: bold; font-family: monospace; margin: 8px 0; }
+    #timerTitle { font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+    #timerDisplay { font-size: 28px; font-weight: bold; font-family: monospace; margin: 6px 0; }
     #timerProgress { width: 100%; height: 5px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
     #timerProgressFill { height: 100%; background: #1DB954; transition: width 1s linear; }
-    .timer-btn { padding: 6px 12px; margin: 3px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; }
+    .timer-btn { padding: 5px 10px; margin: 2px; font-size: 11px; border-radius: 6px; border: none; cursor: pointer; }
     .timer-btn.start { background: #1DB954; color: white; }
     .timer-btn.pause { background: #ffd93d; color: #333; }
     .timer-btn.reset { background: rgba(255,255,255,0.2); color: white; }
 
-    /* ===== QUICK LINKS HIDE BUTTON ===== */
-    .panel-hide-btn { padding: 2px 6px; font-size: 10px; background: rgba(255,255,255,0.15); border: none; border-radius: 4px; cursor: pointer; color: white; margin-left: 4px; }
-    .panel-hide-btn:hover { background: rgba(255,255,255,0.25); }
-    #quickLinksToggle { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px; cursor: pointer; z-index: 999; font-size: 13px; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
-    #quickLinksToggle:hover { background: rgba(0,0,0,0.6); }
+    /* ===== QUICK LINKS BUTTON ===== */
+    #quickLinksBtn { 
+      background: rgba(255,255,255,0.15); 
+      border: none; 
+      padding: 8px 12px; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      color: white;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    #quickLinksBtn:hover { background: rgba(255,255,255,0.25); }
 
-    /* ===== TASK TIME TRACKING ===== */
-    .task-timer { display: flex; align-items: center; gap: 6px; font-size: 11px; opacity: 0.9; }
-    .task-timer-btn { padding: 3px 8px; font-size: 11px; border-radius: 4px; border: none; cursor: pointer; background: rgba(255,255,255,0.3); }
-    .task-timer-btn.active { background: #ff6b6b; color: white; }
-    .task-time-display { font-family: monospace; min-width: 50px; }
-    .task-total-time { font-size: 10px; opacity: 0.7; margin-left: 4px; }
+    /* ===== QUICK LINKS MODAL ===== */
+    #quickLinksModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(6,8,12,0.95);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      width: 350px;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+    #quickLinksModal h3 { margin-top: 0; }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+
+    /* ===== TASK WITH TIME ESTIMATE ===== */
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .task-timer-section {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.2);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .task-time-display { font-family: monospace; min-width: 55px; font-weight: bold; }
+    .task-start-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background: #1DB954;
+      color: white;
+    }
+    .task-start-btn.running {
+      background: #ff6b6b;
+    }
+    .task-start-btn:hover { opacity: 0.9; }
+    .task-estimate { font-size: 10px; opacity: 0.7; }
 
     @media (max-width: 880px) {
       #topPanels { flex-direction: column; gap: 12px; width: calc(100% - 40px); }
       .panel { width: 100%; }
       body { padding: 20px; }
       #plannerGrid { grid-template-columns: repeat(1, 1fr); }
-      #petContainer { bottom: 10px; right: 10px; padding: 8px; min-width: 100px; }
-      #petDisplay { font-size: 36px; }
-      #floatingLeftContainer { top: 10px; left: 10px; max-width: 200px; }
-      #quoteText { font-size: 11px; }
-      #timerDisplay { font-size: 24px; }
     }
 
-    #plannerBody { max-width: 500px; overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
+    #plannerBody { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
   </style>
 </head>
 <body>
@@ -260,52 +293,69 @@
     </div>
   </div>
 
-  <!-- Virtual Pet -->
-  <div id="petContainer" class="hidden">
-    <div id="petDisplay"><span id="petAccessory"></span><span id="petEmoji">🐱</span></div>
-    <div id="petName">Pixel</div>
-    <div id="petLevel">Level 1 • 0 XP</div>
-    <div id="happinessBar"><div id="happinessFill" style="width: 100%"></div></div>
-    <div id="petMood">😊 Happy!</div>
-    <button class="small-btn" onclick="openPetSettings()" style="margin-top:8px; font-size:10px;">⚙️ Pet</button>
-  </div>
-
-  <!-- Quick Links Toggle (shown when hidden) -->
-  <div id="quickLinksToggle" onclick="showQuickLinks()">📎 Show Quick Links</div>
-
-  <!-- Top inline panels -->
+  <!-- Top panels: Left (Pet/Quote/Timer) + Right (Planner) -->
   <div id="topPanels" class="hidden" aria-hidden="true">
-    <div id="quickLinks" class="panel" aria-hidden="true">
-      <div class="panel-header" onclick="togglePanel('quickLinks')">
-        <button class="panel-hide-btn" onclick="event.stopPropagation(); hideQuickLinks();">Hide</button>
-        <div class="title">Quick Links</div>
+    <!-- Left Panel: Pet, Quote, Timer -->
+    <div id="leftPanel" class="panel">
+      <div class="panel-header" onclick="togglePanel('leftPanel')">
+        <div style="width:20px"></div>
+        <div class="title">Dashboard</div>
         <div class="chev">▾</div>
       </div>
-      <div id="quickLinksBody" class="panel-body" aria-hidden="true">
-        <ul id="quickLinksList"></ul>
-        <div class="inputs">
-          <input type="text" id="quickLinkName" placeholder="Link name (e.g. Spotify)">
-          <input type="text" id="quickLinkURL" placeholder="URL (e.g. https://spotify.com)">
-          <div class="row">
-            <button class="small-btn" onclick="addQuickLink()">Add</button>
-            <button class="small-btn" onclick="clearQuickLinks()">Clear All</button>
+      <div id="leftPanelBody" class="panel-body">
+        <div class="left-panel">
+          <!-- Pet -->
+          <div id="petBox">
+            <div id="petDisplay"><span id="petAccessory"></span><span id="petEmoji">🐱</span></div>
+            <div id="petName">Pixel</div>
+            <div id="petLevel">Level 1 • 0 XP</div>
+            <div id="happinessBar"><div id="happinessFill" style="width: 50%"></div></div>
+            <div id="petMood">😐 Waiting for tasks...</div>
+            <div id="tasksToday">Tasks today: 0/5</div>
+            <button class="small-btn" onclick="openPetSettings()" style="margin-top:8px; font-size:10px;">⚙️ Settings</button>
           </div>
+
+          <!-- Quote -->
+          <div id="quoteBox">
+            <button id="newQuoteBtn" onclick="showNewQuote()">🔄</button>
+            <div id="quoteText">"Loading wisdom..."</div>
+            <div id="quoteAuthor">— Loading</div>
+          </div>
+
+          <!-- Timer -->
+          <div id="timerBox">
+            <div id="timerTitle">⏱️ Focus Timer</div>
+            <div id="timerProgress"><div id="timerProgressFill" style="width: 100%"></div></div>
+            <div id="timerDisplay">25:00</div>
+            <div>
+              <input type="number" id="timerMinutes" value="25" min="1" max="120" style="width:50px; text-align:center; padding:5px;"> min
+            </div>
+            <div style="margin-top:6px;">
+              <button class="timer-btn start" onclick="startTimer()">▶ Start</button>
+              <button class="timer-btn pause" onclick="pauseTimer()">⏸</button>
+              <button class="timer-btn reset" onclick="resetTimer()">↺</button>
+            </div>
+          </div>
+
+          <!-- Quick Links Button -->
+          <button id="quickLinksBtn" onclick="openQuickLinksModal()">📎 Quick Links</button>
         </div>
       </div>
     </div>
 
-    <div id="planner" class="panel" aria-hidden="true">
+    <!-- Right Panel: Planner -->
+    <div id="planner" class="panel">
       <div class="panel-header" onclick="togglePanel('planner')">
         <div style="width:20px"></div>
         <div class="title">Planner (Weekly)</div>
         <div class="chev">▾</div>
       </div>
-      <div id="plannerBody" class="panel-body" aria-hidden="true">
+      <div id="plannerBody" class="panel-body">
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <div style="margin-left:auto; font-size:13px; opacity:0.9">Week: Sunday → Saturday</div>
         </div>
         <div id="plannerGrid" style="margin-top:10px;"></div>
-        <div id="palette" aria-hidden="false">
+        <div id="palette">
           <div style="font-weight:600; margin-top:8px;">Palette (saved colors)</div>
           <div class="palette-row" id="paletteRow"></div>
           <div id="addColorForm" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px;">
@@ -319,34 +369,18 @@
     </div>
   </div>
 
-  <!-- Floating Left Container (Quote + Timer) -->
-  <div id="floatingLeftContainer" class="hidden">
-    <!-- Quote Box -->
-    <div id="quoteBox">
-      <button id="newQuoteBtn" onclick="showNewQuote()">🔄</button>
-      <div id="quoteText">"Loading wisdom..."</div>
-      <div id="quoteAuthor">— Loading</div>
+  <!-- Quick Links Modal -->
+  <div id="quickLinksOverlay" class="modal-overlay hidden" onclick="closeQuickLinksModal()"></div>
+  <div id="quickLinksModal" class="hidden">
+    <h3>📎 Quick Links</h3>
+    <ul id="quickLinksList"></ul>
+    <div style="margin-top:12px;">
+      <input type="text" id="quickLinkName" placeholder="Link name" style="width:100%; margin-bottom:6px;">
+      <input type="text" id="quickLinkURL" placeholder="URL (e.g. https://spotify.com)" style="width:100%; margin-bottom:6px;">
+      <button class="small-btn" onclick="addQuickLink()">Add Link</button>
+      <button class="small-btn" onclick="clearQuickLinks()">Clear All</button>
     </div>
-
-    <!-- Timer -->
-    <div id="timerContainer">
-      <div id="timerHeader">
-        <span id="timerTitle">⏱️ Focus Timer</span>
-        <button class="hide-btn" onclick="toggleTimerCollapse()">Hide</button>
-      </div>
-      <div id="timerBody">
-        <div id="timerProgress"><div id="timerProgressFill" style="width: 100%"></div></div>
-        <div id="timerDisplay">25:00</div>
-        <div>
-          <input type="number" id="timerMinutes" value="25" min="1" max="120" style="width:60px; text-align:center;"> min
-        </div>
-        <div style="margin-top:8px;">
-          <button class="timer-btn start" onclick="startTimer()">▶ Start</button>
-          <button class="timer-btn pause" onclick="pauseTimer()">⏸ Pause</button>
-          <button class="timer-btn reset" onclick="resetTimer()">↺ Reset</button>
-        </div>
-      </div>
-    </div>
+    <button onclick="closeQuickLinksModal()" style="margin-top:12px; width:100%;">Close</button>
   </div>
 
   <!-- To-do lists -->
@@ -373,7 +407,7 @@
   <div id="taskDialog" class="hidden" style="position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(6,8,12,0.95); padding:16px; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.6); width:320px; z-index:999;">
     <h3 id="taskDialogTitle">Add Task</h3>
     <input type="text" id="taskText" placeholder="Task description">
-    <label style="font-size:13px; opacity:0.9; display:block; text-align:left; margin-left:4px;">Color (pick or use palette)</label>
+    <label style="font-size:13px; opacity:0.9; display:block; text-align:left; margin-left:4px;">Color</label>
     <div style="display:flex; gap:8px; align-items:center;">
       <input type="color" id="taskColor" value="#ffd166">
       <div id="taskColorPreview" style="width:34px; height:34px; border-radius:6px; border:2px solid rgba(255,255,255,0.12);"></div>
@@ -425,11 +459,14 @@ let focusTimerRunning = false;
 // Pet decay interval
 let petDecayInterval = null;
 
+// Today's date for tracking daily tasks
+function getTodayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 /* Hide panels on load */
 $('topPanels').classList.add('hidden');
-$('quickLinks').classList.add('hidden');
-$('planner').classList.add('hidden');
-$('petContainer').classList.add('hidden');
 
 /* ========== QUOTES ========== */
 const quotes = [
@@ -438,22 +475,14 @@ const quotes = [
   { text: "Done is better than perfect.", author: "Sheryl Sandberg" },
   { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
   { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
-  { text: "Your future self is watching you right now through memories.", author: "Aubrey de Grey" },
   { text: "A year from now you'll wish you started today.", author: "Karen Lamb" },
-  { text: "Stop waiting for Friday, for summer, for life. Happiness is achieved when you stop waiting and start doing.", author: "Unknown" },
-  // Sarcastic ones 😏
   { text: "I'm not procrastinating. I'm doing side quests.", author: "Every gamer ever" },
-  { text: "If you think you're too small to make a difference, try sleeping with a mosquito.", author: "Dalai Lama" },
   { text: "The road to success is always under construction.", author: "Lily Tomlin" },
-  { text: "I didn't fail. I just found 10,000 ways that won't work.", author: "Thomas Edison" },
   { text: "My to-do list and my 'done' list are in a long-distance relationship.", author: "Everyone" },
   { text: "I'll start being productive tomorrow. Today is still ruined.", author: "You, probably" },
   { text: "Hard work pays off later. Laziness pays off now.", author: "Steven Wright" },
-  { text: "I'm on a seafood diet. I see food and I eat it instead of working.", author: "Anonymous" },
   { text: "Do or do not. There is no try. But also, naps.", author: "Tired Yoda" },
-  { text: "The only thing standing between you and success is... literally everything else.", author: "Reality" },
-  { text: "If at first you don't succeed, redefine success.", author: "Every startup" },
-  { text: "I have a lot of potential. I just choose to keep it potential.", author: "Your inner voice" }
+  { text: "If at first you don't succeed, redefine success.", author: "Every startup" }
 ];
 
 function showNewQuote(){
@@ -480,7 +509,17 @@ function getPetData(){
   if (!currentUser) return null;
   const users = getUsers();
   if (!users[currentUser]) return null;
-  return users[currentUser].pet || { name: 'Pixel', emoji: '🐱', happiness: 100, xp: 0, level: 1, accessory: '', lastActive: Date.now() };
+  return users[currentUser].pet || { 
+    name: 'Pixel', 
+    emoji: '🐱', 
+    happiness: 50, 
+    xp: 0, 
+    level: 1, 
+    accessory: '', 
+    lastActive: Date.now(),
+    tasksToday: 0,
+    lastTaskDate: ''
+  };
 }
 
 function savePetData(pet){
@@ -491,28 +530,65 @@ function savePetData(pet){
   saveUsers(users);
 }
 
+function getTasksCompletedToday(){
+  const pet = getPetData();
+  if (!pet) return 0;
+  const today = getTodayStr();
+  if (pet.lastTaskDate !== today) {
+    return 0;
+  }
+  return pet.tasksToday || 0;
+}
+
+function updatePetHappinessFromTasks(){
+  const pet = getPetData();
+  if (!pet) return;
+  
+  const today = getTodayStr();
+  
+  // Reset tasks count if it's a new day
+  if (pet.lastTaskDate !== today) {
+    pet.tasksToday = 0;
+    pet.lastTaskDate = today;
+    pet.happiness = 0; // Start sad at beginning of day
+  }
+  
+  // Happiness based on tasks: 0 tasks = 0%, 5+ tasks = 100%
+  const tasksToday = pet.tasksToday || 0;
+  pet.happiness = Math.min(100, tasksToday * 20); // 20% per task, max 100%
+  
+  savePetData(pet);
+  renderPet();
+}
+
 function renderPet(){
   const pet = getPetData();
   if (!pet) return;
+  
+  const today = getTodayStr();
+  const tasksToday = (pet.lastTaskDate === today) ? (pet.tasksToday || 0) : 0;
   
   $('petEmoji').textContent = pet.emoji || '🐱';
   $('petAccessory').textContent = pet.accessory || '';
   $('petName').textContent = pet.name || 'Pixel';
   $('petLevel').textContent = `Level ${pet.level} • ${pet.xp} XP`;
   $('happinessFill').style.width = `${pet.happiness}%`;
+  $('tasksToday').textContent = `Tasks today: ${tasksToday}/5`;
   
   const petDisplay = $('petDisplay');
   petDisplay.classList.remove('pet-sad', 'pet-bounce');
   
-  if (pet.happiness >= 70) {
-    $('petMood').textContent = '😊 Happy!';
+  if (pet.happiness >= 80) {
+    $('petMood').textContent = '😊 So happy!';
+  } else if (pet.happiness >= 60) {
+    $('petMood').textContent = '🙂 Feeling good!';
   } else if (pet.happiness >= 40) {
     $('petMood').textContent = '😐 Okay...';
   } else if (pet.happiness >= 20) {
-    $('petMood').textContent = '😢 Sad...';
+    $('petMood').textContent = '😢 Getting sad...';
     petDisplay.classList.add('pet-sad');
   } else {
-    $('petMood').textContent = '💀 Dying! Do tasks!';
+    $('petMood').textContent = '😭 Please do tasks!';
     petDisplay.classList.add('pet-sad');
   }
 }
@@ -522,8 +598,6 @@ function petGainXP(amount){
   if (!pet) return;
   
   pet.xp += amount;
-  pet.happiness = Math.min(100, pet.happiness + 10);
-  pet.lastActive = Date.now();
   
   // Level up check (100 XP per level)
   const newLevel = Math.floor(pet.xp / 100) + 1;
@@ -542,19 +616,46 @@ function petGainXP(amount){
   petDisplay.classList.add('pet-bounce');
 }
 
+function incrementTasksToday(){
+  const pet = getPetData();
+  if (!pet) return;
+  
+  const today = getTodayStr();
+  
+  // Reset if new day
+  if (pet.lastTaskDate !== today) {
+    pet.tasksToday = 0;
+    pet.lastTaskDate = today;
+  }
+  
+  pet.tasksToday = (pet.tasksToday || 0) + 1;
+  pet.happiness = Math.min(100, pet.tasksToday * 20);
+  pet.lastActive = Date.now();
+  
+  savePetData(pet);
+  renderPet();
+  petGainXP(25);
+}
+
 function petDecay(){
   const pet = getPetData();
   if (!pet) return;
   
-  // Decay happiness over time if no tasks completed
-  pet.happiness = Math.max(0, pet.happiness - 2);
-  savePetData(pet);
-  renderPet();
+  // Only decay if no tasks have been started recently
+  const timeSinceActive = Date.now() - (pet.lastActive || Date.now());
+  const minutesSinceActive = timeSinceActive / (1000 * 60);
+  
+  // Decay 5% happiness every 10 minutes of inactivity
+  if (minutesSinceActive > 10) {
+    pet.happiness = Math.max(0, pet.happiness - 5);
+    savePetData(pet);
+    renderPet();
+  }
 }
 
 function startPetDecay(){
   if (petDecayInterval) clearInterval(petDecayInterval);
-  // Decay every 5 minutes
+  // Check every 5 minutes
   petDecayInterval = setInterval(petDecay, 5 * 60 * 1000);
 }
 
@@ -564,7 +665,6 @@ function openPetSettings(){
   
   $('petNameInput').value = pet.name || 'Pixel';
   
-  // Render pet choices
   const petChoicesDiv = $('petChoices');
   petChoicesDiv.innerHTML = '';
   petTypes.forEach(emoji => {
@@ -585,7 +685,6 @@ function openPetSettings(){
     petChoicesDiv.appendChild(btn);
   });
   
-  // Render accessory choices
   const accDiv = $('accessoryChoices');
   accDiv.innerHTML = '';
   accessories.forEach(acc => {
@@ -617,9 +716,7 @@ function openPetSettings(){
   $('petDialog').classList.remove('hidden');
 }
 
-function closePetDialog(){
-  $('petDialog').classList.add('hidden');
-}
+function closePetDialog(){ $('petDialog').classList.add('hidden'); }
 
 function savePetSettings(){
   const pet = getPetData();
@@ -665,7 +762,7 @@ function startTimer(){
       focusTimerRunning = false;
       playChime();
       alert('⏰ Timer complete! Great focus session!');
-      petGainXP(20); // Bonus XP for completing a focus session
+      petGainXP(20);
     }
   }, 1000);
 }
@@ -685,12 +782,9 @@ function resetTimer(){
 }
 
 function playChime(){
-  // Create a pleasant chime sound using Web Audio API
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Play a sequence of tones for a nice chime effect
-    const frequencies = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    const frequencies = [523.25, 659.25, 783.99, 1046.50];
     
     frequencies.forEach((freq, i) => {
       const osc = ctx.createOscillator();
@@ -708,72 +802,33 @@ function playChime(){
       osc.start(startTime);
       osc.stop(startTime + 0.8);
     });
-    
-    // Also play a second round slightly delayed for a richer sound
-    setTimeout(() => {
-      try {
-        const ctx2 = new (window.AudioContext || window.webkitAudioContext)();
-        frequencies.forEach((freq, i) => {
-          const osc = ctx2.createOscillator();
-          const gain = ctx2.createGain();
-          osc.connect(gain);
-          gain.connect(ctx2.destination);
-          osc.frequency.value = freq;
-          osc.type = 'triangle';
-          
-          const startTime = ctx2.currentTime + (i * 0.15);
-          gain.gain.setValueAtTime(0, startTime);
-          gain.gain.linearRampToValueAtTime(0.15, startTime + 0.05);
-          gain.gain.exponentialRampToValueAtTime(0.01, startTime + 1);
-          
-          osc.start(startTime);
-          osc.stop(startTime + 1);
-        });
-      } catch(e) {}
-    }, 600);
-    
-  } catch(e) { /* Audio not supported */ }
-}
-
-/* ========== TIMER COLLAPSE/HIDE ========== */
-function toggleTimerCollapse(){
-  const container = $('timerContainer');
-  const header = $('timerHeader');
-  const hideBtn = container.querySelector('.hide-btn');
-  
-  if (container.classList.contains('collapsed')) {
-    container.classList.remove('collapsed');
-    header.classList.remove('collapsed-header');
-    hideBtn.textContent = 'Hide';
-  } else {
-    container.classList.add('collapsed');
-    header.classList.add('collapsed-header');
-    hideBtn.textContent = 'Show';
-  }
-}
-
-/* ========== QUICK LINKS HIDE/SHOW ========== */
-function hideQuickLinks(){
-  $('quickLinks').classList.add('hidden');
-  $('quickLinksToggle').style.display = 'block';
-}
-
-function showQuickLinks(){
-  $('quickLinks').classList.remove('hidden');
-  $('quickLinksToggle').style.display = 'none';
+  } catch(e) {}
 }
 
 /* ========== TASK TIME TRACKING ========== */
-function formatTaskTime(seconds){
-  if (seconds < 60) return `${seconds}s`;
-  if (seconds < 3600) return `${Math.floor(seconds/60)}m ${seconds%60}s`;
-  return `${Math.floor(seconds/3600)}h ${Math.floor((seconds%3600)/60)}m`;
+function formatTime(seconds){
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
 }
 
 function startTaskTimer(listIndex, taskIndex){
-  // Stop any existing timer
-  stopTaskTimer();
+  // Stop any existing timer first
+  if (activeTaskTimer) {
+    stopTaskTimer(false);
+  }
   
+  const task = allLists[listIndex]?.tasks?.[taskIndex];
+  if (!task) return;
+  
+  // Update pet's last active time
+  const pet = getPetData();
+  if (pet) {
+    pet.lastActive = Date.now();
+    savePetData(pet);
+  }
+  
+  // Start counting up from 0 (or continue from timeSpent)
   activeTaskTimer = {
     listIndex,
     taskIndex,
@@ -783,17 +838,18 @@ function startTaskTimer(listIndex, taskIndex){
   renderLists();
 }
 
-function stopTaskTimer(){
+function stopTaskTimer(save = true){
   if (!activeTaskTimer) return;
   
   clearInterval(activeTaskTimer.intervalId);
   
-  // Calculate time spent
-  const elapsed = Math.floor((Date.now() - activeTaskTimer.startTime) / 1000);
-  const task = allLists[activeTaskTimer.listIndex]?.tasks?.[activeTaskTimer.taskIndex];
-  if (task) {
-    task.timeSpent = (task.timeSpent || 0) + elapsed;
-    saveAllLists();
+  if (save) {
+    const elapsed = Math.floor((Date.now() - activeTaskTimer.startTime) / 1000);
+    const task = allLists[activeTaskTimer.listIndex]?.tasks?.[activeTaskTimer.taskIndex];
+    if (task) {
+      task.timeSpent = (task.timeSpent || 0) + elapsed;
+      saveAllLists();
+    }
   }
   
   activeTaskTimer = null;
@@ -803,6 +859,18 @@ function stopTaskTimer(){
 function getActiveTaskTime(){
   if (!activeTaskTimer) return 0;
   return Math.floor((Date.now() - activeTaskTimer.startTime) / 1000);
+}
+
+/* ========== QUICK LINKS MODAL ========== */
+function openQuickLinksModal(){
+  $('quickLinksOverlay').classList.remove('hidden');
+  $('quickLinksModal').classList.remove('hidden');
+  renderQuickLinks();
+}
+
+function closeQuickLinksModal(){
+  $('quickLinksOverlay').classList.add('hidden');
+  $('quickLinksModal').classList.add('hidden');
 }
 
 /* ========== GRADIENT SELECTION ========== */
@@ -838,12 +906,10 @@ function togglePanel(panelId){
       body.style.maxHeight = '0px';
       body.classList.remove('open');
       panel.classList.remove('open');
-      body.setAttribute('aria-hidden','true');
     });
   } else {
     body.classList.add('open');
     panel.classList.add('open');
-    body.setAttribute('aria-hidden','false');
     body.style.maxHeight = body.scrollHeight + 'px';
     setTimeout(()=> { if (body.classList.contains('open')) body.style.maxHeight = body.scrollHeight + 'px'; }, 330);
   }
@@ -852,26 +918,13 @@ function togglePanel(panelId){
 /* ========== TOP PANELS VISIBILITY ========== */
 function checkTopPanelsVisibility(){
   const top = $('topPanels');
-  const quick = $('quickLinks');
-  const plan = $('planner');
-  const pet = $('petContainer');
-  const floating = $('floatingLeftContainer');
 
   if (!currentUser) {
-    top?.classList.add('hidden'); top?.setAttribute('aria-hidden','true');
-    quick?.classList.add('hidden'); quick?.setAttribute('aria-hidden','true');
-    plan?.classList.add('hidden'); plan?.setAttribute('aria-hidden','true');
-    pet?.classList.add('hidden');
-    floating?.classList.add('hidden');
-    $('quickLinksToggle').style.display = 'none';
+    top?.classList.add('hidden');
     return;
   }
 
-  top?.classList.remove('hidden'); top?.setAttribute('aria-hidden','false');
-  quick?.classList.remove('hidden'); quick?.setAttribute('aria-hidden','false');
-  plan?.classList.remove('hidden'); plan?.setAttribute('aria-hidden','false');
-  pet?.classList.remove('hidden');
-  floating?.classList.remove('hidden');
+  top?.classList.remove('hidden');
 }
 
 /* ========== LOAD SESSION ========== */
@@ -885,6 +938,7 @@ if (currentUser) {
     renderQuickLinks();
     renderPlanner();
     renderPet();
+    updatePetHappinessFromTasks();
     checkTopPanelsVisibility();
     startPetDecay();
   } else {
@@ -918,7 +972,17 @@ function createAccount(){
     quickLinks: [],
     planner: [],
     palette: [],
-    pet: { name: 'Pixel', emoji: '🐱', happiness: 100, xp: 0, level: 1, accessory: '', lastActive: Date.now() }
+    pet: { 
+      name: 'Pixel', 
+      emoji: '🐱', 
+      happiness: 0, 
+      xp: 0, 
+      level: 1, 
+      accessory: '', 
+      lastActive: Date.now(),
+      tasksToday: 0,
+      lastTaskDate: getTodayStr()
+    }
   };
   localStorage.setItem('users', JSON.stringify(users));
   localStorage.setItem('currentUser', user);
@@ -956,6 +1020,7 @@ function login(){
   renderQuickLinks();
   renderPlanner();
   renderPet();
+  updatePetHappinessFromTasks();
   checkTopPanelsVisibility();
   startPetDecay();
   showNewQuote();
@@ -987,11 +1052,7 @@ function showTodo(){
 /* ========== BACKGROUND PICKER ========== */
 function openBackgroundPicker(){
   const picker = $('background-picker');
-  if(picker.classList.contains('hidden')){
-    picker.classList.remove('hidden');
-  } else {
-    picker.classList.add('hidden');
-  }
+  picker.classList.toggle('hidden');
 }
 
 function changeBackground(value){
@@ -1009,25 +1070,25 @@ function renderQuickLinks(){
   if (!listEl) return;
   listEl.innerHTML = '';
 
-  if (!currentUser) {
-    checkTopPanelsVisibility();
-    return;
-  }
+  if (!currentUser) return;
 
   const users = getUsers();
   const links = (users[currentUser] && users[currentUser].quickLinks) || [];
+  
+  if (links.length === 0) {
+    listEl.innerHTML = '<li style="opacity:0.7; font-style:italic;">No quick links yet</li>';
+    return;
+  }
+  
   links.forEach((link, i) => {
     const li = document.createElement('li');
-    const nameDisplay = link.name ? (link.name.length > 36 ? (link.name.slice(0,33) + '...') : link.name) : (link.url.length > 36 ? (link.url.slice(0,33) + '...') : link.url);
-    li.innerHTML = `<div style="display:flex; flex-direction:column; gap:4px;"><a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(nameDisplay)}</a><span style="font-size:12px; opacity:0.9;">${escapeHtml(link.url)}</span></div>
+    li.innerHTML = `
+      <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.name)}</a>
       <div>
-        <button class="small-btn" onclick="editQuickLink(${i})" title="Edit link">✏️</button>
-        <button class="small-btn" onclick="removeQuickLink(${i})" title="Remove link">🗑</button>
+        <button class="small-btn" onclick="removeQuickLink(${i})">🗑</button>
       </div>`;
     listEl.appendChild(li);
   });
-
-  checkTopPanelsVisibility();
 }
 
 function addQuickLink(){
@@ -1044,20 +1105,6 @@ function addQuickLink(){
   renderQuickLinks();
 }
 
-function editQuickLink(index){
-  const users = getUsers();
-  if (!currentUser || !users[currentUser] || !users[currentUser].quickLinks) return;
-  const link = users[currentUser].quickLinks[index];
-  if (!link) return;
-  const newName = prompt('Edit link name:', link.name || '') || link.name || '';
-  let newUrl = prompt('Edit link URL:', link.url || '') || link.url || '';
-  if (!newName || !newUrl) return alert('Name and URL cannot be empty');
-  if (!/^https?:\/\//i.test(newUrl)) newUrl = 'https://' + newUrl;
-  users[currentUser].quickLinks[index] = { name: newName.trim(), url: newUrl.trim() };
-  saveUsers(users);
-  renderQuickLinks();
-}
-
 function removeQuickLink(index){
   const users = getUsers();
   if (!currentUser || !users[currentUser] || !users[currentUser].quickLinks) return;
@@ -1067,7 +1114,7 @@ function removeQuickLink(index){
 }
 
 function clearQuickLinks(){
-  if (!confirm('Clear all quick links for this account?')) return;
+  if (!confirm('Clear all quick links?')) return;
   const users = getUsers();
   if (!currentUser || !users[currentUser]) return;
   users[currentUser].quickLinks = [];
@@ -1077,27 +1124,17 @@ function clearQuickLinks(){
 
 /* ========== PLANNER ========== */
 function formatDate(d) {
-  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const day = days[d.getDay()];
-  const month = months[d.getMonth()];
-  const date = d.getDate();
-  const suffix = (date % 10 === 1 && date !== 11) ? "st" :
-                 (date % 10 === 2 && date !== 12) ? "nd" :
-                 (date % 10 === 3 && date !== 13) ? "rd" : "th";
-  return `${day}, ${month} ${date}${suffix}`;
+  const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`;
 }
 
 function renderPlanner(){
-  const plannerDiv = $('planner');
   const grid = $('plannerGrid');
   const paletteRow = $('paletteRow');
   if (!grid || !paletteRow) return;
 
-  if (!currentUser) {
-    checkTopPanelsVisibility();
-    return;
-  }
+  if (!currentUser) return;
 
   grid.innerHTML = '';
 
@@ -1145,34 +1182,32 @@ function renderPlanner(){
       label.className = 'task-label';
       label.textContent = task.text;
 
-      const controls = document.createElement('div');
-      controls.style.display='flex'; controls.style.gap='6px';
-      const editBtn = document.createElement('button'); editBtn.textContent='✏️'; editBtn.className='small-btn';
-      editBtn.onclick = ()=> openEditTaskDialog(task.id);
-      const delBtn = document.createElement('button'); delBtn.textContent='🗑'; delBtn.className='small-btn';
-      delBtn.onclick = ()=> { if(confirm('Delete this task?')) { removePlannerById(task.id); } };
-      controls.appendChild(editBtn); controls.appendChild(delBtn);
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '🗑';
+      delBtn.className = 'small-btn';
+      delBtn.style.padding = '2px 6px';
+      delBtn.onclick = () => { if(confirm('Delete?')) removePlannerById(task.id); };
 
       pill.appendChild(label);
-      pill.appendChild(controls);
+      pill.appendChild(delBtn);
       col.appendChild(pill);
     });
 
     if(dayTasks.length === 0){
       const empty = document.createElement('div');
-      empty.style.opacity='0.7';
-      empty.style.fontSize='13px';
-      empty.textContent = '— no tasks —';
+      empty.style.opacity = '0.5';
+      empty.style.fontSize = '11px';
+      empty.textContent = '—';
       col.appendChild(empty);
     }
 
     grid.appendChild(col);
   }
 
-  // Render palette WITH LABELS
+  // Render palette
   paletteRow.innerHTML = '';
   if (palette.length === 0) {
-    paletteRow.innerHTML = '<span style="font-size:12px; opacity:0.7;">No saved colors yet</span>';
+    paletteRow.innerHTML = '<span style="font-size:11px; opacity:0.6;">No colors saved</span>';
   } else {
     palette.forEach(p => {
       const container = document.createElement('div');
@@ -1182,9 +1217,9 @@ function renderPlanner(){
       s.className = 'swatch';
       s.title = p.label || '';
       s.style.background = p.color || '#fff';
-      s.onclick = ()=> { 
-        $('taskColor').value = p.color; 
-        $('taskColorPreview').style.background = p.color; 
+      s.onclick = () => { 
+        if ($('taskColor')) $('taskColor').value = p.color;
+        if ($('taskColorPreview')) $('taskColorPreview').style.background = p.color;
       };
       
       const labelEl = document.createElement('div');
@@ -1196,8 +1231,6 @@ function renderPlanner(){
       paletteRow.appendChild(container);
     });
   }
-
-  checkTopPanelsVisibility();
 }
 
 function readableTextColor(hex){
@@ -1212,26 +1245,23 @@ function readableTextColor(hex){
 }
 
 function addPaletteColor(){
-  const labelInput = $('paletteLabel');
-  const colorInput = $('paletteColor');
-  const label = labelInput.value.trim();
-  const color = colorInput.value;
-  
-  if (!label) { alert('Label required for saved color'); return; }
-  if (!currentUser) { alert('No user session'); return; }
+  const label = $('paletteLabel').value.trim();
+  const color = $('paletteColor').value;
+  if (!label) { alert('Label required'); return; }
+  if (!currentUser) return;
   
   const users = getUsers();
-  if (!users[currentUser]) { alert('User not found'); return; }
+  if (!users[currentUser]) return;
   
   users[currentUser].palette = users[currentUser].palette || [];
-  users[currentUser].palette.push({ id: Date.now() + Math.random(), label: label, color: color });
+  users[currentUser].palette.push({ id: Date.now(), label, color });
   saveUsers(users);
-  labelInput.value = '';
+  $('paletteLabel').value = '';
   renderPlanner();
 }
 
 function clearPalette(){
-  if (!confirm('Clear saved palette for this account?')) return;
+  if (!confirm('Clear palette?')) return;
   const users = getUsers();
   if (!users[currentUser]) return;
   users[currentUser].palette = [];
@@ -1239,129 +1269,81 @@ function clearPalette(){
   renderPlanner();
 }
 
-/* ========== TASK DIALOG ========== */
-function renderDialogPalette(){
-  const dialogPaletteRow = $('dialogPaletteRow');
-  if (!dialogPaletteRow) return;
-  dialogPaletteRow.innerHTML = '';
-  
+function removePlannerById(id){
   const users = getUsers();
-  const user = users[currentUser] || {};
-  const palette = user.palette || [];
-  
-  if (palette.length === 0) {
-    dialogPaletteRow.innerHTML = '<span style="font-size:12px; opacity:0.7;">No saved colors yet</span>';
-    return;
-  }
-  
-  palette.forEach(p => {
-    const container = document.createElement('div');
-    container.className = 'swatch-container';
-    
-    const s = document.createElement('div');
-    s.className = 'swatch';
-    s.title = p.label || '';
-    s.style.background = p.color || '#fff';
-    s.onclick = ()=> { 
-      $('taskColor').value = p.color; 
-      $('taskColorPreview').style.background = p.color; 
-    };
-    
-    const labelEl = document.createElement('div');
-    labelEl.className = 'swatch-label';
-    labelEl.textContent = p.label || '';
-    
-    container.appendChild(s);
-    container.appendChild(labelEl);
-    dialogPaletteRow.appendChild(container);
-  });
+  if (!users[currentUser] || !users[currentUser].planner) return;
+  users[currentUser].planner = users[currentUser].planner.filter(t => t.id !== id);
+  saveUsers(users);
+  renderPlanner();
 }
 
-function openAddTaskDialog(){
-  $('taskDialogTitle').textContent = 'Add Task';
-  $('taskText').value = '';
-  $('taskColor').value = '#ffd166';
-  $('taskColorPreview').style.background = $('taskColor').value;
-  $('taskDialog').dataset.editId = '';
-  renderDialogPalette();
-  $('taskDialog').classList.remove('hidden');
+/* ========== TASK DIALOG ========== */
+function renderDialogPalette(){
+  const row = $('dialogPaletteRow');
+  if (!row) return;
+  row.innerHTML = '';
+  
+  const users = getUsers();
+  const palette = users[currentUser]?.palette || [];
+  
+  palette.forEach(p => {
+    const s = document.createElement('div');
+    s.className = 'swatch';
+    s.title = p.label;
+    s.style.background = p.color;
+    s.onclick = () => {
+      $('taskColor').value = p.color;
+      $('taskColorPreview').style.background = p.color;
+    };
+    row.appendChild(s);
+  });
 }
 
 function openEditTaskDialog(taskId){
   const users = getUsers();
-  const user = users[currentUser] || {};
-  const tasks = user.planner || [];
+  const tasks = users[currentUser]?.planner || [];
   const task = tasks.find(t => t.id === taskId);
-  if (!task) return alert('Task not found');
+  if (!task) return;
+  
   $('taskDialogTitle').textContent = 'Edit Task';
   $('taskText').value = task.text || '';
   $('taskColor').value = task.color || '#ffd166';
-  $('taskColorPreview').style.background = $('taskColor').value;
+  $('taskColorPreview').style.background = task.color || '#ffd166';
   $('taskDialog').dataset.editId = String(taskId);
   renderDialogPalette();
   $('taskDialog').classList.remove('hidden');
 }
 
-function closeTaskDialog(){ $('taskDialog').classList.add('hidden'); $('taskDialog').dataset.editId=''; }
+function closeTaskDialog(){ 
+  $('taskDialog').classList.add('hidden'); 
+  $('taskDialog').dataset.editId = ''; 
+}
 
-$('taskColor')?.addEventListener?.('input', ()=> { $('taskColorPreview').style.background = $('taskColor').value; });
+$('taskColor')?.addEventListener?.('input', () => {
+  $('taskColorPreview').style.background = $('taskColor').value;
+});
 
 function saveTaskFromDialog(){
   const text = $('taskText').value.trim();
-  if (!text) return alert('Please enter task text');
+  if (!text) return alert('Enter task text');
   const color = $('taskColor').value || '#ffd166';
+  
   const users = getUsers();
-  users[currentUser] = users[currentUser] || {};
   users[currentUser].planner = users[currentUser].planner || [];
-
+  
   const editId = $('taskDialog').dataset.editId;
   if (editId) {
-    const idx = users[currentUser].planner.findIndex(t=>String(t.id)===String(editId));
+    const idx = users[currentUser].planner.findIndex(t => String(t.id) === editId);
     if (idx >= 0) {
-      const oldTask = users[currentUser].planner[idx];
-      const oldText = oldTask.text;
-      const oldDueDate = oldTask.dueDate;
-      
       users[currentUser].planner[idx].text = text;
       users[currentUser].planner[idx].color = color;
-      
-      if(oldDueDate){
-        allLists.forEach(list => {
-          list.tasks.forEach(t => {
-            if(t.dueDate === oldDueDate && t.text === oldText){
-              t.text = text;
-            }
-          });
-        });
-        saveAllLists();
-      }
     }
   } else {
-    users[currentUser].planner.push({ id: Date.now() + Math.random(), text, color });
+    users[currentUser].planner.push({ id: Date.now(), text, color });
   }
+  
   saveUsers(users);
   closeTaskDialog();
-  renderPlanner();
-  renderLists();
-}
-
-function removePlannerById(id){
-  const users = getUsers();
-  if (!users[currentUser] || !users[currentUser].planner) return;
-  
-  const plannerTask = users[currentUser].planner.find(t => String(t.id) === String(id));
-  
-  users[currentUser].planner = users[currentUser].planner.filter(t => String(t.id) !== String(id));
-  saveUsers(users);
-  
-  if(plannerTask && plannerTask.dueDate){
-    allLists.forEach(list => {
-      list.tasks = list.tasks.filter(t => !(t.dueDate === plannerTask.dueDate && t.text === plannerTask.text));
-    });
-    saveAllLists();
-    renderLists();
-  }
-  
   renderPlanner();
 }
 
@@ -1389,24 +1371,33 @@ function renderLists(){
 }
 
 function renderTabs(){
-  const tabs = $('tabsContainer'); tabs.innerHTML='';
-  allLists.forEach((list,i)=>{
+  const tabs = $('tabsContainer'); 
+  tabs.innerHTML = '';
+  allLists.forEach((list, i) => {
     const btn = document.createElement('button');
-    btn.className = 'tab-btn' + (i===activeListIndex ? ' active' : '');
+    btn.className = 'tab-btn' + (i === activeListIndex ? ' active' : '');
     btn.textContent = list.name || `List ${i+1}`;
-    btn.onclick = ()=>{ activeListIndex = i; renderLists(); };
+    btn.onclick = () => { activeListIndex = i; renderLists(); };
     tabs.appendChild(btn);
-    const renameBtn = document.createElement('button'); renameBtn.className='control-small'; renameBtn.textContent='✏️';
-    renameBtn.onclick = (e)=>{ e.stopPropagation(); renameList(i); };
+    
+    const renameBtn = document.createElement('button');
+    renameBtn.className = 'control-small';
+    renameBtn.textContent = '✏️';
+    renameBtn.onclick = (e) => { e.stopPropagation(); renameList(i); };
     tabs.appendChild(renameBtn);
-    const delBtn = document.createElement('button'); delBtn.className='control-small'; delBtn.textContent='🗑';
-    delBtn.onclick = (e)=>{ e.stopPropagation(); confirmDeleteList(i); };
+    
+    const delBtn = document.createElement('button');
+    delBtn.className = 'control-small';
+    delBtn.textContent = '🗑';
+    delBtn.onclick = (e) => { e.stopPropagation(); confirmDeleteList(i); };
     tabs.appendChild(delBtn);
   });
 }
 
 function renderActiveList(){
-  const container = $('listsContainer'); container.innerHTML='';
+  const container = $('listsContainer'); 
+  container.innerHTML = '';
+  
   if (allLists.length === 0){
     container.innerHTML = `<div style="padding:20px; border-radius:12px; background: rgba(0,0,0,0.15)">
       <h2>No To-Do Lists Yet 😎</h2>
@@ -1414,6 +1405,7 @@ function renderActiveList(){
     </div>`;
     return;
   }
+  
   const index = activeListIndex;
   const list = allLists[index];
   const listDiv = document.createElement('div');
@@ -1421,69 +1413,103 @@ function renderActiveList(){
     <h2 style="margin-bottom:6px">${escapeHtml(list.name)}</h2>
     <div style="margin-bottom:8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
       <input type="text" id="newTask_${index}" placeholder="Add a task..." style="flex:1; min-width:150px;">
+      <input type="number" id="newTaskEstimate_${index}" placeholder="Est. min" min="1" max="999" style="width:80px;" title="Estimated minutes">
       <input type="date" id="newTaskDate_${index}">
       <button onclick="addTask(${index})">Add</button>
     </div>
     <ul id="list_${index}"></ul>
   `;
   container.appendChild(listDiv);
-  const ul = $('list_'+index);
   
-  list.tasks.forEach((task, tIdx)=>{
+  const ul = $('list_' + index);
+  
+  list.tasks.forEach((task, tIdx) => {
     const li = document.createElement('li');
-    const dateLabel = task.dueDate ? `<span style="font-size:12px; opacity:0.9; margin-right:8px;">${escapeHtml(task.dueDate)}</span>` : '';
-    const totalTime = task.timeSpent ? `<span class="task-total-time">Total: ${formatTaskTime(task.timeSpent)}</span>` : '';
     
-    // Check if this task has active timer
     const isTimerActive = activeTaskTimer && activeTaskTimer.listIndex === index && activeTaskTimer.taskIndex === tIdx;
-    const currentTime = isTimerActive ? getActiveTaskTime() + (task.timeSpent || 0) : (task.timeSpent || 0);
+    const currentTime = isTimerActive ? (task.timeSpent || 0) + getActiveTaskTime() : (task.timeSpent || 0);
+    const estimateSecs = (task.estimateMinutes || 0) * 60;
+    
+    const dateLabel = task.dueDate ? `<span style="font-size:11px; opacity:0.8; margin-right:6px;">📅 ${task.dueDate}</span>` : '';
+    const estimateLabel = task.estimateMinutes ? `<span class="task-estimate">Est: ${task.estimateMinutes}m</span>` : '';
     
     li.innerHTML = `
-      <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${tIdx})">
-      <input type="text" value="${escapeHtml(task.text)}" onchange="editTask(${tIdx}, this.value)" style="text-decoration: ${task.done ? 'line-through' : 'none'}; margin-left:8px; flex:1; min-width:100px;">
-      ${dateLabel}
-      <div class="task-timer">
-        <span class="task-time-display">${formatTaskTime(currentTime)}</span>
-        ${isTimerActive 
-          ? `<button class="task-timer-btn active" onclick="stopTaskTimer()">⏹</button>`
-          : `<button class="task-timer-btn" onclick="startTaskTimer(${index}, ${tIdx})">▶</button>`
-        }
+      <div class="task-row">
+        <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${tIdx})" style="margin:0;">
+        <input type="text" value="${escapeHtml(task.text)}" onchange="editTask(${tIdx}, this.value)" 
+               style="text-decoration: ${task.done ? 'line-through' : 'none'}; flex:1; min-width:100px;">
+        ${dateLabel}
+        <div class="task-timer-section">
+          <span class="task-time-display">${formatTime(currentTime)}</span>
+          ${estimateLabel}
+          ${isTimerActive 
+            ? `<button class="task-start-btn running" onclick="stopTaskTimer()">⏹ Stop</button>`
+            : `<button class="task-start-btn" onclick="startTaskTimer(${index}, ${tIdx})">▶ Start</button>`
+          }
+        </div>
+        <button onclick="deleteTask(${index}, ${tIdx})" style="padding:6px 10px;">🗑️</button>
       </div>
-      <button onclick="deleteTask(${index}, ${tIdx})">🗑️</button>
     `;
     ul.appendChild(li);
   });
 }
 
-function createNewList(){ allLists.push({ name:`List ${allLists.length+1}`, tasks:[] }); saveAllLists(); activeListIndex = allLists.length-1; renderLists(); }
-function renameList(listIndex){ const newName = prompt("New name:", allLists[listIndex].name || `List ${listIndex+1}`); if (newName && newName.trim()!==""){ allLists[listIndex].name=newName.trim(); saveAllLists(); renderLists(); } }
-function confirmDeleteList(listIndex){ if(!confirm("Delete this list?")) return; allLists.splice(listIndex,1); if(allLists.length===0) activeListIndex=0; else if(activeListIndex>=allLists.length) activeListIndex=allLists.length-1; saveAllLists(); renderLists(); }
+function createNewList(){ 
+  allLists.push({ name: `List ${allLists.length + 1}`, tasks: [] }); 
+  saveAllLists(); 
+  activeListIndex = allLists.length - 1; 
+  renderLists(); 
+}
+
+function renameList(listIndex){ 
+  const newName = prompt("New name:", allLists[listIndex].name || `List ${listIndex+1}`); 
+  if (newName && newName.trim() !== ""){ 
+    allLists[listIndex].name = newName.trim(); 
+    saveAllLists(); 
+    renderLists(); 
+  } 
+}
+
+function confirmDeleteList(listIndex){ 
+  if(!confirm("Delete this list?")) return; 
+  allLists.splice(listIndex, 1); 
+  if(allLists.length === 0) activeListIndex = 0; 
+  else if(activeListIndex >= allLists.length) activeListIndex = allLists.length - 1; 
+  saveAllLists(); 
+  renderLists(); 
+}
 
 function addTask(listIndex){
-  const input = $('newTask_'+listIndex);
-  const dateInput = $('newTaskDate_'+listIndex);
+  const input = $('newTask_' + listIndex);
+  const dateInput = $('newTaskDate_' + listIndex);
+  const estimateInput = $('newTaskEstimate_' + listIndex);
   const text = input.value.trim();
   const dueDate = dateInput ? dateInput.value : '';
+  const estimateMinutes = estimateInput ? parseInt(estimateInput.value) || 0 : 0;
 
   if (!text) return alert("Please enter a task!");
 
-  allLists[listIndex].tasks.push({ text, done:false, dueDate: dueDate || undefined, timeSpent: 0 });
+  allLists[listIndex].tasks.push({ 
+    text, 
+    done: false, 
+    dueDate: dueDate || undefined, 
+    timeSpent: 0,
+    estimateMinutes: estimateMinutes || undefined
+  });
 
   input.value = "";
   if(dateInput) dateInput.value = "";
+  if(estimateInput) estimateInput.value = "";
 
   if(dueDate && currentUser){
     const users = getUsers();
-    users[currentUser] = users[currentUser] || {};
     users[currentUser].planner = users[currentUser].planner || [];
-
     users[currentUser].planner.push({
-      id: Date.now() + Math.random(),
+      id: Date.now(),
       text,
       dueDate,
       color: '#ffd166'
     });
-
     saveUsers(users);
     renderPlanner();
   }
@@ -1494,14 +1520,15 @@ function addTask(listIndex){
 
 function toggleTask(taskIndex){ 
   const task = allLists[activeListIndex].tasks[taskIndex];
+  const wasNotDone = !task.done;
   task.done = !task.done;
   
-  // If completing a task, stop its timer and give pet XP
-  if (task.done) {
+  // If completing a task, stop its timer and update pet
+  if (task.done && wasNotDone) {
     if (activeTaskTimer && activeTaskTimer.listIndex === activeListIndex && activeTaskTimer.taskIndex === taskIndex) {
       stopTaskTimer();
     }
-    petGainXP(25); // XP for completing a task
+    incrementTasksToday();
   }
   
   saveAllLists(); 
@@ -1509,76 +1536,42 @@ function toggleTask(taskIndex){
 }
 
 function editTask(taskIndex, newText){
-  const task = allLists[activeListIndex].tasks[taskIndex];
-  const oldText = task.text;
-  
-  if(currentUser && task.dueDate){
-    const users = getUsers();
-    const user = users[currentUser];
-    if(user && user.planner){
-      const plannerTask = user.planner.find(p => p.dueDate === task.dueDate && p.text === oldText);
-      if(plannerTask) plannerTask.text = newText;
-      saveUsers(users);
-      renderPlanner();
-    }
-  }
-  
-  task.text = newText;
+  allLists[activeListIndex].tasks[taskIndex].text = newText;
   saveAllLists();
 }
 
 function deleteTask(listIndex, taskIndex) {
-  if (allLists[listIndex] && allLists[listIndex].tasks && allLists[listIndex].tasks[taskIndex] !== undefined) {
-    const task = allLists[listIndex].tasks[taskIndex];
-    
-    // Stop timer if active on this task
-    if (activeTaskTimer && activeTaskTimer.listIndex === listIndex && activeTaskTimer.taskIndex === taskIndex) {
-      stopTaskTimer();
-    }
-
-    allLists[listIndex].tasks.splice(taskIndex, 1);
-    saveAllLists();
-
-    if (currentUser && task && task.dueDate) {
-      const users = getUsers();
-      const user = users[currentUser];
-      if (user && user.planner) {
-        user.planner = user.planner.filter(
-          (p) => p.dueDate !== task.dueDate || p.text !== task.text
-        );
-        saveUsers(users);
-      }
-    }
-
-    requestAnimationFrame(() => {
-      renderLists();
-      renderPlanner();
-    });
+  if (!allLists[listIndex]?.tasks?.[taskIndex]) return;
+  
+  // Stop timer if active
+  if (activeTaskTimer && activeTaskTimer.listIndex === listIndex && activeTaskTimer.taskIndex === taskIndex) {
+    stopTaskTimer(false);
   }
+
+  allLists[listIndex].tasks.splice(taskIndex, 1);
+  saveAllLists();
+  renderLists();
 }
 
 /* ========== LOGOUT ========== */
 function logout(){
-  stopTaskTimer();
+  stopTaskTimer(true);
   saveAllLists();
   if (petDecayInterval) clearInterval(petDecayInterval);
   localStorage.removeItem('currentUser');
-  currentUser = null; currentUserName = null; allLists = []; activeListIndex = 0;
+  currentUser = null; 
+  currentUserName = null; 
+  allLists = []; 
+  activeListIndex = 0;
   setPickedBgValue('default');
   $('todo').classList.add('hidden'); 
   $('login').classList.remove('hidden');
-  $('listsContainer').innerHTML=''; 
-  $('tabsContainer').innerHTML=''; 
-  $('todoHeader').innerHTML='';
+  $('listsContainer').innerHTML = ''; 
+  $('tabsContainer').innerHTML = ''; 
+  $('todoHeader').innerHTML = '';
   $('background-picker')?.classList.add('hidden');
-  $('topPanels')?.classList.add('hidden'); 
-  $('topPanels')?.setAttribute('aria-hidden','true');
-  $('quickLinks')?.classList.add('hidden'); 
-  $('planner')?.classList.add('hidden');
-  $('petContainer')?.classList.add('hidden');
-  $('floatingLeftContainer')?.classList.add('hidden');
-  $('quickLinksToggle').style.display = 'none';
-  checkTopPanelsVisibility();
+  $('topPanels')?.classList.add('hidden');
+  closeQuickLinksModal();
 }
 
 /* ========== INIT ========== */
@@ -1594,6 +1587,7 @@ function initPage(){
       renderQuickLinks();
       renderPlanner();
       renderPet();
+      updatePetHappinessFromTasks();
       startPetDecay();
     } else {
       localStorage.removeItem('currentUser');
