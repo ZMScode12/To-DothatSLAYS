@@ -148,40 +148,63 @@
     @keyframes petSad { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
     .pet-sad { animation: petSad 1s ease infinite; }
 
+    /* ===== FLOATING LEFT CONTAINER (Quote + Timer) ===== */
+    #floatingLeftContainer {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 280px;
+    }
+
     /* ===== QUOTE BOX ===== */
     #quoteBox {
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.5);
       border-radius: 12px;
-      padding: 16px 20px;
-      margin-bottom: 20px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
+      padding: 14px 16px;
       font-style: italic;
       position: relative;
+      text-align: left;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     }
-    #quoteText { font-size: 14px; line-height: 1.5; margin-bottom: 8px; }
-    #quoteAuthor { font-size: 12px; opacity: 0.7; }
-    #newQuoteBtn { position: absolute; top: 8px; right: 8px; padding: 4px 8px; font-size: 12px; background: rgba(255,255,255,0.2); border: none; border-radius: 6px; cursor: pointer; color: white; }
+    #quoteBox.collapsed { display: none; }
+    #quoteText { font-size: 13px; line-height: 1.4; margin-bottom: 6px; }
+    #quoteAuthor { font-size: 11px; opacity: 0.7; }
+    #newQuoteBtn { position: absolute; top: 6px; right: 6px; padding: 3px 6px; font-size: 11px; background: rgba(255,255,255,0.2); border: none; border-radius: 4px; cursor: pointer; color: white; }
     #newQuoteBtn:hover { background: rgba(255,255,255,0.3); }
 
     /* ===== TIMER ===== */
     #timerContainer {
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.5);
       border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
+      padding: 14px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      position: relative;
     }
-    #timerDisplay { font-size: 36px; font-weight: bold; font-family: monospace; margin: 10px 0; }
-    #timerProgress { width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+    #timerContainer.collapsed #timerBody { display: none; }
+    #timerContainer.collapsed { padding: 10px 14px; }
+    #timerHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    #timerHeader.collapsed-header { margin-bottom: 0; }
+    #timerTitle { font-weight: 600; font-size: 14px; }
+    .hide-btn { padding: 3px 8px; font-size: 11px; background: rgba(255,255,255,0.2); border: none; border-radius: 4px; cursor: pointer; color: white; }
+    .hide-btn:hover { background: rgba(255,255,255,0.3); }
+    #timerDisplay { font-size: 32px; font-weight: bold; font-family: monospace; margin: 8px 0; }
+    #timerProgress { width: 100%; height: 5px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
     #timerProgressFill { height: 100%; background: #1DB954; transition: width 1s linear; }
-    .timer-btn { padding: 8px 16px; margin: 4px; font-size: 13px; border-radius: 8px; border: none; cursor: pointer; }
+    .timer-btn { padding: 6px 12px; margin: 3px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; }
     .timer-btn.start { background: #1DB954; color: white; }
     .timer-btn.pause { background: #ffd93d; color: #333; }
     .timer-btn.reset { background: rgba(255,255,255,0.2); color: white; }
+
+    /* ===== QUICK LINKS HIDE BUTTON ===== */
+    .panel-hide-btn { padding: 2px 6px; font-size: 10px; background: rgba(255,255,255,0.15); border: none; border-radius: 4px; cursor: pointer; color: white; margin-left: 4px; }
+    .panel-hide-btn:hover { background: rgba(255,255,255,0.25); }
+    #quickLinksToggle { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px; cursor: pointer; z-index: 999; font-size: 13px; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+    #quickLinksToggle:hover { background: rgba(0,0,0,0.6); }
 
     /* ===== TASK TIME TRACKING ===== */
     .task-timer { display: flex; align-items: center; gap: 6px; font-size: 11px; opacity: 0.9; }
@@ -197,6 +220,9 @@
       #plannerGrid { grid-template-columns: repeat(1, 1fr); }
       #petContainer { bottom: 10px; right: 10px; padding: 8px; min-width: 100px; }
       #petDisplay { font-size: 36px; }
+      #floatingLeftContainer { top: 10px; left: 10px; max-width: 200px; }
+      #quoteText { font-size: 11px; }
+      #timerDisplay { font-size: 24px; }
     }
 
     #plannerBody { max-width: 500px; overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
@@ -244,11 +270,14 @@
     <button class="small-btn" onclick="openPetSettings()" style="margin-top:8px; font-size:10px;">⚙️ Pet</button>
   </div>
 
+  <!-- Quick Links Toggle (shown when hidden) -->
+  <div id="quickLinksToggle" onclick="showQuickLinks()">📎 Show Quick Links</div>
+
   <!-- Top inline panels -->
   <div id="topPanels" class="hidden" aria-hidden="true">
     <div id="quickLinks" class="panel" aria-hidden="true">
       <div class="panel-header" onclick="togglePanel('quickLinks')">
-        <div style="width:20px"></div>
+        <button class="panel-hide-btn" onclick="event.stopPropagation(); hideQuickLinks();">Hide</button>
         <div class="title">Quick Links</div>
         <div class="chev">▾</div>
       </div>
@@ -290,8 +319,8 @@
     </div>
   </div>
 
-  <!-- To-do lists -->
-  <div id="todo" class="hidden">
+  <!-- Floating Left Container (Quote + Timer) -->
+  <div id="floatingLeftContainer" class="hidden">
     <!-- Quote Box -->
     <div id="quoteBox">
       <button id="newQuoteBtn" onclick="showNewQuote()">🔄</button>
@@ -301,19 +330,27 @@
 
     <!-- Timer -->
     <div id="timerContainer">
-      <div style="font-weight:600; margin-bottom:8px;">⏱️ Focus Timer</div>
-      <div id="timerProgress"><div id="timerProgressFill" style="width: 100%"></div></div>
-      <div id="timerDisplay">25:00</div>
-      <div>
-        <input type="number" id="timerMinutes" value="25" min="1" max="120" style="width:60px; text-align:center;"> min
+      <div id="timerHeader">
+        <span id="timerTitle">⏱️ Focus Timer</span>
+        <button class="hide-btn" onclick="toggleTimerCollapse()">Hide</button>
       </div>
-      <div style="margin-top:8px;">
-        <button class="timer-btn start" onclick="startTimer()">▶ Start</button>
-        <button class="timer-btn pause" onclick="pauseTimer()">⏸ Pause</button>
-        <button class="timer-btn reset" onclick="resetTimer()">↺ Reset</button>
+      <div id="timerBody">
+        <div id="timerProgress"><div id="timerProgressFill" style="width: 100%"></div></div>
+        <div id="timerDisplay">25:00</div>
+        <div>
+          <input type="number" id="timerMinutes" value="25" min="1" max="120" style="width:60px; text-align:center;"> min
+        </div>
+        <div style="margin-top:8px;">
+          <button class="timer-btn start" onclick="startTimer()">▶ Start</button>
+          <button class="timer-btn pause" onclick="pauseTimer()">⏸ Pause</button>
+          <button class="timer-btn reset" onclick="resetTimer()">↺ Reset</button>
+        </div>
       </div>
     </div>
+  </div>
 
+  <!-- To-do lists -->
+  <div id="todo" class="hidden">
     <div id="todoHeader"></div>
     <div class="tabs" id="tabsContainer"></div>
     <div id="listsContainer"></div>
@@ -648,20 +685,82 @@ function resetTimer(){
 }
 
 function playChime(){
-  // Create a soft chime using Web Audio API
+  // Create a pleasant chime sound using Web Audio API
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 800;
-    osc.type = 'sine';
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 1);
+    
+    // Play a sequence of tones for a nice chime effect
+    const frequencies = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    
+    frequencies.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      
+      const startTime = ctx.currentTime + (i * 0.15);
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.8);
+      
+      osc.start(startTime);
+      osc.stop(startTime + 0.8);
+    });
+    
+    // Also play a second round slightly delayed for a richer sound
+    setTimeout(() => {
+      try {
+        const ctx2 = new (window.AudioContext || window.webkitAudioContext)();
+        frequencies.forEach((freq, i) => {
+          const osc = ctx2.createOscillator();
+          const gain = ctx2.createGain();
+          osc.connect(gain);
+          gain.connect(ctx2.destination);
+          osc.frequency.value = freq;
+          osc.type = 'triangle';
+          
+          const startTime = ctx2.currentTime + (i * 0.15);
+          gain.gain.setValueAtTime(0, startTime);
+          gain.gain.linearRampToValueAtTime(0.15, startTime + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.01, startTime + 1);
+          
+          osc.start(startTime);
+          osc.stop(startTime + 1);
+        });
+      } catch(e) {}
+    }, 600);
+    
   } catch(e) { /* Audio not supported */ }
+}
+
+/* ========== TIMER COLLAPSE/HIDE ========== */
+function toggleTimerCollapse(){
+  const container = $('timerContainer');
+  const header = $('timerHeader');
+  const hideBtn = container.querySelector('.hide-btn');
+  
+  if (container.classList.contains('collapsed')) {
+    container.classList.remove('collapsed');
+    header.classList.remove('collapsed-header');
+    hideBtn.textContent = 'Hide';
+  } else {
+    container.classList.add('collapsed');
+    header.classList.add('collapsed-header');
+    hideBtn.textContent = 'Show';
+  }
+}
+
+/* ========== QUICK LINKS HIDE/SHOW ========== */
+function hideQuickLinks(){
+  $('quickLinks').classList.add('hidden');
+  $('quickLinksToggle').style.display = 'block';
+}
+
+function showQuickLinks(){
+  $('quickLinks').classList.remove('hidden');
+  $('quickLinksToggle').style.display = 'none';
 }
 
 /* ========== TASK TIME TRACKING ========== */
@@ -756,12 +855,15 @@ function checkTopPanelsVisibility(){
   const quick = $('quickLinks');
   const plan = $('planner');
   const pet = $('petContainer');
+  const floating = $('floatingLeftContainer');
 
   if (!currentUser) {
     top?.classList.add('hidden'); top?.setAttribute('aria-hidden','true');
     quick?.classList.add('hidden'); quick?.setAttribute('aria-hidden','true');
     plan?.classList.add('hidden'); plan?.setAttribute('aria-hidden','true');
     pet?.classList.add('hidden');
+    floating?.classList.add('hidden');
+    $('quickLinksToggle').style.display = 'none';
     return;
   }
 
@@ -769,6 +871,7 @@ function checkTopPanelsVisibility(){
   quick?.classList.remove('hidden'); quick?.setAttribute('aria-hidden','false');
   plan?.classList.remove('hidden'); plan?.setAttribute('aria-hidden','false');
   pet?.classList.remove('hidden');
+  floating?.classList.remove('hidden');
 }
 
 /* ========== LOAD SESSION ========== */
@@ -1473,6 +1576,8 @@ function logout(){
   $('quickLinks')?.classList.add('hidden'); 
   $('planner')?.classList.add('hidden');
   $('petContainer')?.classList.add('hidden');
+  $('floatingLeftContainer')?.classList.add('hidden');
+  $('quickLinksToggle').style.display = 'none';
   checkTopPanelsVisibility();
 }
 
