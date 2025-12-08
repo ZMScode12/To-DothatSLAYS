@@ -1619,8 +1619,8 @@ function logout(){
   $('tabsContainer').innerHTML = ''; 
   $('todoHeader').innerHTML = '';
   $('background-picker')?.classList.add('hidden');
-  $('topPanels')?.classList.add('hidden');
   closeQuickLinksModal();
+  checkTopPanelsVisibility();
 }
 
 /* ========== INIT ========== */
