@@ -975,33 +975,25 @@ function togglePanel(panelId){
 /* ========== TOP PANELS VISIBILITY ========== */
 function checkTopPanelsVisibility(){
   const top = $('topPanels');
+  const leftPanel = $('leftPanel');
+  const planner = $('planner');
 
   if (!currentUser) {
-    top?.classList.add('hidden');
+    if (top) {
+      top.classList.add('hidden');
+      top.setAttribute('aria-hidden', 'true');
+    }
+    if (leftPanel) leftPanel.classList.add('hidden');
+    if (planner) planner.classList.add('hidden');
     return;
   }
 
-  top?.classList.remove('hidden');
-}
-
-/* ========== LOAD SESSION ========== */
-if (currentUser) {
-  const usersTemp = getUsers();
-  if (usersTemp[currentUser]) {
-    currentUserName = usersTemp[currentUser].username || null;
-    loadAllLists();
-    showTodo();
-    renderLists();
-    renderQuickLinks();
-    renderPlanner();
-    renderPet();
-    updatePetHappinessFromTasks();
-    checkTopPanelsVisibility();
-    startPetDecay();
-  } else {
-    localStorage.removeItem('currentUser');
-    currentUser = null;
+  if (top) {
+    top.classList.remove('hidden');
+    top.setAttribute('aria-hidden', 'false');
   }
+  if (leftPanel) leftPanel.classList.remove('hidden');
+  if (planner) planner.classList.remove('hidden');
 }
 
 /* ========== ACCOUNTS ========== */
