@@ -331,7 +331,7 @@
             <div id="petMood">😐 Waiting for tasks...</div>
             <div id="tasksToday">Tasks today: 0/5</div>
             <div id="unlockedPets">🔓 1/10 pets</div>
-            <button class="small-btn" onclick="openPetSettings()" style="margin-top:6px; font-size:9px; padding:4px 8px;">⚙️ Pet</button>
+            <button class="small-btn" onclick="openPetSettings()" style="margin-top:8px; font-size:11px; padding:6px 10px;">⚙️ Settings</button>
           </div>
 
           <!-- Quote -->
@@ -452,6 +452,23 @@
     <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
       <button onclick="closePetDialog()">Cancel</button>
       <button onclick="savePetSettings()" class="list-button">Save</button>
+    </div>
+  </div>
+
+  <!-- Task Color Picker Modal -->
+  <div id="taskColorOverlay" class="modal-overlay hidden" onclick="closeTaskColorPicker()"></div>
+  <div id="taskColorModal" class="hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(6,8,12,0.95); padding:20px; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.6); width:300px; z-index:1000;">
+    <h3 style="margin-top:0;">🎨 Change Task Color</h3>
+    <div id="taskColorName" style="font-size:14px; opacity:0.8; margin-bottom:12px;"></div>
+    <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+      <input type="color" id="taskColorInput" value="#ffd166" style="width:60px; height:40px; padding:0; border:none; cursor:pointer;">
+      <div id="taskColorPreviewBox" style="flex:1; height:40px; border-radius:8px; background:#ffd166;"></div>
+    </div>
+    <div style="font-size:12px; margin-bottom:8px;">Quick colors from palette:</div>
+    <div id="taskColorPalette" class="palette-row" style="margin-bottom:16px;"></div>
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button onclick="closeTaskColorPicker()">Cancel</button>
+      <button onclick="saveTaskColor()" class="list-button">Save</button>
     </div>
   </div>
 
@@ -1198,9 +1215,26 @@ function renderPlanner(){
   }
 
   const users = getUsers();
-  const user = users[currentUser] || { planner: [], palette: [] };
-  const tasks = user.planner || [];
+  const user = users[currentUser] || { palette: [] };
   const palette = user.palette || [];
+
+  // Gather all tasks with due dates from all lists
+  const allTasksWithDates = [];
+  allLists.forEach((list, listIndex) => {
+    list.tasks.forEach((task, taskIndex) => {
+      if (task.dueDate) {
+        allTasksWithDates.push({
+          text: task.text,
+          dueDate: task.dueDate,
+          done: task.done,
+          color: task.color,
+          listIndex,
+          taskIndex,
+          listName: list.name
+        });
+      }
+    });
+  });
 
   for (let day = 0; day < 7; day++){
     const col = document.createElement('div');
@@ -1218,27 +1252,37 @@ function renderPlanner(){
     const date = String(d.getDate()).padStart(2, '0');
     const dateStr = `${year}-${month}-${date}`;
     
-    const dayTasks = tasks.filter(t => t.dueDate === dateStr);
+    const dayTasks = allTasksWithDates.filter(t => t.dueDate === dateStr);
 
     dayTasks.forEach((task) => {
+      const taskColor = task.color || (task.done ? '#6bcb77' : '#ffd166');
+      
       const pill = document.createElement('div');
       pill.className = 'task-pill';
-      pill.style.background = task.color || '#ffd166';
-      pill.style.color = readableTextColor(task.color || '#ffd166');
-      pill.title = task.text;
+      pill.style.background = taskColor;
+      pill.style.color = readableTextColor(taskColor);
+      pill.style.opacity = task.done ? '0.7' : '1';
+      pill.title = `${task.text} (${task.listName})${task.done ? ' ✓' : ''}`;
 
       const label = document.createElement('div');
       label.className = 'task-label';
-      label.textContent = task.text;
+      label.textContent = task.done ? `✓ ${task.text}` : task.text;
+      label.style.textDecoration = task.done ? 'line-through' : 'none';
 
-      const delBtn = document.createElement('button');
-      delBtn.textContent = '🗑';
-      delBtn.className = 'small-btn';
-      delBtn.style.padding = '2px 6px';
-      delBtn.onclick = () => { if(confirm('Delete?')) removePlannerById(task.id); };
+      const settingsBtn = document.createElement('button');
+      settingsBtn.textContent = '⚙️';
+      settingsBtn.className = 'small-btn';
+      settingsBtn.style.padding = '2px 5px';
+      settingsBtn.style.fontSize = '10px';
+      settingsBtn.style.background = 'rgba(255,255,255,0.3)';
+      settingsBtn.title = 'Change color';
+      settingsBtn.onclick = (e) => {
+        e.stopPropagation();
+        openTaskColorPicker(task.listIndex, task.taskIndex);
+      };
 
       pill.appendChild(label);
-      pill.appendChild(delBtn);
+      pill.appendChild(settingsBtn);
       col.appendChild(pill);
     });
 
@@ -1293,6 +1337,75 @@ function readableTextColor(hex){
   } catch(e){ return '#071019'; }
 }
 
+/* ========== TASK COLOR PICKER ========== */
+let editingTaskColor = { listIndex: -1, taskIndex: -1 };
+
+function openTaskColorPicker(listIndex, taskIndex){
+  const task = allLists[listIndex]?.tasks?.[taskIndex];
+  if (!task) return;
+  
+  editingTaskColor = { listIndex, taskIndex };
+  
+  const currentColor = task.color || '#ffd166';
+  $('taskColorInput').value = currentColor;
+  $('taskColorPreviewBox').style.background = currentColor;
+  $('taskColorName').textContent = task.text;
+  
+  // Render palette swatches
+  const paletteDiv = $('taskColorPalette');
+  paletteDiv.innerHTML = '';
+  
+  const users = getUsers();
+  const palette = users[currentUser]?.palette || [];
+  
+  if (palette.length === 0) {
+    paletteDiv.innerHTML = '<span style="font-size:11px; opacity:0.6;">No saved colors</span>';
+  } else {
+    palette.forEach(p => {
+      const s = document.createElement('div');
+      s.className = 'swatch';
+      s.title = p.label || '';
+      s.style.background = p.color || '#fff';
+      s.onclick = () => {
+        $('taskColorInput').value = p.color;
+        $('taskColorPreviewBox').style.background = p.color;
+      };
+      paletteDiv.appendChild(s);
+    });
+  }
+  
+  $('taskColorOverlay').classList.remove('hidden');
+  $('taskColorModal').classList.remove('hidden');
+}
+
+function closeTaskColorPicker(){
+  $('taskColorOverlay').classList.add('hidden');
+  $('taskColorModal').classList.add('hidden');
+  editingTaskColor = { listIndex: -1, taskIndex: -1 };
+}
+
+function saveTaskColor(){
+  const { listIndex, taskIndex } = editingTaskColor;
+  const task = allLists[listIndex]?.tasks?.[taskIndex];
+  if (!task) return;
+  
+  task.color = $('taskColorInput').value;
+  saveAllLists();
+  closeTaskColorPicker();
+  renderPlanner();
+  renderLists();
+}
+
+// Update color preview when input changes
+document.addEventListener('DOMContentLoaded', () => {
+  const colorInput = $('taskColorInput');
+  if (colorInput) {
+    colorInput.addEventListener('input', () => {
+      $('taskColorPreviewBox').style.background = colorInput.value;
+    });
+  }
+});
+
 function addPaletteColor(){
   const label = $('paletteLabel').value.trim();
   const color = $('paletteColor').value;
@@ -1314,14 +1427,6 @@ function clearPalette(){
   const users = getUsers();
   if (!users[currentUser]) return;
   users[currentUser].palette = [];
-  saveUsers(users);
-  renderPlanner();
-}
-
-function removePlannerById(id){
-  const users = getUsers();
-  if (!users[currentUser] || !users[currentUser].planner) return;
-  users[currentUser].planner = users[currentUser].planner.filter(t => t.id !== id);
   saveUsers(users);
   renderPlanner();
 }
@@ -1550,21 +1655,9 @@ function addTask(listIndex){
   if(dateInput) dateInput.value = "";
   if(estimateInput) estimateInput.value = "";
 
-  if(dueDate && currentUser){
-    const users = getUsers();
-    users[currentUser].planner = users[currentUser].planner || [];
-    users[currentUser].planner.push({
-      id: Date.now(),
-      text,
-      dueDate,
-      color: '#ffd166'
-    });
-    saveUsers(users);
-    renderPlanner();
-  }
-
   saveAllLists();
   renderLists();
+  renderPlanner(); // Sync planner with tasks
 }
 
 function toggleTask(taskIndex){ 
@@ -1581,12 +1674,14 @@ function toggleTask(taskIndex){
   }
   
   saveAllLists(); 
-  renderLists(); 
+  renderLists();
+  renderPlanner(); // Sync planner
 }
 
 function editTask(taskIndex, newText){
   allLists[activeListIndex].tasks[taskIndex].text = newText;
   saveAllLists();
+  renderPlanner(); // Sync planner
 }
 
 function deleteTask(listIndex, taskIndex) {
@@ -1600,6 +1695,7 @@ function deleteTask(listIndex, taskIndex) {
   allLists[listIndex].tasks.splice(taskIndex, 1);
   saveAllLists();
   renderLists();
+  renderPlanner(); // Sync planner
 }
 
 /* ========== LOGOUT ========== */
