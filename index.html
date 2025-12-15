@@ -356,9 +356,10 @@
             </div>
           </div>
 
-          <!-- Quick Links Button -->
-          <div style="display:flex; align-items:center;">
-            <button id="quickLinksBtn" onclick="openQuickLinksModal()" style="padding:10px 14px;">📎 Links</button>
+          <!-- Journal & Quick Links Buttons -->
+          <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+            <button id="journalBtn" onclick="openJournalModal()" style="padding:10px 14px; width:100%;">📓 Journal</button>
+            <button id="quickLinksBtn" onclick="openQuickLinksModal()" style="padding:10px 14px; width:100%;">📎 Links</button>
           </div>
         </div>
       </div>
@@ -403,6 +404,36 @@
     </div>
     <button onclick="closeQuickLinksModal()" style="margin-top:12px; width:100%;">Close</button>
   </div>
+
+  <!-- Journal Modal -->
+  <div id="journalOverlay" class="modal-overlay hidden" onclick="closeJournalModal()"></div>
+  <div id="journalModal" class="hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(6,8,12,0.95); padding:20px; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.6); width:400px; max-height:80vh; z-index:1000;">
+    <h3 style="margin-top:0;">📓 Journal</h3>
+    <textarea id="journalTextarea" placeholder="Write your thoughts here..." style="width:100%; height:300px; border-radius:8px; padding:12px; font-size:14px; resize:vertical; background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2);"></textarea>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
+      <button onclick="closeJournalModal()">Close</button>
+      <button onclick="saveJournal()" class="list-button">Save</button>
+    </div>
+  </div>
+
+  <!-- Task Completion Popup -->
+  <div id="taskCompletionPopup" class="hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:linear-gradient(135deg, #1DB954, #0d9440); padding:24px 32px; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.5); z-index:1001; text-align:center; animation:popIn 0.3s ease;">
+    <div style="font-size:32px; margin-bottom:8px;">🎉</div>
+    <div id="completionMessage" style="font-size:18px; font-weight:bold;"></div>
+  </div>
+
+  <style>
+    @keyframes popIn {
+      0% { transform: translate(-50%,-50%) scale(0.5); opacity: 0; }
+      70% { transform: translate(-50%,-50%) scale(1.1); }
+      100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+    }
+    @keyframes popOut {
+      0% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%,-50%) scale(0.5); opacity: 0; }
+    }
+    .popup-exit { animation: popOut 0.2s ease forwards; }
+  </style>
 
   <!-- To-do lists -->
   <div id="todo" class="hidden">
@@ -630,6 +661,126 @@ const accessories = [
   { emoji: '🌸', name: 'Flower', unlockLevel: 8 },
   { emoji: '⭐', name: 'Star', unlockLevel: 10 }
 ];
+
+/* ========== TASK COMPLETION MESSAGES ========== */
+const completionMessages = [
+  "That task did not stand a CHANCE! 💪",
+  "PRODUCTIVITY!!!!!",
+  "You're on FIRE! 🔥",
+  "Absolutely CRUSHED it!",
+  "Task? What task? DEMOLISHED!",
+  "You're a productivity MACHINE!",
+  "Another one bites the dust! 🎵",
+  "BOOM! Task eliminated!",
+  "Was that even a challenge?",
+  "You make it look EASY!",
+  "Unstoppable! 🚀",
+  "Task destroyed in record time!",
+  "That's how it's DONE!",
+  "You're killing it today!",
+  "Legendary productivity move!",
+  "Task completed like a BOSS!",
+  "Nothing can stop you!",
+  "You're in the ZONE!",
+  "Efficiency level: MAXIMUM!",
+  "That task never saw it coming!",
+  "WINNER! 🏆",
+  "Productivity king/queen!",
+  "Task annihilated!",
+  "You're built different!",
+  "Absolutely SMASHED it!",
+  "Keep this energy! ⚡",
+  "Task? More like no task!",
+  "You're too good at this!",
+  "GET AFTER IT!",
+  "Momentum is BUILDING!",
+  "One down, glory to go!",
+  "Excellence achieved!",
+  "That was smooth!",
+  "Chef's kiss on that one! 👨‍🍳",
+  "Pure domination!",
+  "Task erased from existence!",
+  "You're a force of nature!",
+  "FLAWLESS execution!",
+  "Making progress look GOOD!",
+  "You're on a roll! 🎲",
+  "Task obliterated!",
+  "Simply magnificent!",
+  "You're crushing your goals!",
+  "That was surgical precision!",
+  "Task vaporized! 💨",
+  "Look at you GO!",
+  "Productivity unlocked!",
+  "You're in beast mode!",
+  "Another victory! 🏅",
+  "Task sent to the shadow realm!",
+  "Impressive work!",
+  "You're making waves! 🌊",
+  "Nailed it! 🔨",
+  "Task conquered!",
+  "You're a productivity ninja!",
+  "Smooth operator!",
+  "That's the spirit!",
+  "Task eliminated with style!",
+  "You're winning at life!",
+  "Absolutely stellar!",
+  "Keep stacking those wins!",
+  "Task? Never heard of her!",
+  "You're an inspiration!",
+  "Maximum effort achieved!",
+  "That was beautiful!",
+  "Productivity overload!",
+  "You're unstoppable today!",
+  "Task deleted successfully! 🗑️",
+  "Pure excellence!",
+  "You're doing amazing!",
+  "That's what I'm talking about!",
+  "Task wrecked!",
+  "You're leveling up!",
+  "Absolutely incredible!",
+  "Task? Handled!",
+  "You're a productivity legend!",
+  "That was satisfying!",
+  "Keep the momentum going!",
+  "Task destroyed with ease!",
+  "You're crushing it!",
+  "Phenomenal work!",
+  "Task? Child's play!",
+  "You're on another level!",
+  "That's how winners do it!",
+  "Task terminated!",
+  "You're making it happen!",
+  "Superstar performance! ⭐",
+  "Task sent packing!",
+  "You're a productivity god!",
+  "That was epic!",
+  "Keep being awesome!",
+  "Task? Bye bye! 👋",
+  "You're dominating!",
+  "Incredible focus!",
+  "Task pulverized!",
+  "You're the real MVP!",
+  "That's a W!",
+  "Task officially DONE!",
+  "You're built for success!",
+  "Masterfully executed!"
+];
+
+function showCompletionPopup(){
+  const popup = $('taskCompletionPopup');
+  const message = completionMessages[Math.floor(Math.random() * completionMessages.length)];
+  $('completionMessage').textContent = message;
+  
+  popup.classList.remove('hidden', 'popup-exit');
+  
+  setTimeout(() => {
+    popup.classList.add('popup-exit');
+    setTimeout(() => {
+      popup.classList.add('hidden');
+      popup.classList.remove('popup-exit');
+    }, 200);
+  }, 1500);
+}
 
 function getPetData(){
   if (!currentUser) return null;
@@ -1199,6 +1350,7 @@ function showTodo(){
     <h1>Welcome, ${escapeHtml(displayName)}!</h1>
     <div style="margin-top:8px">
       <button onclick="createNewList()" class="list-button">+ New To-Do List</button>
+      <button class="control-small" onclick="resetCompletedTasks()">Reset Tasks</button>
       <button class="control-small" onclick="openBackgroundPicker()">Change background</button>
     </div>
   `;
@@ -1272,12 +1424,50 @@ function removeQuickLink(index){
 }
 
 function clearQuickLinks(){
-  if (!confirm('Clear all quick links?')) return;
   const users = getUsers();
   if (!currentUser || !users[currentUser]) return;
   users[currentUser].quickLinks = [];
   saveUsers(users);
   renderQuickLinks();
+}
+
+/* ========== JOURNAL ========== */
+function openJournalModal(){
+  const users = getUsers();
+  const journal = users[currentUser]?.journal || '';
+  $('journalTextarea').value = journal;
+  $('journalOverlay').classList.remove('hidden');
+  $('journalModal').classList.remove('hidden');
+}
+
+function closeJournalModal(){
+  $('journalOverlay').classList.add('hidden');
+  $('journalModal').classList.add('hidden');
+}
+
+function saveJournal(){
+  const users = getUsers();
+  if (!currentUser || !users[currentUser]) return;
+  users[currentUser].journal = $('journalTextarea').value;
+  saveUsers(users);
+  closeJournalModal();
+}
+
+/* ========== RESET COMPLETED TASKS ========== */
+function resetCompletedTasks(){
+  // Stop any active timer first
+  if (activeTaskTimer) {
+    stopTaskTimer(false);
+  }
+  
+  // Filter out completed tasks from each list
+  for (let i = 0; i < allLists.length; i++) {
+    allLists[i].tasks = allLists[i].tasks.filter(task => !task.done);
+  }
+  
+  saveAllLists();
+  renderLists();
+  renderPlanner();
 }
 
 /* ========== PLANNER ========== */
@@ -1515,7 +1705,6 @@ function addPaletteColor(){
 }
 
 function clearPalette(){
-  if (!confirm('Clear palette?')) return;
   const users = getUsers();
   if (!users[currentUser]) return;
   users[currentUser].palette = [];
@@ -1717,7 +1906,6 @@ function renameList(listIndex){
 }
 
 function confirmDeleteList(listIndex){ 
-  if(!confirm("Delete this list?")) return; 
   allLists.splice(listIndex, 1); 
   if(allLists.length === 0) activeListIndex = 0; 
   else if(activeListIndex >= allLists.length) activeListIndex = allLists.length - 1; 
@@ -1757,12 +1945,13 @@ function toggleTask(taskIndex){
   const wasNotDone = !task.done;
   task.done = !task.done;
   
-  // If completing a task, stop its timer and update pet
+  // If completing a task, stop its timer, update pet, and show popup
   if (task.done && wasNotDone) {
     if (activeTaskTimer && activeTaskTimer.listIndex === activeListIndex && activeTaskTimer.taskIndex === taskIndex) {
       stopTaskTimer();
     }
     incrementTasksToday();
+    showCompletionPopup();
   }
   
   saveAllLists(); 
