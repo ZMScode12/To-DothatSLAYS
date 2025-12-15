@@ -433,7 +433,22 @@
       100% { transform: translate(-50%,-50%) scale(0.5); opacity: 0; }
     }
     .popup-exit { animation: popOut 0.2s ease forwards; }
+    @keyframes spinWheel {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(1800deg); }
+    }
+    .wheel-spinning { animation: spinWheel 2s cubic-bezier(0.17, 0.67, 0.12, 0.99) forwards; }
   </style>
+
+  <!-- Task Wheel Popup -->
+  <div id="taskWheelOverlay" class="modal-overlay hidden" onclick="closeTaskWheel()"></div>
+  <div id="taskWheelPopup" class="hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(6,8,12,0.95); padding:24px; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.6); z-index:1001; text-align:center; min-width:300px;">
+    <div style="font-size:24px; margin-bottom:12px;">🎡 Task Wheel</div>
+    <div id="wheelEmoji" style="font-size:64px; margin:20px 0;">🎯</div>
+    <div id="wheelResult" style="font-size:16px; padding:12px; background:rgba(255,255,255,0.1); border-radius:8px; margin:12px 0;"></div>
+    <div id="wheelListName" style="font-size:12px; opacity:0.7; margin-bottom:12px;"></div>
+    <button onclick="closeTaskWheel()" style="margin-top:8px;">Close</button>
+  </div>
 
   <!-- To-do lists -->
   <div id="todo" class="hidden">
@@ -444,7 +459,7 @@
       <label for="bg-select">Choose Background:</label>
       <select id="bg-select" onchange="changeBackground(this.value)">
         <option value="default">Default</option>
-        <option value="blue-purple-moving">Cat's Background</option>
+        <option value="blue-purple-moving">Blue Purple (Moving)</option>
         <option value="linear-gradient(to right, #ff7e5f, #feb47b)">Sunset</option>
         <option value="linear-gradient(to right, #2193b0, #6dd5ed)">Ocean</option>
         <option value="linear-gradient(to right, #0f2027, #203a43, #2c5364)">Galaxy</option>
@@ -1352,6 +1367,7 @@ function showTodo(){
       <button onclick="createNewList()" class="list-button">+ New To-Do List</button>
       <button class="control-small" onclick="resetCompletedTasks()">Reset Tasks</button>
       <button class="control-small" onclick="openBackgroundPicker()">Change background</button>
+      <button class="control-small" onclick="spinTaskWheel()">🎡 Random Task</button>
     </div>
   `;
   
@@ -1468,6 +1484,64 @@ function resetCompletedTasks(){
   saveAllLists();
   renderLists();
   renderPlanner();
+}
+
+/* ========== TASK WHEEL ========== */
+function spinTaskWheel(){
+  // Gather all unfinished tasks from all lists
+  const unfinishedTasks = [];
+  allLists.forEach((list, listIndex) => {
+    list.tasks.forEach((task, taskIndex) => {
+      if (!task.done) {
+        unfinishedTasks.push({
+          text: task.text,
+          listName: list.name,
+          listIndex,
+          taskIndex
+        });
+      }
+    });
+  });
+  
+  if (unfinishedTasks.length === 0) {
+    $('wheelEmoji').textContent = '🎉';
+    $('wheelResult').textContent = 'No unfinished tasks! You\'re all done!';
+    $('wheelListName').textContent = '';
+    $('taskWheelOverlay').classList.remove('hidden');
+    $('taskWheelPopup').classList.remove('hidden');
+    return;
+  }
+  
+  // Show the popup
+  $('taskWheelOverlay').classList.remove('hidden');
+  $('taskWheelPopup').classList.remove('hidden');
+  $('wheelResult').textContent = 'Spinning...';
+  $('wheelListName').textContent = '';
+  
+  // Animate the wheel emoji
+  const wheelEmoji = $('wheelEmoji');
+  wheelEmoji.textContent = '🎡';
+  wheelEmoji.classList.remove('wheel-spinning');
+  void wheelEmoji.offsetWidth; // Force reflow
+  wheelEmoji.classList.add('wheel-spinning');
+  
+  // After spin animation, show random task
+  setTimeout(() => {
+    const randomTask = unfinishedTasks[Math.floor(Math.random() * unfinishedTasks.length)];
+    wheelEmoji.classList.remove('wheel-spinning');
+    wheelEmoji.textContent = '🎯';
+    $('wheelResult').textContent = randomTask.text;
+    $('wheelListName').textContent = `From: ${randomTask.listName}`;
+    
+    // Switch to that list
+    activeListIndex = randomTask.listIndex;
+    renderLists();
+  }, 2000);
+}
+
+function closeTaskWheel(){
+  $('taskWheelOverlay').classList.add('hidden');
+  $('taskWheelPopup').classList.add('hidden');
 }
 
 /* ========== PLANNER ========== */
@@ -2030,4 +2104,3 @@ window.addEventListener('DOMContentLoaded', initPage);
 </script>
 </body>
 </html>
-
