@@ -797,6 +797,51 @@ function showCompletionPopup(){
   }, 1500);
 }
 
+function getDifficultyEmoji(difficulty){
+  switch(difficulty){
+    case 'insane': return '🤯';
+    case 'hard': return '😤';
+    case 'medium': return '😐';
+    case 'easy': return '🙂';
+    case 'really-easy': return '😌';
+    default: return '😐';
+  }
+}
+
+function showConfetti(count){
+  const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6bcb', '#9b59b6', '#f39c12'];
+  const container = document.body;
+  
+  for (let i = 0; i < count; i++){
+    const confetti = document.createElement('div');
+    confetti.style.cssText = `
+      position: fixed;
+      width: ${Math.random() * 10 + 5}px;
+      height: ${Math.random() * 10 + 5}px;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      left: ${Math.random() * 100}vw;
+      top: -20px;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 1;
+    `;
+    container.appendChild(confetti);
+    
+    const fallDuration = Math.random() * 2 + 2;
+    const swayAmount = Math.random() * 100 - 50;
+    const rotation = Math.random() * 720;
+    
+    confetti.animate([
+      { transform: 'translateY(0) translateX(0) rotate(0deg)', opacity: 1 },
+      { transform: `translateY(100vh) translateX(${swayAmount}px) rotate(${rotation}deg)`, opacity: 0 }
+    ], {
+      duration: fallDuration * 1000,
+      easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+    }).onfinish = () => confetti.remove();
+  }
+}
+
 function getPetData(){
   if (!currentUser) return null;
   const users = getUsers();
@@ -1922,6 +1967,13 @@ function renderActiveList(){
     <h2 style="margin-bottom:6px">${escapeHtml(list.name)}</h2>
     <div style="margin-bottom:8px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
       <input type="text" id="newTask_${index}" placeholder="Add a task..." style="flex:1; min-width:150px;">
+      <select id="newTaskDifficulty_${index}" title="How hard is this task?" style="padding:8px; border-radius:6px;">
+        <option value="really-easy">😌 Really Easy</option>
+        <option value="easy">🙂 Easy</option>
+        <option value="medium" selected>😐 Medium</option>
+        <option value="hard">😤 Hard</option>
+        <option value="insane">🤯 INSANE</option>
+      </select>
       <input type="number" id="newTaskEstimate_${index}" placeholder="Est. min" min="1" max="999" style="width:80px;" title="Estimated minutes">
       <input type="date" id="newTaskDate_${index}">
       <button onclick="addTask(${index})">Add</button>
@@ -1941,10 +1993,13 @@ function renderActiveList(){
     
     const dateLabel = task.dueDate ? `<span style="font-size:11px; opacity:0.8; margin-right:6px;">📅 ${task.dueDate}</span>` : '';
     const estimateLabel = task.estimateMinutes ? `<span class="task-estimate">Est: ${task.estimateMinutes}m</span>` : '';
+    const difficultyEmoji = getDifficultyEmoji(task.difficulty);
+    const difficultyLabel = `<span style="font-size:14px; margin-right:4px;" title="${task.difficulty || 'medium'}">${difficultyEmoji}</span>`;
     
     li.innerHTML = `
       <div class="task-row">
         <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${tIdx})" style="margin:0;">
+        ${difficultyLabel}
         <input type="text" value="${escapeHtml(task.text)}" onchange="editTask(${tIdx}, this.value)" 
                style="text-decoration: ${task.done ? 'line-through' : 'none'}; flex:1; min-width:100px;">
         ${dateLabel}
@@ -1991,23 +2046,27 @@ function addTask(listIndex){
   const input = $('newTask_' + listIndex);
   const dateInput = $('newTaskDate_' + listIndex);
   const estimateInput = $('newTaskEstimate_' + listIndex);
+  const difficultyInput = $('newTaskDifficulty_' + listIndex);
   const text = input.value.trim();
   const dueDate = dateInput ? dateInput.value : '';
   const estimateMinutes = estimateInput ? parseInt(estimateInput.value) || 0 : 0;
+  const difficulty = difficultyInput ? difficultyInput.value : 'medium';
 
-  if (!text) return alert("Please enter a task!");
+  if (!text) return;
 
   allLists[listIndex].tasks.push({ 
     text, 
     done: false, 
     dueDate: dueDate || undefined, 
     timeSpent: 0,
-    estimateMinutes: estimateMinutes || undefined
+    estimateMinutes: estimateMinutes || undefined,
+    difficulty: difficulty
   });
 
   input.value = "";
   if(dateInput) dateInput.value = "";
   if(estimateInput) estimateInput.value = "";
+  if(difficultyInput) difficultyInput.value = "medium";
 
   saveAllLists();
   renderLists();
@@ -2019,13 +2078,22 @@ function toggleTask(taskIndex){
   const wasNotDone = !task.done;
   task.done = !task.done;
   
-  // If completing a task, stop its timer, update pet, and show popup
+  // If completing a task, stop its timer, update pet, and show popup with confetti
   if (task.done && wasNotDone) {
     if (activeTaskTimer && activeTaskTimer.listIndex === activeListIndex && activeTaskTimer.taskIndex === taskIndex) {
       stopTaskTimer();
     }
     incrementTasksToday();
     showCompletionPopup();
+    
+    // Show confetti based on difficulty
+    const difficulty = task.difficulty || 'medium';
+    if (difficulty === 'insane' || difficulty === 'hard') {
+      showConfetti(100); // Full confetti
+    } else if (difficulty === 'medium') {
+      showConfetti(40); // Less confetti
+    }
+    // Easy and really-easy: no confetti, just the message
   }
   
   saveAllLists(); 
