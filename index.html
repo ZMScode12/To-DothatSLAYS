@@ -1083,7 +1083,7 @@ function incrementTasksToday(){
   
   savePetData(pet);
   renderPet();
-  petGainXP(25);
+  petGainXP(10);
 }
 
 function petDecay(){
@@ -1727,6 +1727,30 @@ function renderPlanner(){
   if (!currentUser) return;
 
   grid.innerHTML = '';
+  
+  // Skip weekly grid rendering if monthly view is active
+  if (plannerView === 'monthly') {
+    // Just gather tasks and render monthly
+    const allTasksWithDates = [];
+    allLists.forEach((list, listIndex) => {
+      list.tasks.forEach((task, taskIndex) => {
+        if (task.dueDate) {
+          allTasksWithDates.push({
+            text: task.text,
+            dueDate: task.dueDate,
+            done: task.done,
+            color: task.color,
+            listIndex,
+            taskIndex,
+            listName: list.name
+          });
+        }
+      });
+    });
+    renderMonthlyPlanner(allTasksWithDates);
+    renderPalette(paletteRow);
+    return;
+  }
 
   const today = new Date();
   const startOfWeek = new Date(today);
@@ -1822,6 +1846,14 @@ function renderPlanner(){
   }
 
   // Render palette
+  renderPalette(paletteRow);
+}
+
+function renderPalette(paletteRow){
+  const users = getUsers();
+  const user = users[currentUser] || { palette: [] };
+  const palette = user.palette || [];
+  
   paletteRow.innerHTML = '';
   if (palette.length === 0) {
     paletteRow.innerHTML = '<span style="font-size:11px; opacity:0.6;">No colors saved</span>';
@@ -1847,11 +1879,6 @@ function renderPlanner(){
       container.appendChild(labelEl);
       paletteRow.appendChild(container);
     });
-  }
-  
-  // Render monthly view if selected
-  if (plannerView === 'monthly') {
-    renderMonthlyPlanner(allTasksWithDates);
   }
 }
 
