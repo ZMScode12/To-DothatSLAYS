@@ -112,6 +112,26 @@
     .task-pill { display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius: 8px; color: #071019; font-size:13px; justify-content:space-between; }
     .task-label { flex:1; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:6px; }
 
+    /* ===== MONTHLY CALENDAR ===== */
+    #monthlyGrid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      padding: 8px;
+    }
+    .month-day-header { font-weight: 700; font-size: 11px; text-align: center; padding: 4px; opacity: 0.8; }
+    .month-day {
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      min-height: 60px;
+      padding: 4px;
+      font-size: 10px;
+    }
+    .month-day.other-month { opacity: 0.4; }
+    .month-day.today { border: 2px solid #1DB954; }
+    .month-day-num { font-weight: 700; font-size: 11px; margin-bottom: 2px; }
+    .month-task { background: rgba(255,255,255,0.2); border-radius: 3px; padding: 2px 4px; margin-top: 2px; font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
     #palette { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
     .palette-row { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
     .swatch { width:34px; height:34px; border-radius:6px; border:2px solid rgba(255,255,255,0.18); cursor:pointer; display:inline-block; box-shadow:0 4px 10px rgba(0,0,0,0.18); }
@@ -374,9 +394,14 @@
       </div>
       <div id="plannerBody" class="panel-body">
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <div style="margin-left:auto; font-size:13px; opacity:0.9">Week: Sunday → Saturday</div>
+          <select id="plannerViewSelect" onchange="switchPlannerView(this.value)" style="padding:6px; border-radius:6px;">
+            <option value="weekly">📅 Weekly View</option>
+            <option value="monthly">🗓️ Monthly View</option>
+          </select>
+          <div id="plannerViewLabel" style="margin-left:auto; font-size:13px; opacity:0.9">Week: Sunday → Saturday</div>
         </div>
         <div id="plannerGrid" style="margin-top:10px;"></div>
+        <div id="monthlyGrid" class="hidden" style="margin-top:10px;"></div>
         <div id="palette">
           <div style="font-weight:600; margin-top:8px;">Palette (saved colors)</div>
           <div class="palette-row" id="paletteRow"></div>
@@ -654,7 +679,80 @@ const quotes = [
   { text: "Less talk, more action.", author: "Unknown" },
   { text: "Dream big, start small, but most of all, start.", author: "Simon Sinek" },
   { text: "There is no substitute for hard work.", author: "Thomas Edison" },
-  { text: "If opportunity doesn't knock, build a door.", author: "Milton Berle" }
+  { text: "If opportunity doesn't knock, build a door.", author: "Milton Berle" },
+  { text: "Ordinary people think merely of spending time; great people think of using it.", author: "Arthur Schopenhauer" },
+  { text: "Being relaxed, at peace with yourself, confident, emotionally neutral, loose, and free-floating – these are the keys to successful performance in almost everything.", author: "Dr. Wayne W. Dyer" },
+  { text: "It is not the strongest of the species that survive, nor the most intelligent, but the one most responsive to change.", author: "Charles Darwin" },
+  { text: "Success is almost totally dependent upon drive and persistence. The extra energy required to make another effort or try another approach is the secret of winning.", author: "Denis Waitley" },
+  { text: "Nothing can stop the man with the right mental attitude from achieving his goal; nothing on earth can help the man with the wrong mental attitude.", author: "Thomas Jefferson" },
+  { text: "What we think determines what happens to us, so if we want to change our lives, we need to stretch our minds.", author: "Wayne Dyer" },
+  { text: "The world can only be grasped by action, not by contemplation. The hand is more important than the eye. The hand is the cutting edge of the mind.", author: "J. Bronowski" },
+  { text: "It does not take much strength to do things, but it requires a great deal of strength to decide what to do.", author: "Elbert Hubbard" },
+  { text: "The secret of getting ahead is getting started. The secret of getting started is breaking your complex overwhelming tasks into small, manageable tasks, and then starting on the first one.", author: "Mark Twain" },
+  { text: "You've got to think about the big things while you're doing small things, so that all the small things go in the right direction.", author: "Alvin Toffler" },
+  { text: "Every now and then go away, have a little relaxation, for when you come back to your work your judgment will be surer.", author: "Leonardo da Vinci" },
+  { text: "Start by doing what's necessary, then what's possible, and suddenly you are doing the impossible.", author: "Saint Francis of Assisi" },
+  { text: "I have always thought that one man of tolerable abilities may work great changes, and accomplish great affairs among mankind.", author: "Benjamin Franklin" },
+  { text: "Enter every activity without giving mental recognition to the possibility of defeat. Concentrate on your strengths, instead of your weaknesses.", author: "Paul J. Meyer" },
+  { text: "In the world of business, the people who are most successful are those who are doing what they love.", author: "Warren Buffett" },
+  { text: "Success is often achieved by those who don't know that failure is inevitable.", author: "Coco Chanel" },
+  { text: "My goal is no longer to get more done, but rather to have less to do.", author: "Francine Jay" },
+  { text: "If you don't like how things are, change it! You're not a tree.", author: "Jim Rohn" },
+  { text: "We must accept finite disappointment, but never lose infinite hope.", author: "Martin Luther King, Jr." },
+  { text: "Surround yourself only with people who are going to take you higher.", author: "Oprah Winfrey" },
+  { text: "Inspiration exists, but it has to find you working.", author: "Pablo Picasso" },
+  { text: "How dare you settle for less when the world has made it so easy for you to be remarkable?", author: "Seth Godin" },
+  { text: "One, remember to look up at the stars and not down at your feet. Two, never give up work. Work gives you meaning and purpose, and life is empty without it.", author: "Stephen Hawking" },
+  { text: "When one door closes, another door opens; but we so often look so long and so regretfully upon the closed door that we do not see the ones which open for us.", author: "Alexander Graham Bell" },
+  { text: "Consider everything an experiment.", author: "Corita Kent" },
+  { text: "Conformity is the jailer of freedom and the enemy of growth.", author: "John F. Kennedy" },
+  { text: "Keep your eyes on the stars and your feet on the ground.", author: "Theodore Roosevelt" },
+  { text: "The potential of controlling and living a successful life according to your terms depends on how you think. Your perception is your world.", author: "Dee Dee Artner" },
+  { text: "When obstacles arise, you change your direction to reach your goal; you do not change your decision to get there.", author: "Zig Ziglar" },
+  { text: "Efficiency is doing better what is already being done.", author: "Peter Drucker" },
+  { text: "There's a way to do it better. Find it!", author: "Thomas Edison" },
+  { text: "If the ladder is not leaning against the right wall, every step we take just gets us to the wrong place faster.", author: "Stephen Covey" },
+  { text: "Time is the scarcest resource, and unless it is managed, nothing else can be managed.", author: "Peter Drucker" },
+  { text: "There is nothing so useless as doing efficiently that which should not be done at all.", author: "Peter Drucker" },
+  { text: "Progress isn't made by early risers. It's made by lazy men trying to find easier ways to do something.", author: "Robert A. Heinlein" },
+  { text: "You cannot increase the quality or quantity of your achievement or performance except to the degree in which you increase your ability to use your time effectively.", author: "Brian Tracy" },
+  { text: "It's not enough to be busy; so are the ants. The question is, what are we busy about?", author: "Henry David Thoreau" },
+  { text: "Efficiency is intelligent laziness.", author: "David Dunham" },
+  { text: "If I had six hours to chop down a tree, I'd spend the first four hours sharpening the axe.", author: "Abraham Lincoln" },
+  { text: "A sense of the value of time – that is, of the best way to divide one's time into one's various activities – is an essential preliminary to efficient work.", author: "Arnold Bennett" },
+  { text: "Obviously, the highest type of efficiency is that which can utilize existing material to the best advantage.", author: "Jawaharlal Nehru" },
+  { text: "Besides the noble art of getting things done, there is the noble art of leaving things undone. The wisdom of life consists in the elimination of non-essentials.", author: "Lin Yutang" },
+  { text: "By concentrating our efforts upon a few major goals, our efficiency soars, our projects are completed, we are going somewhere.", author: "Michael Korda" },
+  { text: "The combination of hard work and smart work is efficient work.", author: "Robert Half" },
+  { text: "Efficiency is doing things – not wishing you could do them, dreaming about them, or wondering if you can do them.", author: "Frank Crane" },
+  { text: "Don't lower your expectations to meet your performance. Raise your level of performance to meet your expectations.", author: "Ralph Marston" },
+  { text: "Quality means doing it right when no one is looking.", author: "Henry Ford" },
+  { text: "Be a yardstick of quality. Some people aren't used to an environment where excellence is expected.", author: "Steve Jobs" },
+  { text: "The starting point of all achievement is desire.", author: "Napoleon Hill" },
+  { text: "Without changing our patterns of thought, we will not be able to solve the problems that we created with our current patterns of thought.", author: "Albert Einstein" },
+  { text: "Quality is not an act; it is a habit.", author: "Aristotle" },
+  { text: "Quality is never an accident. It is always the result of intelligent effort.", author: "John Ruskin" },
+  { text: "Quality is more important than quantity. One home run is much better than two doubles.", author: "Steve Jobs" },
+  { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+  { text: "Simplicity boils down to two steps: Identify the essential. Eliminate the rest.", author: "Leo Babauta" },
+  { text: "Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work.", author: "Steve Jobs" },
+  { text: "It's not that I'm so smart; it's just that I stay with problems longer.", author: "Albert Einstein" },
+  { text: "The only thing to do with good advice is to pass it on. It is never of any use to oneself.", author: "Oscar Wilde" },
+  { text: "Why do anything unless it is going to be great?", author: "Peter Block" },
+  { text: "Simple, clear purpose and principles give rise to complex and intelligent behavior.", author: "Dee Hock" },
+  { text: "Quality needs to be constantly improved, but it is just as necessary to make sure that quality never deteriorates.", author: "Shigeru Mizuno" },
+  { text: "Productivity is being able to do things that you were never able to do before.", author: "Franz Kafka" },
+  { text: "If there are nine rabbits on the ground, if you want to catch one, just focus on one.", author: "Jack Ma" },
+  { text: "Sometimes, things may not go your way, but the effort should be there every single night.", author: "Michael Jordan" },
+  { text: "If you spend too much time thinking about a thing, you'll never get it done.", author: "Bruce Lee" },
+  { text: "He who is not courageous enough to take risks will accomplish nothing in life.", author: "Muhammad Ali" },
+  { text: "Setting goals is the first step in turning the invisible into the visible.", author: "Tony Robbins" },
+  { text: "Productivity is never an accident. It is always the result of a commitment to excellence, intelligent planning, and focused effort.", author: "Paul J. Meyer" },
+  { text: "Don't say, 'If I could, I would.' Say, 'If I can, I will.'", author: "Jim Rohn" },
+  { text: "Your 'I CAN' is more important than your IQ.", author: "Robin Sharma" },
+  { text: "The best way out is always through.", author: "Robert Frost" },
+  { text: "There are risks and costs to action. But they are far less than the long-range risks of comfortable inaction.", author: "John F. Kennedy" },
+  { text: "He can who thinks he can, and he can't who thinks he can't. This is an inexorable, indisputable law.", author: "Pablo Picasso" }
 ];
 
 function showNewQuote(){
@@ -1180,9 +1278,10 @@ function playChime(){
 
 /* ========== TASK TIME TRACKING ========== */
 function formatTime(seconds){
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  const mins = Math.floor(Math.abs(seconds) / 60);
+  const secs = Math.abs(seconds) % 60;
+  const prefix = seconds < 0 ? '-' : '';
+  return `${prefix}${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
 }
 
 function startTaskTimer(listIndex, taskIndex){
@@ -1201,7 +1300,7 @@ function startTaskTimer(listIndex, taskIndex){
     savePetData(pet);
   }
   
-  // Start counting up from 0 (or continue from timeSpent)
+  // Start countdown timer
   activeTaskTimer = {
     listIndex,
     taskIndex,
@@ -1232,6 +1331,12 @@ function stopTaskTimer(save = true){
 function getActiveTaskTime(){
   if (!activeTaskTimer) return 0;
   return Math.floor((Date.now() - activeTaskTimer.startTime) / 1000);
+}
+
+function getRemainingTime(task){
+  const estimateSecs = (task.estimateMinutes || 0) * 60;
+  const spent = task.timeSpent || 0;
+  return estimateSecs - spent;
 }
 
 /* ========== QUICK LINKS MODAL ========== */
@@ -1590,6 +1695,24 @@ function closeTaskWheel(){
 }
 
 /* ========== PLANNER ========== */
+let plannerView = 'weekly';
+
+function switchPlannerView(view){
+  plannerView = view;
+  if (view === 'weekly') {
+    $('plannerGrid').classList.remove('hidden');
+    $('monthlyGrid').classList.add('hidden');
+    $('plannerViewLabel').textContent = 'Week: Sunday → Saturday';
+  } else {
+    $('plannerGrid').classList.add('hidden');
+    $('monthlyGrid').classList.remove('hidden');
+    const now = new Date();
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    $('plannerViewLabel').textContent = `${months[now.getMonth()]} ${now.getFullYear()}`;
+  }
+  renderPlanner();
+}
+
 function formatDate(d) {
   const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -1724,6 +1847,98 @@ function renderPlanner(){
       container.appendChild(labelEl);
       paletteRow.appendChild(container);
     });
+  }
+  
+  // Render monthly view if selected
+  if (plannerView === 'monthly') {
+    renderMonthlyPlanner(allTasksWithDates);
+  }
+}
+
+function renderMonthlyPlanner(allTasksWithDates){
+  const monthlyGrid = $('monthlyGrid');
+  if (!monthlyGrid) return;
+  monthlyGrid.innerHTML = '';
+  
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+  
+  // Day headers
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  dayNames.forEach(name => {
+    const header = document.createElement('div');
+    header.className = 'month-day-header';
+    header.textContent = name;
+    monthlyGrid.appendChild(header);
+  });
+  
+  // First day of month
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const lastDay = new Date(currentYear, currentMonth + 1, 0);
+  const startPadding = firstDay.getDay();
+  
+  // Previous month padding
+  const prevMonth = new Date(currentYear, currentMonth, 0);
+  for (let i = startPadding - 1; i >= 0; i--) {
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'month-day other-month';
+    const dayNum = document.createElement('div');
+    dayNum.className = 'month-day-num';
+    dayNum.textContent = prevMonth.getDate() - i;
+    dayDiv.appendChild(dayNum);
+    monthlyGrid.appendChild(dayDiv);
+  }
+  
+  // Current month days
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'month-day';
+    if (d === today.getDate() && currentMonth === today.getMonth()) {
+      dayDiv.classList.add('today');
+    }
+    
+    const dayNum = document.createElement('div');
+    dayNum.className = 'month-day-num';
+    dayNum.textContent = d;
+    dayDiv.appendChild(dayNum);
+    
+    // Find tasks for this day
+    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayTasks = allTasksWithDates.filter(t => t.dueDate === dateStr);
+    
+    dayTasks.slice(0, 3).forEach(task => {
+      const taskDiv = document.createElement('div');
+      taskDiv.className = 'month-task';
+      taskDiv.style.background = task.color || (task.done ? '#6bcb77' : '#ffd166');
+      taskDiv.style.color = readableTextColor(task.color || '#ffd166');
+      taskDiv.textContent = task.text;
+      taskDiv.title = task.text;
+      if (task.done) taskDiv.style.opacity = '0.6';
+      dayDiv.appendChild(taskDiv);
+    });
+    
+    if (dayTasks.length > 3) {
+      const more = document.createElement('div');
+      more.style.fontSize = '9px';
+      more.style.opacity = '0.7';
+      more.textContent = `+${dayTasks.length - 3} more`;
+      dayDiv.appendChild(more);
+    }
+    
+    monthlyGrid.appendChild(dayDiv);
+  }
+  
+  // Next month padding
+  const endPadding = 6 - lastDay.getDay();
+  for (let i = 1; i <= endPadding; i++) {
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'month-day other-month';
+    const dayNum = document.createElement('div');
+    dayNum.className = 'month-day-num';
+    dayNum.textContent = i;
+    dayDiv.appendChild(dayNum);
+    monthlyGrid.appendChild(dayDiv);
   }
 }
 
@@ -1902,6 +2117,8 @@ function saveTaskFromDialog(){
 }
 
 /* ========== LISTS ========== */
+let currentSortOrder = 'default';
+
 function saveAllLists(){
   if (!currentUser) return;
   const users = getUsers();
@@ -1909,6 +2126,60 @@ function saveAllLists(){
     users[currentUser].lists = allLists;
     saveUsers(users);
   }
+}
+
+function getDifficultyValue(difficulty){
+  switch(difficulty){
+    case 'really-easy': return 1;
+    case 'easy': return 2;
+    case 'medium': return 3;
+    case 'hard': return 4;
+    case 'insane': return 5;
+    default: return 3;
+  }
+}
+
+function getSortedTasks(tasks){
+  // Create array with original indices
+  const tasksWithIndex = tasks.map((task, index) => ({ task, originalIndex: index }));
+  
+  switch(currentSortOrder){
+    case 'oldest':
+      // Reverse order (oldest first since newest is default)
+      return tasksWithIndex.reverse();
+    case 'due-date':
+      return tasksWithIndex.sort((a, b) => {
+        const dateA = a.task.dueDate || '9999-99-99';
+        const dateB = b.task.dueDate || '9999-99-99';
+        if (dateA === dateB) {
+          // Secondary sort: shortest tasks first
+          return (a.task.estimateMinutes || 999) - (b.task.estimateMinutes || 999);
+        }
+        return dateA.localeCompare(dateB);
+      });
+    case 'shortest':
+      return tasksWithIndex.sort((a, b) => {
+        return (a.task.estimateMinutes || 999) - (b.task.estimateMinutes || 999);
+      });
+    case 'easiest':
+      return tasksWithIndex.sort((a, b) => {
+        return getDifficultyValue(a.task.difficulty) - getDifficultyValue(b.task.difficulty);
+      });
+    case 'hardest':
+      return tasksWithIndex.sort((a, b) => {
+        return getDifficultyValue(b.task.difficulty) - getDifficultyValue(a.task.difficulty);
+      });
+    default:
+      return tasksWithIndex;
+  }
+}
+
+function sortTasks(sortOrder){
+  currentSortOrder = sortOrder;
+  renderActiveList();
+  // Re-set the dropdown value since renderActiveList rebuilds it
+  const select = $('taskSortSelect');
+  if (select) select.value = sortOrder;
 }
 
 function loadAllLists(){
@@ -1962,6 +2233,12 @@ function renderActiveList(){
   
   const index = activeListIndex;
   const list = allLists[index];
+  
+  if (!list) {
+    activeListIndex = 0;
+    return renderActiveList();
+  }
+  
   const listDiv = document.createElement('div');
   listDiv.innerHTML = `
     <h2 style="margin-bottom:6px">${escapeHtml(list.name)}</h2>
@@ -1978,23 +2255,47 @@ function renderActiveList(){
       <input type="date" id="newTaskDate_${index}">
       <button onclick="addTask(${index})">Add</button>
     </div>
+    <div style="margin-bottom:8px; display:flex; gap:6px; align-items:center;">
+      <span style="font-size:12px; opacity:0.8;">Sort by:</span>
+      <select id="taskSortSelect" onchange="sortTasks(this.value)" style="padding:6px; border-radius:6px; font-size:12px;">
+        <option value="default">Default (Newest First)</option>
+        <option value="oldest">Oldest First</option>
+        <option value="due-date">Due Date</option>
+        <option value="shortest">Shortest Tasks</option>
+        <option value="easiest">Easiest First</option>
+        <option value="hardest">Hardest First</option>
+      </select>
+    </div>
     <ul id="list_${index}"></ul>
   `;
   container.appendChild(listDiv);
   
   const ul = $('list_' + index);
   
-  list.tasks.forEach((task, tIdx) => {
+  // Get sorted tasks with original indices
+  const sortedTasks = getSortedTasks(list.tasks);
+  
+  sortedTasks.forEach(({ task, originalIndex }) => {
+    const tIdx = originalIndex;
     const li = document.createElement('li');
     
     const isTimerActive = activeTaskTimer && activeTaskTimer.listIndex === index && activeTaskTimer.taskIndex === tIdx;
-    const currentTime = isTimerActive ? (task.timeSpent || 0) + getActiveTaskTime() : (task.timeSpent || 0);
+    const activeElapsed = isTimerActive ? getActiveTaskTime() : 0;
+    const totalSpent = (task.timeSpent || 0) + activeElapsed;
     const estimateSecs = (task.estimateMinutes || 0) * 60;
     
+    // Calculate remaining time (countdown)
+    const remainingTime = estimateSecs - totalSpent;
+    const timerColor = remainingTime < 0 ? '#ff6b6b' : (remainingTime < 60 ? '#ffd93d' : 'inherit');
+    
     const dateLabel = task.dueDate ? `<span style="font-size:11px; opacity:0.8; margin-right:6px;">📅 ${task.dueDate}</span>` : '';
-    const estimateLabel = task.estimateMinutes ? `<span class="task-estimate">Est: ${task.estimateMinutes}m</span>` : '';
     const difficultyEmoji = getDifficultyEmoji(task.difficulty);
     const difficultyLabel = `<span style="font-size:14px; margin-right:4px;" title="${task.difficulty || 'medium'}">${difficultyEmoji}</span>`;
+    
+    // Show countdown if estimate exists, otherwise show time spent
+    const timeDisplay = task.estimateMinutes 
+      ? `<span class="task-time-display" style="color:${timerColor}">${formatTime(remainingTime)}</span>`
+      : `<span class="task-time-display">${formatTime(totalSpent)}</span>`;
     
     li.innerHTML = `
       <div class="task-row">
@@ -2004,8 +2305,7 @@ function renderActiveList(){
                style="text-decoration: ${task.done ? 'line-through' : 'none'}; flex:1; min-width:100px;">
         ${dateLabel}
         <div class="task-timer-section">
-          <span class="task-time-display">${formatTime(currentTime)}</span>
-          ${estimateLabel}
+          ${timeDisplay}
           ${isTimerActive 
             ? `<button class="task-start-btn running" onclick="stopTaskTimer()">⏹ Stop</button>`
             : `<button class="task-start-btn" onclick="startTaskTimer(${index}, ${tIdx})">▶ Start</button>`
