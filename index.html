@@ -545,11 +545,106 @@
   </div>
 
 <script>
+/* ========== SUPABASE CONFIG ========== */
+const SUPABASE_URL = 'https://caafadtwoeayphbtkxmq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYWZhZHR3b2VheXBoYnRreG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NjQwMDEsImV4cCI6MjA4MzA0MDAwMX0.Uqn_SLdlKA1Scp6yTqP1yZd1G6KpKD6CTL8hukzUzHk';
+
+const supabaseClient = {
+  async fetch(endpoint, options = {}) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+      ...options,
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': options.prefer || 'return=representation',
+        ...options.headers
+      }
+    });
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error);
+    }
+    return response.json();
+  }
+};
+
+async function saveToCloud(username, data) {
+  try {
+    const existing = await supabaseClient.fetch(`users?username=eq.${encodeURIComponent(username)}&select=id`);
+    
+    if (existing.length > 0) {
+      await supabaseClient.fetch(`users?username=eq.${encodeURIComponent(username)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ data: data, updated_at: new Date().toISOString() })
+      });
+    }
+    console.log('✅ Saved to cloud');
+  } catch (err) {
+    console.error('Cloud save failed:', err);
+  }
+}
+
+async function loadFromCloud(username) {
+  try {
+    const result = await supabaseClient.fetch(`users?username=eq.${encodeURIComponent(username)}&select=data`);
+    if (result.length > 0) {
+      console.log('✅ Loaded from cloud');
+      return result[0].data;
+    }
+  } catch (err) {
+    console.error('Cloud load failed:', err);
+  }
+  return null;
+}
+
+async function cloudLogin(username, password) {
+  try {
+    const result = await supabaseClient.fetch(
+      `users?username=eq.${encodeURIComponent(username)}&password=eq.${encodeURIComponent(password)}&select=*`
+    );
+    if (result.length > 0) {
+      return result[0];
+    }
+  } catch (err) {
+    console.error('Cloud login failed:', err);
+  }
+  return null;
+}
+
+async function cloudSignup(username, password, userData) {
+  try {
+    const existing = await supabaseClient.fetch(`users?username=eq.${encodeURIComponent(username)}&select=id`);
+    if (existing.length > 0) {
+      return { error: 'Username already exists' };
+    }
+    
+    const result = await supabaseClient.fetch('users', {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        password,
+        data: userData
+      })
+    });
+    return result[0];
+  } catch (err) {
+    console.error('Cloud signup failed:', err);
+    return { error: err.message };
+  }
+}
+
 /* ========== UTILITIES ========== */
 function $(id){return document.getElementById(id);}
 function escapeHtml(str){ return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function getUsers(){ return JSON.parse(localStorage.getItem('users') || '{}'); }
-function saveUsers(u){ localStorage.setItem('users', JSON.stringify(u)); }
+function saveUsers(u){ 
+  localStorage.setItem('users', JSON.stringify(u)); 
+  // Sync to cloud if logged in
+  if (currentUser && u[currentUser]) {
+    saveToCloud(currentUser, u[currentUser]);
+  }
+}
 
 let currentUser = localStorage.getItem('currentUser') || null;
 let currentUserName = null;
@@ -1422,23 +1517,12 @@ function checkTopPanelsVisibility(){
 }
 
 /* ========== ACCOUNTS ========== */
-function createAccount(){
+async function createAccount(){
   const user = $('username').value.trim();
   const pass = $('password').value.trim();
   if (!user || !pass) { alert('Please fill both username and password'); return; }
   
-  const usersRaw = localStorage.getItem('users');
-  const users = usersRaw ? JSON.parse(usersRaw) : {};
-  
-  const existingUsernames = Object.keys(users);
-  for (let i = 0; i < existingUsernames.length; i++) {
-    if (existingUsernames[i] === user) {
-      alert('Username is in use, please choose another one');
-      return;
-    }
-  }
-  
-  users[user] = {
+  const userData = {
     username: user,
     password: pass,
     lists: [{ name: 'My First List', tasks: [] }],
@@ -1446,6 +1530,7 @@ function createAccount(){
     quickLinks: [],
     planner: [],
     palette: [],
+    journal: '',
     pet: { 
       name: 'Pixel', 
       emoji: '🐱', 
@@ -1458,6 +1543,17 @@ function createAccount(){
       lastTaskDate: getTodayStr()
     }
   };
+  
+  // Try cloud signup first
+  const cloudResult = await cloudSignup(user, pass, userData);
+  if (cloudResult.error) {
+    alert(cloudResult.error);
+    return;
+  }
+  
+  // Save locally too
+  const users = getUsers();
+  users[user] = userData;
   localStorage.setItem('users', JSON.stringify(users));
   localStorage.setItem('currentUser', user);
   currentUser = user; 
@@ -1475,11 +1571,38 @@ function createAccount(){
 function showLogin(){ $('signup').classList.add('hidden'); $('login').classList.remove('hidden'); }
 function showSignup(){ $('login').classList.add('hidden'); $('signup').classList.remove('hidden'); }
 
-function login(){
+async function login(){
   const userInput = $('loginUsername').value.trim();
   const pass = $('loginPassword').value.trim();
-  const users = getUsers();
   
+  // Try cloud login first
+  const cloudUser = await cloudLogin(userInput, pass);
+  
+  if (cloudUser) {
+    // Sync cloud data to local
+    const users = getUsers();
+    users[userInput] = cloudUser.data;
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    localStorage.setItem('currentUser', userInput);
+    currentUser = userInput; 
+    currentUserName = cloudUser.data.username || userInput;
+    loadAllLists();
+    showTodo();
+    renderLists();
+    renderQuickLinks();
+    renderPlanner();
+    renderPet();
+    updatePetHappinessFromTasks();
+    checkTopPanelsVisibility();
+    startPetDecay();
+    showNewQuote();
+    console.log('✅ Logged in from cloud');
+    return;
+  }
+  
+  // Fall back to local login
+  const users = getUsers();
   if (!users[userInput] || users[userInput].password !== pass) { 
     alert('Invalid username or password'); 
     return; 
@@ -1711,6 +1834,13 @@ function switchPlannerView(view){
     $('plannerViewLabel').textContent = `${months[now.getMonth()]} ${now.getFullYear()}`;
   }
   renderPlanner();
+  
+  // Force panel body to recalculate height
+  const plannerBody = $('plannerBody');
+  if (plannerBody) {
+    plannerBody.style.maxHeight = 'none';
+    plannerBody.style.maxHeight = plannerBody.scrollHeight + 'px';
+  }
 }
 
 function formatDate(d) {
