@@ -656,11 +656,23 @@ async function cloudSignup(username, password, userData) {
 function $(id){return document.getElementById(id);}
 function escapeHtml(str){ return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function getUsers(){ return JSON.parse(localStorage.getItem('users') || '{}'); }
+
+// Debounce cloud sync - waits 2 seconds after last change
+let cloudSyncTimeout = null;
+function debouncedCloudSync(username, data) {
+  if (cloudSyncTimeout) {
+    clearTimeout(cloudSyncTimeout);
+  }
+  cloudSyncTimeout = setTimeout(() => {
+    saveToCloud(username, data);
+  }, 2000);
+}
+
 function saveUsers(u){ 
   localStorage.setItem('users', JSON.stringify(u)); 
-  // Sync to cloud if logged in
+  // Sync to cloud if logged in (debounced)
   if (currentUser && u[currentUser]) {
-    saveToCloud(currentUser, u[currentUser]);
+    debouncedCloudSync(currentUser, u[currentUser]);
   }
 }
 
