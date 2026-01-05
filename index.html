@@ -1594,9 +1594,13 @@ async function login(){
   const pass = $('loginPassword').value.trim();
   
   // Try cloud login first
+  console.log('🔄 Attempting cloud login for:', userInput);
   const cloudUser = await cloudLogin(userInput, pass);
   
   if (cloudUser) {
+    console.log('☁️ Cloud user data:', cloudUser);
+    console.log('☁️ Cloud user lists:', cloudUser.data?.lists);
+    
     // Sync cloud data to local
     const users = getUsers();
     users[userInput] = cloudUser.data;
@@ -1605,7 +1609,13 @@ async function login(){
     localStorage.setItem('currentUser', userInput);
     currentUser = userInput; 
     currentUserName = cloudUser.data.username || userInput;
-    loadAllLists();
+    
+    // Load lists directly from cloud data
+    allLists = cloudUser.data.lists || [];
+    activeListIndex = 0;
+    
+    console.log('📋 Loaded lists:', allLists);
+    
     showTodo();
     renderLists();
     renderQuickLinks();
