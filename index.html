@@ -5,17 +5,93 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    :root { --default-moving: linear-gradient(135deg, #5b00ff, #ff0066, #00f2ff); }
+    :root { 
+      --default-moving: linear-gradient(135deg, #5b00ff, #ff0066, #00f2ff);
+      --bg-panel: rgba(0, 0, 0, 0.32);
+      --bg-panel-light: rgba(255, 255, 255, 0.85);
+      --text-color: white;
+      --text-color-light: #1a1a2e;
+    }
 
     body {
       font-family: Arial, sans-serif;
-      color: white;
+      color: var(--text-color);
       text-align: center;
       padding: 40px;
-      transition: background 0.6s ease;
+      transition: background 0.6s ease, color 0.3s ease;
       background: var(--default-moving);
       background-size: 400% 400%;
       animation: gradientMove 12s ease infinite;
+    }
+
+    body.light-mode {
+      background: #f5f7fa;
+      animation: none;
+      color: var(--text-color-light);
+    }
+
+    body.light-mode .panel {
+      background: var(--bg-panel-light);
+      color: var(--text-color-light);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    body.light-mode li {
+      background: rgba(0,0,0,0.06);
+    }
+
+    body.light-mode .tab-btn {
+      background: rgba(0,0,0,0.08);
+      color: var(--text-color-light);
+    }
+
+    body.light-mode .tab-btn.active {
+      background: #6b5bff;
+      color: white;
+    }
+
+    body.light-mode #petBox,
+    body.light-mode #quoteBox,
+    body.light-mode #timerBox {
+      background: rgba(0,0,0,0.05);
+    }
+
+    body.light-mode .swatch-label {
+      color: var(--text-color-light);
+    }
+
+    body.light-mode .month-day {
+      background: rgba(0,0,0,0.04);
+    }
+
+    body.light-mode .month-day.today {
+      border-color: #22c55e;
+    }
+
+    .dark-mode-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .dark-mode-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    body.light-mode .dark-mode-toggle {
+      background: rgba(0,0,0,0.1);
+      color: #1a1a2e;
     }
 
     @keyframes gradientMove {
@@ -138,6 +214,24 @@
     .swatch.selected { outline:3px solid rgba(255,255,255,0.12); transform:translateY(-2px); }
     .swatch-container { display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .swatch-label { color: white; font-size: 10px; max-width: 50px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .swatch-delete { 
+      position: absolute; 
+      top: -6px; 
+      right: -6px; 
+      width: 16px; 
+      height: 16px; 
+      background: #ff4444; 
+      border-radius: 50%; 
+      font-size: 12px; 
+      line-height: 16px; 
+      text-align: center; 
+      cursor: pointer; 
+      color: white; 
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .swatch-container:hover .swatch-delete { opacity: 1; }
 
     #addColorForm { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
     #addColorForm input[type="text"] { width:140px; padding:8px; border-radius:8px; }
@@ -170,10 +264,44 @@
     #petMood { font-size: 10px; margin-top: 4px; }
     #tasksToday { font-size: 9px; opacity: 0.7; margin-top: 2px; }
     #unlockedPets { font-size: 9px; opacity: 0.7; margin-top: 2px; }
+    #petHabitat { font-size: 9px; opacity: 0.7; margin-top: 2px; }
     .pet-bounce { animation: petBounce 0.5s ease; }
     @keyframes petBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     @keyframes petSad { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
     .pet-sad { animation: petSad 1s ease infinite; }
+    
+    /* Happy dance animation */
+    @keyframes petHappyDance { 
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); } 
+      10% { transform: translateY(-15px) rotate(-10deg) scale(1.1); }
+      20% { transform: translateY(0) rotate(10deg) scale(1); }
+      30% { transform: translateY(-12px) rotate(-8deg) scale(1.05); }
+      40% { transform: translateY(0) rotate(8deg) scale(1); }
+      50% { transform: translateY(-10px) rotate(-5deg) scale(1.1); }
+      60% { transform: translateY(0) rotate(5deg) scale(1); }
+      70% { transform: translateY(-8px) rotate(-3deg) scale(1.05); }
+      80% { transform: translateY(0) rotate(3deg) scale(1); }
+      90% { transform: translateY(-5px) rotate(0deg) scale(1.02); }
+    }
+    .pet-happy-dance { animation: petHappyDance 1.5s ease; }
+    
+    /* Sleeping animation */
+    @keyframes petSleep { 
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; } 
+      50% { transform: translateY(2px) scale(0.98); opacity: 0.6; } 
+    }
+    .pet-sleeping { animation: petSleep 2s ease infinite; }
+    #sleepingZzz { 
+      position: absolute; 
+      top: -8px; 
+      right: -15px; 
+      font-size: 14px; 
+      animation: zzzFloat 1.5s ease infinite;
+    }
+    @keyframes zzzFloat {
+      0%, 100% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-8px); opacity: 0.5; }
+    }
 
     /* ===== QUOTE BOX IN PANEL ===== */
     #quoteBox {
@@ -301,6 +429,9 @@
 </head>
 <body>
 
+  <!-- Dark/Light Mode Toggle -->
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">🌙</button>
+
   <!-- Sign up / Login -->
   <div id="signup">
     <h1>Sign Up 💫</h1>
@@ -344,13 +475,18 @@
         <div class="dashboard-content">
           <!-- Pet -->
           <div id="petBox">
-            <div id="petDisplay"><span id="petAccessory"></span><span id="petEmoji">🐱</span></div>
+            <div id="petDisplay">
+              <span id="petAccessory"></span>
+              <span id="petEmoji">🐱</span>
+              <span id="sleepingZzz" class="hidden">💤</span>
+            </div>
             <div id="petName">Pixel</div>
             <div id="petLevel">Level 1 • 0 XP</div>
             <div id="happinessBar"><div id="happinessFill" style="width: 50%"></div></div>
             <div id="petMood">😐 Waiting for tasks...</div>
             <div id="tasksToday">Tasks today: 0/5</div>
             <div id="unlockedPets">🔓 1/10 pets</div>
+            <div id="petHabitat">🏠 Home</div>
             <button class="small-btn" onclick="openPetSettings()" style="margin-top:8px; font-size:11px; padding:6px 10px;">⚙️ Settings</button>
           </div>
 
@@ -376,10 +512,11 @@
             </div>
           </div>
 
-          <!-- Journal & Quick Links Buttons -->
+          <!-- Journal & Quick Links & Stats Buttons -->
           <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
             <button id="journalBtn" onclick="openJournalModal()" style="padding:10px 14px; width:100%;">📓 Journal</button>
             <button id="quickLinksBtn" onclick="openQuickLinksModal()" style="padding:10px 14px; width:100%;">📎 Links</button>
+            <button id="statsBtn" onclick="openStatsModal()" style="padding:10px 14px; width:100%;">📊 Stats</button>
           </div>
         </div>
       </div>
@@ -475,6 +612,39 @@
     <button onclick="closeTaskWheel()" style="margin-top:8px;">Close</button>
   </div>
 
+  <!-- Stats Modal -->
+  <div id="statsOverlay" class="modal-overlay hidden" onclick="closeStatsModal()"></div>
+  <div id="statsModal" class="hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(6,8,12,0.95); padding:24px; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.6); z-index:1001; min-width:350px; max-width:90vw; max-height:80vh; overflow-y:auto;">
+    <h3 style="margin-top:0;">📊 Your Stats</h3>
+    <div id="statsContent" style="text-align:left;">
+      <div class="stat-row" style="display:flex; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:8px;">
+        <span>Tasks Completed Today</span>
+        <span id="statTasksToday" style="font-weight:bold;">0</span>
+      </div>
+      <div class="stat-row" style="display:flex; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:8px;">
+        <span>Tasks This Week</span>
+        <span id="statTasksWeek" style="font-weight:bold;">0</span>
+      </div>
+      <div class="stat-row" style="display:flex; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:8px;">
+        <span>Total Tasks Completed</span>
+        <span id="statTasksTotal" style="font-weight:bold;">0</span>
+      </div>
+      <div class="stat-row" style="display:flex; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:8px;">
+        <span>🔥 Current Streak</span>
+        <span id="statStreak" style="font-weight:bold; color:#ffd93d;">0 days</span>
+      </div>
+      <div class="stat-row" style="display:flex; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:8px;">
+        <span>⏱️ Total Time Tracked</span>
+        <span id="statTimeTracked" style="font-weight:bold;">0h 0m</span>
+      </div>
+      <div class="stat-row" style="display:flex; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:8px;">
+        <span>🏆 Best Streak</span>
+        <span id="statBestStreak" style="font-weight:bold; color:#6bcb77;">0 days</span>
+      </div>
+    </div>
+    <button onclick="closeStatsModal()" style="margin-top:16px; width:100%;">Close</button>
+  </div>
+
   <!-- To-do lists -->
   <div id="todo" class="hidden">
     <div id="todoHeader"></div>
@@ -513,7 +683,7 @@
   </div>
 
   <!-- Pet Settings Dialog -->
-  <div id="petDialog" class="hidden" style="position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(6,8,12,0.95); padding:16px; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.6); width:320px; z-index:999;">
+  <div id="petDialog" class="hidden" style="position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(6,8,12,0.95); padding:16px; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,0.6); width:320px; z-index:999; max-height:80vh; overflow-y:auto;">
     <h3>🐾 Pet Settings</h3>
     <label style="font-size:13px; display:block; text-align:left; margin:8px 0 4px;">Pet Name:</label>
     <input type="text" id="petNameInput" placeholder="Name your pet" style="width:100%;">
@@ -521,6 +691,8 @@
     <div id="petChoices" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
     <label style="font-size:13px; display:block; text-align:left; margin:8px 0 4px;">Unlocked Accessories:</label>
     <div id="accessoryChoices" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
+    <label style="font-size:13px; display:block; text-align:left; margin:8px 0 4px;">Habitat:</label>
+    <div id="habitatChoices" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
     <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
       <button onclick="closePetDialog()">Cancel</button>
       <button onclick="savePetSettings()" class="list-button">Save</button>
@@ -657,15 +829,40 @@ function $(id){return document.getElementById(id);}
 function escapeHtml(str){ return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function getUsers(){ return JSON.parse(localStorage.getItem('users') || '{}'); }
 
-// Debounce cloud sync - waits 2 seconds after last change
+/* ========== DARK/LIGHT MODE ========== */
+let isDarkMode = localStorage.getItem('darkMode') !== 'false';
+
+function toggleDarkMode(){
+  isDarkMode = !isDarkMode;
+  localStorage.setItem('darkMode', isDarkMode);
+  applyDarkMode();
+}
+
+function applyDarkMode(){
+  const toggle = document.querySelector('.dark-mode-toggle');
+  if (isDarkMode) {
+    document.body.classList.remove('light-mode');
+    if (toggle) toggle.textContent = '🌙';
+  } else {
+    document.body.classList.add('light-mode');
+    if (toggle) toggle.textContent = '☀️';
+  }
+}
+
+// Apply on load
+document.addEventListener('DOMContentLoaded', applyDarkMode);
+
+// Debounce cloud sync - waits 1 second after last change
 let cloudSyncTimeout = null;
 function debouncedCloudSync(username, data) {
   if (cloudSyncTimeout) {
     clearTimeout(cloudSyncTimeout);
   }
+  console.log('⏳ Sync scheduled...');
   cloudSyncTimeout = setTimeout(() => {
+    console.log('☁️ Syncing now...');
     saveToCloud(username, data);
-  }, 2000);
+  }, 1000);
 }
 
 function saveUsers(u){ 
@@ -1134,6 +1331,10 @@ function renderPet(){
   const tasksToday = (pet.lastTaskDate === today) ? (pet.tasksToday || 0) : 0;
   const unlockedCount = getUnlockedPetCount(pet.xp);
   
+  // Check if it's nighttime (10pm - 6am)
+  const hour = new Date().getHours();
+  const isNighttime = hour >= 22 || hour < 6;
+  
   $('petEmoji').textContent = pet.emoji || '🐱';
   $('petAccessory').textContent = pet.accessory || '';
   $('petName').textContent = pet.name || 'Pixel';
@@ -1142,8 +1343,23 @@ function renderPet(){
   $('tasksToday').textContent = `Tasks today: ${tasksToday}/5`;
   $('unlockedPets').textContent = `🔓 ${unlockedCount}/10 pets unlocked`;
   
+  // Display habitat
+  const habitat = pet.habitat || 'home';
+  const habitatEmojis = { home: '🏠 Home', beach: '🏖️ Beach', space: '🚀 Space', forest: '🌲 Forest' };
+  $('petHabitat').textContent = habitatEmojis[habitat] || '🏠 Home';
+  
   const petDisplay = $('petDisplay');
-  petDisplay.classList.remove('pet-sad', 'pet-bounce');
+  const sleepingZzz = $('sleepingZzz');
+  petDisplay.classList.remove('pet-sad', 'pet-bounce', 'pet-sleeping', 'pet-happy-dance');
+  sleepingZzz.classList.add('hidden');
+  
+  // Check if sleeping
+  if (isNighttime) {
+    petDisplay.classList.add('pet-sleeping');
+    sleepingZzz.classList.remove('hidden');
+    $('petMood').textContent = '😴 Zzz...';
+    return;
+  }
   
   if (pet.happiness >= 80) {
     $('petMood').textContent = '😊 So happy!';
@@ -1178,16 +1394,37 @@ function petGainXP(amount){
   const newLevel = Math.floor(pet.xp / 100) + 1;
   if (newLevel > pet.level) {
     pet.level = newLevel;
+    // Check for new habitat unlock
+    if (newLevel >= 3 && !pet.habitatsUnlocked?.includes('beach')) {
+      pet.habitatsUnlocked = pet.habitatsUnlocked || ['home'];
+      pet.habitatsUnlocked.push('beach');
+      alert('🏖️ New habitat unlocked: Beach!');
+    }
+    if (newLevel >= 5 && !pet.habitatsUnlocked?.includes('forest')) {
+      pet.habitatsUnlocked = pet.habitatsUnlocked || ['home'];
+      pet.habitatsUnlocked.push('forest');
+      alert('🌲 New habitat unlocked: Forest!');
+    }
+    if (newLevel >= 8 && !pet.habitatsUnlocked?.includes('space')) {
+      pet.habitatsUnlocked = pet.habitatsUnlocked || ['home'];
+      pet.habitatsUnlocked.push('space');
+      alert('🚀 New habitat unlocked: Space!');
+    }
   }
   
   savePetData(pet);
   renderPet();
   
-  // Bounce animation
+  // Happy dance animation
   const petDisplay = $('petDisplay');
-  petDisplay.classList.remove('pet-bounce');
+  petDisplay.classList.remove('pet-bounce', 'pet-happy-dance', 'pet-sad');
   void petDisplay.offsetWidth;
-  petDisplay.classList.add('pet-bounce');
+  petDisplay.classList.add('pet-happy-dance');
+  
+  // Remove after animation
+  setTimeout(() => {
+    petDisplay.classList.remove('pet-happy-dance');
+  }, 1500);
 }
 
 function incrementTasksToday(){
@@ -1307,6 +1544,46 @@ function openPetSettings(){
     accDiv.appendChild(btn);
   });
   
+  // Habitat choices
+  const habitatDiv = $('habitatChoices');
+  habitatDiv.innerHTML = '';
+  const allHabitats = [
+    { id: 'home', emoji: '🏠', name: 'Home', unlockLevel: 1 },
+    { id: 'beach', emoji: '🏖️', name: 'Beach', unlockLevel: 3 },
+    { id: 'forest', emoji: '🌲', name: 'Forest', unlockLevel: 5 },
+    { id: 'space', emoji: '🚀', name: 'Space', unlockLevel: 8 }
+  ];
+  
+  allHabitats.forEach(hab => {
+    const isUnlocked = pet.level >= hab.unlockLevel;
+    const btn = document.createElement('button');
+    btn.textContent = hab.emoji;
+    btn.title = isUnlocked ? hab.name : `${hab.name} (Unlock at Lvl ${hab.unlockLevel})`;
+    btn.style.fontSize = '20px';
+    btn.style.padding = '6px 10px';
+    btn.style.background = pet.habitat === hab.id ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '8px';
+    btn.style.cursor = isUnlocked ? 'pointer' : 'not-allowed';
+    btn.style.opacity = isUnlocked ? '1' : '0.4';
+    btn.disabled = !isUnlocked;
+    btn.onclick = () => {
+      if (!isUnlocked) return;
+      habitatDiv.querySelectorAll('button').forEach(b => {
+        b.style.background = 'rgba(255,255,255,0.1)';
+        delete b.dataset.selected;
+      });
+      btn.style.background = 'rgba(255,255,255,0.3)';
+      btn.dataset.selected = 'true';
+      btn.dataset.habitat = hab.id;
+    };
+    if ((pet.habitat || 'home') === hab.id) {
+      btn.dataset.selected = 'true';
+      btn.dataset.habitat = hab.id;
+    }
+    habitatDiv.appendChild(btn);
+  });
+  
   $('petDialog').classList.remove('hidden');
 }
 
@@ -1325,6 +1602,9 @@ function savePetSettings(){
   
   const selectedAcc = $('accessoryChoices').querySelector('[data-selected="true"]');
   if (selectedAcc) pet.accessory = selectedAcc.dataset.emoji || '';
+  
+  const selectedHabitat = $('habitatChoices').querySelector('[data-selected="true"]');
+  if (selectedHabitat) pet.habitat = selectedHabitat.dataset.habitat || 'home';
   
   savePetData(pet);
   renderPet();
@@ -1474,6 +1754,108 @@ function openQuickLinksModal(){
 function closeQuickLinksModal(){
   $('quickLinksOverlay').classList.add('hidden');
   $('quickLinksModal').classList.add('hidden');
+}
+
+/* ========== STATS MODAL ========== */
+function openStatsModal(){
+  $('statsOverlay').classList.remove('hidden');
+  $('statsModal').classList.remove('hidden');
+  updateStats();
+}
+
+function closeStatsModal(){
+  $('statsOverlay').classList.add('hidden');
+  $('statsModal').classList.add('hidden');
+}
+
+function updateStats(){
+  const users = getUsers();
+  const user = users[currentUser];
+  if (!user) return;
+  
+  // Initialize stats if not present
+  user.stats = user.stats || { totalCompleted: 0, streak: 0, bestStreak: 0, lastCompletionDate: '', weeklyCompleted: {} };
+  
+  const pet = user.pet || {};
+  const today = getTodayStr();
+  
+  // Tasks completed today (from pet data)
+  const tasksToday = (pet.lastTaskDate === today) ? (pet.tasksToday || 0) : 0;
+  $('statTasksToday').textContent = tasksToday;
+  
+  // Tasks this week
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  let tasksThisWeek = 0;
+  const weekly = user.stats.weeklyCompleted || {};
+  Object.keys(weekly).forEach(date => {
+    const d = new Date(date);
+    if (d >= weekAgo) {
+      tasksThisWeek += weekly[date];
+    }
+  });
+  // Add today's tasks
+  tasksThisWeek += tasksToday;
+  $('statTasksWeek').textContent = tasksThisWeek;
+  
+  // Total tasks
+  $('statTasksTotal').textContent = user.stats.totalCompleted || 0;
+  
+  // Current streak
+  $('statStreak').textContent = (user.stats.streak || 0) + ' days';
+  
+  // Best streak
+  $('statBestStreak').textContent = (user.stats.bestStreak || 0) + ' days';
+  
+  // Total time tracked
+  let totalSeconds = 0;
+  (user.lists || []).forEach(list => {
+    (list.tasks || []).forEach(task => {
+      totalSeconds += task.timeSpent || 0;
+    });
+  });
+  const hours = Math.floor(totalSeconds / 3600);
+  const mins = Math.floor((totalSeconds % 3600) / 60);
+  $('statTimeTracked').textContent = `${hours}h ${mins}m`;
+}
+
+function updateStreak(){
+  const users = getUsers();
+  const user = users[currentUser];
+  if (!user) return;
+  
+  user.stats = user.stats || { totalCompleted: 0, streak: 0, bestStreak: 0, lastCompletionDate: '', weeklyCompleted: {} };
+  
+  const today = getTodayStr();
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  
+  if (user.stats.lastCompletionDate === today) {
+    // Already completed today, don't change streak
+  } else if (user.stats.lastCompletionDate === yesterdayStr) {
+    // Completed yesterday, increment streak
+    user.stats.streak = (user.stats.streak || 0) + 1;
+  } else {
+    // Streak broken, reset to 1
+    user.stats.streak = 1;
+  }
+  
+  user.stats.lastCompletionDate = today;
+  
+  // Update best streak
+  if (user.stats.streak > (user.stats.bestStreak || 0)) {
+    user.stats.bestStreak = user.stats.streak;
+  }
+  
+  // Update weekly completed
+  user.stats.weeklyCompleted = user.stats.weeklyCompleted || {};
+  user.stats.weeklyCompleted[today] = (user.stats.weeklyCompleted[today] || 0) + 1;
+  
+  // Increment total completed
+  user.stats.totalCompleted = (user.stats.totalCompleted || 0) + 1;
+  
+  saveUsers(users);
 }
 
 /* ========== GRADIENT SELECTION ========== */
@@ -2028,9 +2410,10 @@ function renderPalette(paletteRow){
   if (palette.length === 0) {
     paletteRow.innerHTML = '<span style="font-size:11px; opacity:0.6;">No colors saved</span>';
   } else {
-    palette.forEach(p => {
+    palette.forEach((p, index) => {
       const container = document.createElement('div');
       container.className = 'swatch-container';
+      container.style.position = 'relative';
       
       const s = document.createElement('div');
       s.className = 'swatch';
@@ -2041,15 +2424,35 @@ function renderPalette(paletteRow){
         if ($('taskColorPreview')) $('taskColorPreview').style.background = p.color;
       };
       
+      // Delete button
+      const deleteBtn = document.createElement('div');
+      deleteBtn.className = 'swatch-delete';
+      deleteBtn.innerHTML = '×';
+      deleteBtn.title = 'Delete color';
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        deletePaletteColor(index);
+      };
+      
       const labelEl = document.createElement('div');
       labelEl.className = 'swatch-label';
       labelEl.textContent = p.label || '';
       
       container.appendChild(s);
+      container.appendChild(deleteBtn);
       container.appendChild(labelEl);
       paletteRow.appendChild(container);
     });
   }
+}
+
+function deletePaletteColor(index){
+  const users = getUsers();
+  if (!users[currentUser]) return;
+  users[currentUser].palette = users[currentUser].palette || [];
+  users[currentUser].palette.splice(index, 1);
+  saveUsers(users);
+  renderPlanner();
 }
 
 function renderMonthlyPlanner(allTasksWithDates){
@@ -2110,8 +2513,10 @@ function renderMonthlyPlanner(allTasksWithDates){
       taskDiv.style.background = task.color || (task.done ? '#6bcb77' : '#ffd166');
       taskDiv.style.color = readableTextColor(task.color || '#ffd166');
       taskDiv.textContent = task.text;
-      taskDiv.title = task.text;
+      taskDiv.title = 'Click to change color';
+      taskDiv.style.cursor = 'pointer';
       if (task.done) taskDiv.style.opacity = '0.6';
+      taskDiv.onclick = () => openTaskColorPicker(task.listIndex, task.taskIndex);
       dayDiv.appendChild(taskDiv);
     });
     
@@ -2450,6 +2855,11 @@ function renderActiveList(){
       </select>
       <input type="number" id="newTaskEstimate_${index}" placeholder="Est. min" min="1" max="999" style="width:80px;" title="Estimated minutes">
       <input type="date" id="newTaskDate_${index}">
+      <select id="newTaskRecur_${index}" title="Recurring?" style="padding:8px; border-radius:6px;">
+        <option value="">🔄 Once</option>
+        <option value="daily">📅 Daily</option>
+        <option value="weekly">📆 Weekly</option>
+      </select>
       <button onclick="addTask(${index})">Add</button>
     </div>
     <div style="margin-bottom:8px; display:flex; gap:6px; align-items:center;">
@@ -2486,6 +2896,7 @@ function renderActiveList(){
     const timerColor = remainingTime < 0 ? '#ff6b6b' : (remainingTime < 60 ? '#ffd93d' : 'inherit');
     
     const dateLabel = task.dueDate ? `<span style="font-size:11px; opacity:0.8; margin-right:6px;">📅 ${task.dueDate}</span>` : '';
+    const recurLabel = task.recurring ? `<span style="font-size:11px; opacity:0.8; margin-right:6px;" title="${task.recurring === 'daily' ? 'Repeats daily' : 'Repeats weekly'}">${task.recurring === 'daily' ? '🔄' : '📆'}</span>` : '';
     const difficultyEmoji = getDifficultyEmoji(task.difficulty);
     const difficultyLabel = `<span style="font-size:14px; margin-right:4px;" title="${task.difficulty || 'medium'}">${difficultyEmoji}</span>`;
     
@@ -2500,6 +2911,7 @@ function renderActiveList(){
         ${difficultyLabel}
         <input type="text" value="${escapeHtml(task.text)}" onchange="editTask(${tIdx}, this.value)" 
                style="text-decoration: ${task.done ? 'line-through' : 'none'}; flex:1; min-width:100px;">
+        ${recurLabel}
         ${dateLabel}
         <div class="task-timer-section">
           ${timeDisplay}
@@ -2544,10 +2956,12 @@ function addTask(listIndex){
   const dateInput = $('newTaskDate_' + listIndex);
   const estimateInput = $('newTaskEstimate_' + listIndex);
   const difficultyInput = $('newTaskDifficulty_' + listIndex);
+  const recurInput = $('newTaskRecur_' + listIndex);
   const text = input.value.trim();
   const dueDate = dateInput ? dateInput.value : '';
   const estimateMinutes = estimateInput ? parseInt(estimateInput.value) || 0 : 0;
   const difficulty = difficultyInput ? difficultyInput.value : 'medium';
+  const recurring = recurInput ? recurInput.value : '';
 
   if (!text) return;
 
@@ -2557,13 +2971,15 @@ function addTask(listIndex){
     dueDate: dueDate || undefined, 
     timeSpent: 0,
     estimateMinutes: estimateMinutes || undefined,
-    difficulty: difficulty
+    difficulty: difficulty,
+    recurring: recurring || undefined
   });
 
   input.value = "";
   if(dateInput) dateInput.value = "";
   if(estimateInput) estimateInput.value = "";
   if(difficultyInput) difficultyInput.value = "medium";
+  if(recurInput) recurInput.value = "";
 
   saveAllLists();
   renderLists();
@@ -2575,12 +2991,13 @@ function toggleTask(taskIndex){
   const wasNotDone = !task.done;
   task.done = !task.done;
   
-  // If completing a task, stop its timer, update pet, and show popup with confetti
+  // If completing a task, stop its timer, update pet, update streak, and show popup with confetti
   if (task.done && wasNotDone) {
     if (activeTaskTimer && activeTaskTimer.listIndex === activeListIndex && activeTaskTimer.taskIndex === taskIndex) {
       stopTaskTimer();
     }
     incrementTasksToday();
+    updateStreak(); // Track stats
     showCompletionPopup();
     
     // Show confetti based on difficulty
@@ -2591,6 +3008,33 @@ function toggleTask(taskIndex){
       showConfetti(40); // Less confetti
     }
     // Easy and really-easy: no confetti, just the message
+    
+    // Handle recurring tasks - create next occurrence
+    if (task.recurring) {
+      const newTask = {
+        text: task.text,
+        done: false,
+        timeSpent: 0,
+        estimateMinutes: task.estimateMinutes,
+        difficulty: task.difficulty,
+        recurring: task.recurring,
+        color: task.color
+      };
+      
+      // Calculate next due date
+      if (task.dueDate) {
+        const currentDate = new Date(task.dueDate);
+        if (task.recurring === 'daily') {
+          currentDate.setDate(currentDate.getDate() + 1);
+        } else if (task.recurring === 'weekly') {
+          currentDate.setDate(currentDate.getDate() + 7);
+        }
+        newTask.dueDate = currentDate.toISOString().split('T')[0];
+      }
+      
+      // Add the recurring task
+      allLists[activeListIndex].tasks.push(newTask);
+    }
   }
   
   saveAllLists(); 
