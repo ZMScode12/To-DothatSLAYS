@@ -94,6 +94,101 @@
       color: #1a1a2e;
     }
 
+    .focus-mode-toggle {
+      position: fixed;
+      top: 16px;
+      right: 70px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .focus-mode-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    body.light-mode .focus-mode-toggle {
+      background: rgba(0,0,0,0.1);
+      color: #1a1a2e;
+    }
+
+    .focus-mode-toggle.active {
+      background: #6b5bff;
+      color: white;
+    }
+
+    /* Global Focus Mode Styles */
+    body.global-focus-mode {
+      background: black !important;
+      animation: none !important;
+    }
+
+    body.global-focus-mode.light-mode {
+      background: white !important;
+    }
+
+    body.global-focus-mode .dark-mode-toggle,
+    body.global-focus-mode #topPanels,
+    body.global-focus-mode #todo,
+    body.global-focus-mode .tabs,
+    body.global-focus-mode #tabsContainer {
+      display: none !important;
+    }
+
+    body.global-focus-mode .focus-mode-toggle {
+      display: block !important;
+    }
+
+    #globalFocusTaskDisplay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      max-width: 80%;
+      z-index: 100;
+      display: none;
+    }
+
+    body.global-focus-mode #globalFocusTaskDisplay {
+      display: block;
+    }
+
+    #globalFocusCompleteBtn {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 40px;
+      font-size: 18px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      z-index: 100;
+      display: none;
+    }
+
+    body.global-focus-mode #globalFocusCompleteBtn {
+      display: block;
+      background: #333;
+      color: white;
+    }
+
+    body.global-focus-mode.light-mode #globalFocusCompleteBtn {
+      background: #eee;
+      color: #1a1a2e;
+    }
+
     @keyframes gradientMove {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
@@ -264,7 +359,6 @@
     #petMood { font-size: 10px; margin-top: 4px; }
     #tasksToday { font-size: 9px; opacity: 0.7; margin-top: 2px; }
     #unlockedPets { font-size: 9px; opacity: 0.7; margin-top: 2px; }
-    #petHabitat { font-size: 9px; opacity: 0.7; margin-top: 2px; }
     .pet-bounce { animation: petBounce 0.5s ease; }
     @keyframes petBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     @keyframes petSad { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
@@ -410,6 +504,75 @@
     .task-start-btn:hover { opacity: 0.9; }
     .task-estimate { font-size: 10px; opacity: 0.7; }
 
+    /* Focus Mode */
+    #focusModeOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease;
+    }
+    #focusModeOverlay.dark { background: #000; color: white; }
+    #focusModeOverlay.light { background: #fff; color: #1a1a2e; }
+    #focusTaskDisplay {
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      padding: 40px;
+      max-width: 80%;
+    }
+    #focusExitBtn {
+      margin-top: 30px;
+      padding: 15px 40px;
+      font-size: 18px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+    }
+    #focusModeOverlay.dark #focusExitBtn { background: #333; color: white; }
+    #focusModeOverlay.light #focusExitBtn { background: #eee; color: #1a1a2e; }
+    #focusExitBtn:hover { opacity: 0.8; }
+
+    /* Focus Complete Message */
+    #focusCompleteOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      cursor: pointer;
+    }
+    #focusCompleteMessage {
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+      padding: 40px;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+    #focusCompleteHint {
+      margin-top: 30px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    #newPetUnlocked {
+      font-size: 64px;
+      margin-top: 20px;
+    }
+
     @media (max-width: 880px) {
       #topPanels { gap: 12px; width: calc(100% - 40px); }
       .panel { width: 100%; }
@@ -431,6 +594,26 @@
 
   <!-- Dark/Light Mode Toggle -->
   <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">🌙</button>
+  
+  <!-- Global Focus Mode Toggle -->
+  <button class="focus-mode-toggle" onclick="toggleGlobalFocusMode()" title="Toggle Focus Mode">📄</button>
+
+  <!-- Global Focus Mode Task Display -->
+  <div id="globalFocusTaskDisplay" class="hidden">Select a task first</div>
+  <button id="globalFocusCompleteBtn" class="hidden" onclick="completeGlobalFocusTask()">✓ Complete Task</button>
+
+  <!-- Focus Mode Overlay -->
+  <div id="focusModeOverlay" class="hidden dark">
+    <div id="focusTaskDisplay">Your task will appear here</div>
+    <button id="focusExitBtn" onclick="exitFocusMode()">✓ Complete & Exit Focus Mode</button>
+  </div>
+
+  <!-- Focus Complete Overlay -->
+  <div id="focusCompleteOverlay" class="hidden" onclick="closeFocusComplete()">
+    <div id="focusCompleteMessage">"The secret of getting ahead is getting started."</div>
+    <div id="newPetUnlocked">🎉</div>
+    <div id="focusCompleteHint">Click anywhere to continue</div>
+  </div>
 
   <!-- Sign up / Login -->
   <div id="signup">
@@ -486,7 +669,6 @@
             <div id="petMood">😐 Waiting for tasks...</div>
             <div id="tasksToday">Tasks today: 0/5</div>
             <div id="unlockedPets">🔓 1/10 pets</div>
-            <div id="petHabitat">🏠 Home</div>
             <button class="small-btn" onclick="openPetSettings()" style="margin-top:8px; font-size:11px; padding:6px 10px;">⚙️ Settings</button>
           </div>
 
@@ -534,6 +716,7 @@
           <select id="plannerViewSelect" onchange="switchPlannerView(this.value)" style="padding:6px; border-radius:6px;">
             <option value="weekly">📅 Weekly View</option>
             <option value="monthly">🗓️ Monthly View</option>
+            <option value="both">📅🗓️ Both Views</option>
           </select>
           <div id="plannerViewLabel" style="margin-left:auto; font-size:13px; opacity:0.9">Week: Sunday → Saturday</div>
         </div>
@@ -691,8 +874,6 @@
     <div id="petChoices" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
     <label style="font-size:13px; display:block; text-align:left; margin:8px 0 4px;">Unlocked Accessories:</label>
     <div id="accessoryChoices" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
-    <label style="font-size:13px; display:block; text-align:left; margin:8px 0 4px;">Habitat:</label>
-    <div id="habitatChoices" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
     <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
       <button onclick="closePetDialog()">Cancel</button>
       <button onclick="savePetSettings()" class="list-button">Save</button>
@@ -1343,11 +1524,6 @@ function renderPet(){
   $('tasksToday').textContent = `Tasks today: ${tasksToday}/5`;
   $('unlockedPets').textContent = `🔓 ${unlockedCount}/10 pets unlocked`;
   
-  // Display habitat
-  const habitat = pet.habitat || 'home';
-  const habitatEmojis = { home: '🏠 Home', beach: '🏖️ Beach', space: '🚀 Space', forest: '🌲 Forest' };
-  $('petHabitat').textContent = habitatEmojis[habitat] || '🏠 Home';
-  
   const petDisplay = $('petDisplay');
   const sleepingZzz = $('sleepingZzz');
   petDisplay.classList.remove('pet-sad', 'pet-bounce', 'pet-sleeping', 'pet-happy-dance');
@@ -1394,22 +1570,6 @@ function petGainXP(amount){
   const newLevel = Math.floor(pet.xp / 100) + 1;
   if (newLevel > pet.level) {
     pet.level = newLevel;
-    // Check for new habitat unlock
-    if (newLevel >= 3 && !pet.habitatsUnlocked?.includes('beach')) {
-      pet.habitatsUnlocked = pet.habitatsUnlocked || ['home'];
-      pet.habitatsUnlocked.push('beach');
-      alert('🏖️ New habitat unlocked: Beach!');
-    }
-    if (newLevel >= 5 && !pet.habitatsUnlocked?.includes('forest')) {
-      pet.habitatsUnlocked = pet.habitatsUnlocked || ['home'];
-      pet.habitatsUnlocked.push('forest');
-      alert('🌲 New habitat unlocked: Forest!');
-    }
-    if (newLevel >= 8 && !pet.habitatsUnlocked?.includes('space')) {
-      pet.habitatsUnlocked = pet.habitatsUnlocked || ['home'];
-      pet.habitatsUnlocked.push('space');
-      alert('🚀 New habitat unlocked: Space!');
-    }
   }
   
   savePetData(pet);
@@ -1544,46 +1704,6 @@ function openPetSettings(){
     accDiv.appendChild(btn);
   });
   
-  // Habitat choices
-  const habitatDiv = $('habitatChoices');
-  habitatDiv.innerHTML = '';
-  const allHabitats = [
-    { id: 'home', emoji: '🏠', name: 'Home', unlockLevel: 1 },
-    { id: 'beach', emoji: '🏖️', name: 'Beach', unlockLevel: 3 },
-    { id: 'forest', emoji: '🌲', name: 'Forest', unlockLevel: 5 },
-    { id: 'space', emoji: '🚀', name: 'Space', unlockLevel: 8 }
-  ];
-  
-  allHabitats.forEach(hab => {
-    const isUnlocked = pet.level >= hab.unlockLevel;
-    const btn = document.createElement('button');
-    btn.textContent = hab.emoji;
-    btn.title = isUnlocked ? hab.name : `${hab.name} (Unlock at Lvl ${hab.unlockLevel})`;
-    btn.style.fontSize = '20px';
-    btn.style.padding = '6px 10px';
-    btn.style.background = pet.habitat === hab.id ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)';
-    btn.style.border = 'none';
-    btn.style.borderRadius = '8px';
-    btn.style.cursor = isUnlocked ? 'pointer' : 'not-allowed';
-    btn.style.opacity = isUnlocked ? '1' : '0.4';
-    btn.disabled = !isUnlocked;
-    btn.onclick = () => {
-      if (!isUnlocked) return;
-      habitatDiv.querySelectorAll('button').forEach(b => {
-        b.style.background = 'rgba(255,255,255,0.1)';
-        delete b.dataset.selected;
-      });
-      btn.style.background = 'rgba(255,255,255,0.3)';
-      btn.dataset.selected = 'true';
-      btn.dataset.habitat = hab.id;
-    };
-    if ((pet.habitat || 'home') === hab.id) {
-      btn.dataset.selected = 'true';
-      btn.dataset.habitat = hab.id;
-    }
-    habitatDiv.appendChild(btn);
-  });
-  
   $('petDialog').classList.remove('hidden');
 }
 
@@ -1602,9 +1722,6 @@ function savePetSettings(){
   
   const selectedAcc = $('accessoryChoices').querySelector('[data-selected="true"]');
   if (selectedAcc) pet.accessory = selectedAcc.dataset.emoji || '';
-  
-  const selectedHabitat = $('habitatChoices').querySelector('[data-selected="true"]');
-  if (selectedHabitat) pet.habitat = selectedHabitat.dataset.habitat || 'home';
   
   savePetData(pet);
   renderPet();
@@ -1768,6 +1885,181 @@ function closeStatsModal(){
   $('statsModal').classList.add('hidden');
 }
 
+/* ========== FOCUS MODE ========== */
+let focusModeTask = { listIndex: -1, taskIndex: -1 };
+let globalFocusModeActive = false;
+let globalFocusTask = { listIndex: -1, taskIndex: -1 };
+
+const inspirationalMessages = [
+  "You just accomplished something incredible!",
+  "Every great journey begins with a single step. You took that step!",
+  "You're unstoppable! Keep that momentum going!",
+  "Success is the sum of small efforts. You just added one more!",
+  "The only way to do great work is to love what you do. You're doing great!",
+  "Believe you can and you're halfway there. Now you're all the way!",
+  "You didn't come this far to only come this far. Keep pushing!",
+  "Your focus determines your reality. And yours is amazing!",
+  "The secret of getting ahead is getting started. You've done both!",
+  "You are capable of amazing things. You just proved it!",
+  "Progress, not perfection. And you just made progress!",
+  "Dreams don't work unless you do. And you're working!",
+  "Your only limit is your mind. And you just broke through!",
+  "Make each day your masterpiece. Today's a great one!",
+  "Stars can't shine without darkness. You're shining bright!",
+  "The future belongs to those who believe in the beauty of their dreams!",
+  "What you do today can improve all your tomorrows!",
+  "Excellence is not a destination but a continuous journey!",
+  "Small progress is still progress. You're moving forward!",
+  "You're building something amazing, one task at a time!",
+  "Champions are made when no one is watching. You're a champion!",
+  "Your dedication is inspiring. Keep being awesome!",
+  "Focus + effort = unstoppable. That's you right now!",
+  "Every task completed is a step toward greatness!",
+  "You have the power to create change. You just did!"
+];
+
+function toggleGlobalFocusMode(){
+  if (globalFocusModeActive) {
+    exitGlobalFocusMode();
+  } else {
+    enterGlobalFocusMode();
+  }
+}
+
+function enterGlobalFocusMode(){
+  // Check if there's a selected task (we'll use the first uncompleted task in the active list)
+  if (!allLists[activeListIndex] || allLists[activeListIndex].tasks.length === 0) {
+    alert('No tasks available. Add some tasks first!');
+    return;
+  }
+  
+  // Find first uncompleted task
+  const tasks = allLists[activeListIndex].tasks;
+  let taskIndex = -1;
+  for (let i = 0; i < tasks.length; i++) {
+    if (!tasks[i].done) {
+      taskIndex = i;
+      break;
+    }
+  }
+  
+  if (taskIndex === -1) {
+    alert('All tasks are completed! Add new tasks to use focus mode.');
+    return;
+  }
+  
+  globalFocusTask = { listIndex: activeListIndex, taskIndex };
+  globalFocusModeActive = true;
+  
+  // Update UI
+  document.body.classList.add('global-focus-mode');
+  document.querySelector('.focus-mode-toggle').classList.add('active');
+  $('globalFocusTaskDisplay').classList.remove('hidden');
+  $('globalFocusCompleteBtn').classList.remove('hidden');
+  
+  // Set task text
+  const task = tasks[taskIndex];
+  $('globalFocusTaskDisplay').textContent = task.text;
+}
+
+function exitGlobalFocusMode(){
+  globalFocusModeActive = false;
+  globalFocusTask = { listIndex: -1, taskIndex: -1 };
+  
+  // Update UI
+  document.body.classList.remove('global-focus-mode');
+  document.querySelector('.focus-mode-toggle').classList.remove('active');
+  $('globalFocusTaskDisplay').classList.add('hidden');
+  $('globalFocusCompleteBtn').classList.add('hidden');
+}
+
+function completeGlobalFocusTask(){
+  const { listIndex, taskIndex } = globalFocusTask;
+  const task = allLists[listIndex]?.tasks?.[taskIndex];
+  
+  if (!task || task.done) {
+    exitGlobalFocusMode();
+    return;
+  }
+  
+  // Mark task as complete
+  task.done = true;
+  incrementTasksToday();
+  updateStreak();
+  saveAllLists();
+  
+  // Exit focus mode first
+  exitGlobalFocusMode();
+  
+  // Render lists
+  renderLists();
+  renderPlanner();
+  
+  // Show 200 confetti pieces
+  showConfetti(200);
+  
+  // Give XP
+  petGainXP(50);
+  
+  // Show inspirational message in the focus complete overlay
+  const randomMessage = inspirationalMessages[Math.floor(Math.random() * inspirationalMessages.length)];
+  $('focusCompleteMessage').textContent = randomMessage;
+  $('focusCompleteOverlay').classList.remove('hidden');
+}
+
+function enterFocusMode(listIndex, taskIndex){
+  const task = allLists[listIndex]?.tasks?.[taskIndex];
+  if (!task) return;
+  
+  focusModeTask = { listIndex, taskIndex };
+  
+  // Set the task text
+  $('focusTaskDisplay').textContent = task.text;
+  
+  // Set dark or light mode
+  const overlay = $('focusModeOverlay');
+  overlay.classList.remove('dark', 'light');
+  overlay.classList.add(isDarkMode ? 'dark' : 'light');
+  
+  // Show the overlay
+  overlay.classList.remove('hidden');
+}
+
+function exitFocusMode(){
+  const { listIndex, taskIndex } = focusModeTask;
+  const task = allLists[listIndex]?.tasks?.[taskIndex];
+  
+  // Hide focus overlay
+  $('focusModeOverlay').classList.add('hidden');
+  
+  if (task && !task.done) {
+    // Mark task as complete
+    task.done = true;
+    incrementTasksToday();
+    updateStreak();
+    saveAllLists();
+    renderLists();
+    renderPlanner();
+    
+    // Show 200 confetti pieces
+    showConfetti(200);
+    
+    // Unlock a pet (give XP to unlock next one)
+    petGainXP(100); // This will unlock a pet every time since pets unlock at 100 XP intervals
+    
+    // Show inspirational message
+    const randomMessage = inspirationalMessages[Math.floor(Math.random() * inspirationalMessages.length)];
+    $('focusCompleteMessage').textContent = randomMessage;
+    $('focusCompleteOverlay').classList.remove('hidden');
+  }
+  
+  focusModeTask = { listIndex: -1, taskIndex: -1 };
+}
+
+function closeFocusComplete(){
+  $('focusCompleteOverlay').classList.add('hidden');
+}
+
 function updateStats(){
   const users = getUsers();
   const user = users[currentUser];
@@ -1783,7 +2075,7 @@ function updateStats(){
   const tasksToday = (pet.lastTaskDate === today) ? (pet.tasksToday || 0) : 0;
   $('statTasksToday').textContent = tasksToday;
   
-  // Tasks this week
+  // Tasks this week - only count from weeklyCompleted, don't add tasksToday separately
   const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 7);
   let tasksThisWeek = 0;
@@ -1794,8 +2086,7 @@ function updateStats(){
       tasksThisWeek += weekly[date];
     }
   });
-  // Add today's tasks
-  tasksThisWeek += tasksToday;
+  // Don't add tasksToday again - it's already counted in weeklyCompleted[today]
   $('statTasksWeek').textContent = tasksThisWeek;
   
   // Total tasks
@@ -2244,17 +2535,27 @@ let plannerView = 'weekly';
 
 function switchPlannerView(view){
   plannerView = view;
+  const weeklyGrid = $('plannerGrid');
+  const monthlyGrid = $('monthlyGrid');
+  const now = new Date();
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  
+  // Always reset both grids first
+  weeklyGrid.classList.add('hidden');
+  monthlyGrid.classList.add('hidden');
+  
   if (view === 'weekly') {
-    $('plannerGrid').classList.remove('hidden');
-    $('monthlyGrid').classList.add('hidden');
+    weeklyGrid.classList.remove('hidden');
     $('plannerViewLabel').textContent = 'Week: Sunday → Saturday';
-  } else {
-    $('plannerGrid').classList.add('hidden');
-    $('monthlyGrid').classList.remove('hidden');
-    const now = new Date();
-    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  } else if (view === 'monthly') {
+    monthlyGrid.classList.remove('hidden');
     $('plannerViewLabel').textContent = `${months[now.getMonth()]} ${now.getFullYear()}`;
+  } else if (view === 'both') {
+    weeklyGrid.classList.remove('hidden');
+    monthlyGrid.classList.remove('hidden');
+    $('plannerViewLabel').textContent = `Week + ${months[now.getMonth()]} ${now.getFullYear()}`;
   }
+  
   renderPlanner();
   
   // Force panel body to recalculate height
@@ -2273,52 +2574,30 @@ function formatDate(d) {
 
 function renderPlanner(){
   const grid = $('plannerGrid');
+  const monthlyGrid = $('monthlyGrid');
   const paletteRow = $('paletteRow');
-  if (!grid || !paletteRow) return;
+  if (!grid || !paletteRow || !monthlyGrid) return;
 
   if (!currentUser) return;
 
+  // Clear both grids
   grid.innerHTML = '';
+  monthlyGrid.innerHTML = '';
   
-  // Skip weekly grid rendering if monthly view is active
-  if (plannerView === 'monthly') {
-    // Just gather tasks and render monthly
-    const allTasksWithDates = [];
-    allLists.forEach((list, listIndex) => {
-      list.tasks.forEach((task, taskIndex) => {
-        if (task.dueDate) {
-          allTasksWithDates.push({
-            text: task.text,
-            dueDate: task.dueDate,
-            done: task.done,
-            color: task.color,
-            listIndex,
-            taskIndex,
-            listName: list.name
-          });
-        }
-      });
-    });
-    renderMonthlyPlanner(allTasksWithDates);
-    renderPalette(paletteRow);
-    return;
+  // Ensure correct visibility based on current plannerView
+  grid.classList.add('hidden');
+  monthlyGrid.classList.add('hidden');
+  
+  if (plannerView === 'weekly') {
+    grid.classList.remove('hidden');
+  } else if (plannerView === 'monthly') {
+    monthlyGrid.classList.remove('hidden');
+  } else if (plannerView === 'both') {
+    grid.classList.remove('hidden');
+    monthlyGrid.classList.remove('hidden');
   }
-
-  const today = new Date();
-  const startOfWeek = new Date(today);
-  startOfWeek.setDate(today.getDate() - today.getDay());
-  const weekDates = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(startOfWeek);
-    d.setDate(startOfWeek.getDate() + i);
-    weekDates.push(d);
-  }
-
-  const users = getUsers();
-  const user = users[currentUser] || { palette: [] };
-  const palette = user.palette || [];
-
-  // Gather all tasks with due dates from all lists
+  
+  // Gather all tasks with due dates from all lists (needed for both views)
   const allTasksWithDates = [];
   allLists.forEach((list, listIndex) => {
     list.tasks.forEach((task, taskIndex) => {
@@ -2335,6 +2614,35 @@ function renderPlanner(){
       }
     });
   });
+  
+  // Render monthly if monthly or both
+  if (plannerView === 'monthly' || plannerView === 'both') {
+    renderMonthlyPlanner(allTasksWithDates);
+  }
+  
+  // Render weekly if weekly or both
+  if (plannerView === 'weekly' || plannerView === 'both') {
+    renderWeeklyPlanner(allTasksWithDates);
+  }
+  
+  renderPalette(paletteRow);
+}
+
+function renderWeeklyPlanner(allTasksWithDates){
+  const grid = $('plannerGrid');
+  if (!grid) return;
+  
+  grid.innerHTML = '';
+
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay());
+  const weekDates = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    weekDates.push(d);
+  }
 
   for (let day = 0; day < 7; day++){
     const col = document.createElement('div');
@@ -2396,9 +2704,6 @@ function renderPlanner(){
 
     grid.appendChild(col);
   }
-
-  // Render palette
-  renderPalette(paletteRow);
 }
 
 function renderPalette(paletteRow){
@@ -2920,6 +3225,7 @@ function renderActiveList(){
             : `<button class="task-start-btn" onclick="startTaskTimer(${index}, ${tIdx})">▶ Start</button>`
           }
         </div>
+        <button onclick="enterFocusMode(${index}, ${tIdx})" style="padding:6px 10px;" title="Focus Mode">🎯</button>
         <button onclick="deleteTask(${index}, ${tIdx})" style="padding:6px 10px;">🗑️</button>
       </div>
     `;
