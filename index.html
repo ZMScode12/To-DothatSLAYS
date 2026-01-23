@@ -668,10 +668,10 @@
 <body>
 
   <!-- Dark/Light Mode Toggle -->
-  <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">🌙</button>
+  <button class="dark-mode-toggle hidden" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">🌙</button>
   
   <!-- Global Focus Mode Toggle -->
-  <button class="focus-mode-toggle" onclick="toggleGlobalFocusMode()" title="Toggle Focus Mode">📄</button>
+  <button class="focus-mode-toggle hidden" onclick="toggleGlobalFocusMode()" title="Toggle Focus Mode">📄</button>
 
   <!-- Global Focus Mode Task Display -->
   <div id="globalFocusTaskDisplay" class="hidden">Select a task first</div>
@@ -2468,6 +2468,10 @@ function showTodo(){
     </div>
   `;
   
+  // Show focus mode and dark mode buttons when logged in
+  document.querySelector('.focus-mode-toggle').classList.remove('hidden');
+  document.querySelector('.dark-mode-toggle').classList.remove('hidden');
+  
   showNewQuote();
   resetTimer();
 }
@@ -3498,6 +3502,10 @@ function logout(){
   $('background-picker')?.classList.add('hidden');
   closeQuickLinksModal();
   checkTopPanelsVisibility();
+  
+  // Hide focus mode and dark mode buttons when logged out
+  document.querySelector('.focus-mode-toggle').classList.add('hidden');
+  document.querySelector('.dark-mode-toggle').classList.add('hidden');
 }
 
 /* ========== INIT ========== */
